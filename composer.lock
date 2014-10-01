@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "spindle/httpclient",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spindle/spindle-httpclient.git",
-                "reference": "c761d3862fc1db0958c70f9997ace4c6bb1f47af"
+                "reference": "aeda3e390e6c1006d5772b8867960aeaf5d9bac5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spindle/spindle-httpclient/zipball/c761d3862fc1db0958c70f9997ace4c6bb1f47af",
-                "reference": "c761d3862fc1db0958c70f9997ace4c6bb1f47af",
+                "url": "https://api.github.com/repos/spindle/spindle-httpclient/zipball/aeda3e390e6c1006d5772b8867960aeaf5d9bac5",
+                "reference": "aeda3e390e6c1006d5772b8867960aeaf5d9bac5",
                 "shasum": ""
             },
             "require": {
@@ -48,7 +48,7 @@
                 }
             ],
             "description": "simple wrapper for ext-curl, multi-request enabled",
-            "time": "2014-07-26 20:20:07"
+            "time": "2014-09-15 13:56:36"
         }
     ],
     "packages-dev": [],
