@@ -1,0 +1,61 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "0c96ff783b08d459e4ca629f87dbdf7c",
+    "packages": [
+        {
+            "name": "spindle/httpclient",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spindle/spindle-httpclient.git",
+                "reference": "c761d3862fc1db0958c70f9997ace4c6bb1f47af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spindle/spindle-httpclient/zipball/c761d3862fc1db0958c70f9997ace4c6bb1f47af",
+                "reference": "c761d3862fc1db0958c70f9997ace4c6bb1f47af",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "apigen/apigen": "*",
+                "dg/texy": "<v2.5",
+                "nette/nette": "<2.2",
+                "pdepend/pdepend": "*",
+                "phpunit/phpunit": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spindle\\HttpClient\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "CC0-1.0"
+            ],
+            "authors": [
+                {
+                    "name": "Hiraku NAKANO",
+                    "email": "hiraku@tojiru.net"
+                }
+            ],
+            "description": "simple wrapper for ext-curl, multi-request enabled",
+            "time": "2014-07-26 20:20:07"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
+}
