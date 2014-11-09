@@ -163,6 +163,30 @@ function downloadPackages($config, $globals, $providers)
         }
     }
 
+    //残りの端数をダウンロード
+    $globals->mh->waitResponse();
+    foreach ($globals->mh as $req) {
+        $res = $req->getResponse();
+        $globals->q->enqueue($req);
+
+        echo $res->getStatusCode(), "\t", $req->packageName, PHP_EOL;
+
+        if (200 === $res->getStatusCode()) {
+            $cachefile = $cachedir
+                . str_replace("$config->packagistUrl/", '', $res->getUrl());
+            foreach (glob("{$cachedir}p/$req->packageName*")  as $old) {
+                //unlink($old);
+                $olds->fwrite($old . \PHP_EOL);
+            }
+            if (!file_exists(dirname($cachefile))) {
+                mkdir(dirname($cachefile), 0777, true);
+            }
+            file_put_contents($cachefile, $res->getBody());
+        } else {
+            $globals->retry = true;
+        }
+    }
+
 }
 
 function flushFiles($config)
@@ -177,7 +201,8 @@ function flushFiles($config)
     $olds = new \SplFileObject($config->olds, 'r');
 
     foreach ($olds as $oldfile) {
-        unlink(trim($oldfile));
+        $oldfile = rtrim($oldfile);
+        if (file_exists($oldfile)) unlink($oldfile);
     }
 
     unset($olds);
