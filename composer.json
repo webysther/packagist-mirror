@@ -1,6 +1,6 @@
 {
-    "name": "hiraku/composer-crowler",
-    "description": "yet another composer command",
+    "name": "hiraku/packagist-crawler",
+    "description": "build mirror of packagist.org",
     "license": "CC0-1.0",
     "authors": [
         {
