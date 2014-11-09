@@ -4,13 +4,16 @@ namespace Spindle\HttpClient;
 require_once __DIR__ . '/vendor/autoload.php';
 
 $config = [
-    //'cachedir' => __DIR__ . '/cache/',
+    'cachedir' => __DIR__ . '/cache/',
     //'cachedir' => '/usr/share/nginx/html/',
-    'cachedir' => '/usr/local/apache2/htdocs/',
+    //'cachedir' => '/usr/local/apache2/htdocs/',
 ];
 
-$providers = downloadProviders($config);
-downloadPackages($config, $providers);
+do {
+    $retry = false;
+    $providers = downloadProviders($config);
+    downloadPackages($config, $providers);
+} while ($retry);
 
 /**
  * packages.json & provider-latest$xxx.json downloader
@@ -114,6 +117,8 @@ function downloadPackages($config, $providers)
                     mkdir(dirname($cachefile), 0777, true);
                 }
                 file_put_contents($cachefile, $res->getBody());
+            } else {
+                $GLOBALS['retry'] = true;
             }
         }
     }
