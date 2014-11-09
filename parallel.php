@@ -196,6 +196,8 @@ function flushFiles($config)
         $config->cachedir . 'packages.json'
     );
 
+    echo 'finished! flushing...', PHP_EOL;
+
     sleep(10); //何秒あれば十分なのか？
 
     $olds = new \SplFileObject($config->olds, 'r');
