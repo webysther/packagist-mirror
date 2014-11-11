@@ -3,14 +3,11 @@ namespace Spindle\HttpClient;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$config = (object)array(
-    'cachedir' => __DIR__ . '/cache/',
-    //'cachedir' => '/usr/share/nginx/html/',
-    //'cachedir' => '/usr/local/apache2/htdocs/',
-    'packagistUrl' => 'https://packagist.org',
-    'olds' => __DIR__ . '/cache/.olds',
-    'maxConnections' => 10,
-);
+if (file_exists(__DIR__ . '/config.php')) {
+    $config = require __DIR__ . '/config.php';
+} else {
+    $config = require __DIR__ . '/config.default.php';
+}
 
 if (file_exists($config->olds)) {
     throw new \RuntimeException("$config->olds exists");
@@ -59,11 +56,14 @@ function downloadProviders($config, $globals)
     if (200 === $res->getStatusCode()) {
         $packages = json_decode($res->getBody());
         foreach (explode(' ', 'notify notify-batch search') as $k) {
-            $packages->$k = 'https://packagist.org' . $packages->$k;
+            if ('/' === $packages->$k[0]) {
+                $packages->$k = 'https://packagist.org' . $packages->$k;
+            }
         }
         file_put_contents($packagesCache . '.new', json_encode($packages));
     } else {
         //throw new \RuntimeException('no changes', $res->getStatusCode());
+        $packages = json_decode(file_get_contents($packagesCache));
     }
 
     if (empty($packages->{'provider-includes'})) {
@@ -83,7 +83,7 @@ function downloadProviders($config, $globals)
         $req->setOption('url', $config->packagistUrl . '/' . $fileurl);
         $res = $req->send();
 
-        echo $res->getStatusCode(), "\t", $fileurl, PHP_EOL;
+        echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
         if (200 === $res->getStatusCode()) {
             $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
             foreach (glob($oldcache)  as $old) {
@@ -113,8 +113,6 @@ function downloadPackages($config, $globals, $providers)
     $urls = array();
 
     $olds = new \SplFileObject($config->olds, 'a');
-    $req = new Request;
-    $req->setOption('encoding', 'gzip');
 
     foreach ($providers as $providerjson) {
         $list = json_decode(file_get_contents($providerjson));
@@ -142,12 +140,11 @@ function downloadPackages($config, $globals, $providers)
                     $res = $req->getResponse();
                     $globals->q->enqueue($req);
 
-                    echo $res->getStatusCode(), "\t", $req->packageName, PHP_EOL;
-
+                    echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
                     if (200 === $res->getStatusCode()) {
                         $cachefile = $cachedir
                             . str_replace("$config->packagistUrl/", '', $res->getUrl());
-                        foreach (glob("{$cachedir}p/$req->packageName*")  as $old) {
+                        foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
                             //unlink($old);
                             $olds->fwrite($old . \PHP_EOL);
                         }
@@ -167,14 +164,13 @@ function downloadPackages($config, $globals, $providers)
     $globals->mh->waitResponse();
     foreach ($globals->mh as $req) {
         $res = $req->getResponse();
-        $globals->q->enqueue($req);
 
-        echo $res->getStatusCode(), "\t", $req->packageName, PHP_EOL;
+        echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
 
         if (200 === $res->getStatusCode()) {
             $cachefile = $cachedir
                 . str_replace("$config->packagistUrl/", '', $res->getUrl());
-            foreach (glob("{$cachedir}p/$req->packageName*")  as $old) {
+            foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
                 //unlink($old);
                 $olds->fwrite($old . \PHP_EOL);
             }
