@@ -125,41 +125,44 @@ function downloadPackages($config, $globals, $providers)
             $cachefile = $cachedir . str_replace("$config->packagistUrl/", '', $url);
             if (file_exists($cachefile)) continue;
 
-            if (!$globals->q->isEmpty()) {
-                $req = $globals->q->dequeue();
-                $req->packageName = $packageName;
-                $req->setOption('url', $url);
-                $globals->mh->attach($req);
-                $globals->mh->start(); //non block
+            $req = $globals->q->dequeue();
+            $req->packageName = $packageName;
+            $req->setOption('url', $url);
+            $globals->mh->attach($req);
+            $globals->mh->start(); //non block
 
-            } else {
-                /** @type Request[] $requests */
+            if (count($globals->q)) continue;
+
+            /** @type Request[] $requests */
+            do {
                 $requests = $globals->mh->getFinishedResponses(); //block
+            } while (0 === count($requests));
 
-                foreach ($requests as $req) {
-                    $res = $req->getResponse();
-                    $globals->q->enqueue($req);
+            foreach ($requests as $req) {
+                $res = $req->getResponse();
+                $globals->q->enqueue($req);
 
-                    echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
-                    if (200 === $res->getStatusCode()) {
-                        $cachefile = $cachedir
-                            . str_replace("$config->packagistUrl/", '', $res->getUrl());
-                        foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
-                            //unlink($old);
-                            $olds->fwrite($old . \PHP_EOL);
-                        }
-                        if (!file_exists(dirname($cachefile))) {
-                            mkdir(dirname($cachefile), 0777, true);
-                        }
-                        file_put_contents($cachefile, $res->getBody());
-                    } else {
-                        $globals->retry = true;
+                echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
+                if (200 === $res->getStatusCode()) {
+                    $cachefile = $cachedir
+                        . str_replace("$config->packagistUrl/", '', $res->getUrl());
+                    foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
+                        //unlink($old);
+                        $olds->fwrite($old . \PHP_EOL);
                     }
+                    if (!file_exists(dirname($cachefile))) {
+                        mkdir(dirname($cachefile), 0777, true);
+                    }
+                    file_put_contents($cachefile, $res->getBody());
+                } else {
+                    $globals->retry = true;
                 }
             }
         }
     }
 
+
+    if (0 === count($globals->mh)) return;
     //残りの端数をダウンロード
     $globals->mh->waitResponse();
     foreach ($globals->mh as $req) {
@@ -194,7 +197,7 @@ function flushFiles($config)
 
     echo 'finished! flushing...', PHP_EOL;
 
-    sleep(10); //何秒あれば十分なのか？
+//    sleep(10); //何秒あれば十分なのか？
 
     $olds = new \SplFileObject($config->olds, 'r');
 
