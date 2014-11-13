@@ -56,7 +56,7 @@ function downloadProviders($config, $globals)
     if (200 === $res->getStatusCode()) {
         $packages = json_decode($res->getBody());
         foreach (explode(' ', 'notify notify-batch search') as $k) {
-            if ('/' === $packages->$k[0]) {
+            if (0 === strpos($packages->$k, '/')) {
                 $packages->$k = 'https://packagist.org' . $packages->$k;
             }
         }
