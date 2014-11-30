@@ -9,7 +9,11 @@
         }
     ],
     "require": {
-        "spindle/httpclient": "1.*"
+        "spindle/httpclient": "1.*",
+        "php": ">=5.3",
+        "ext-json": "*",
+        "ext-hash": "*",
+        "ext-curl": "*"
     },
     "bin": [
         "parallel.php"
@@ -17,6 +21,6 @@
     "scripts": {
         "crawl": "php parallel.php",
         "test": "php check.php",
-        "tgz": "tar czf packagist.tgz cache/"
+        "archive": "tar cjf packagist.tar.bz2 cache/"
     }
 }
