@@ -27,3 +27,5 @@ foreach ($packagejson->{'provider-includes'} as $tpl => $provider) {
     }
 }
 echo $i, ' / ', $i+$j,  PHP_EOL;
+
+exit($i);

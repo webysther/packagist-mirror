@@ -10,5 +10,13 @@
     ],
     "require": {
         "spindle/httpclient": "1.*"
+    },
+    "bin": [
+        "parallel.php"
+    ],
+    "scripts": {
+        "crawl": "php parallel.php",
+        "test": "php check.php",
+        "tgz": "tar czf packagist.tgz cache/"
     }
 }
