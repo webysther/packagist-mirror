@@ -246,6 +246,6 @@ function checkFiles($config)
         }
     }
 
-    error_log($i . ' / ' . $i + $j);
+    error_log('' . $i . ' / ' . ($i + $j));
     return $i;
 }
