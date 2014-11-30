@@ -18,6 +18,7 @@ $globals->q = new \SplQueue;
 for ($i=0; $i<$config->maxConnections; ++$i) {
     $req = new Request;
     $req->setOption('encoding', 'gzip');
+    $req->setOption('userAgent', 'https://github.com/hirak/packagist-crawler');
     $globals->q->enqueue($req);
 }
 
@@ -27,6 +28,7 @@ do {
     $globals->retry = false;
     $providers = downloadProviders($config, $globals);
     downloadPackages($config, $globals, $providers);
+    $globals->retry = checkFiles($config);
 } while ($globals->retry);
 
 flushFiles($config);
@@ -63,6 +65,7 @@ function downloadProviders($config, $globals)
         file_put_contents($packagesCache . '.new', json_encode($packages));
     } else {
         //throw new \RuntimeException('no changes', $res->getStatusCode());
+        copy($packagesCache, $packagesCache . '.new');
         $packages = json_decode(file_get_contents($packagesCache));
     }
 
@@ -83,12 +86,14 @@ function downloadProviders($config, $globals)
         $req->setOption('url', $config->packagistUrl . '/' . $fileurl);
         $res = $req->send();
 
-        echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
+        error_log($res->getStatusCode(). "\t". $res->getUrl());
         if (200 === $res->getStatusCode()) {
             $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
-            foreach (glob($oldcache)  as $old) {
-                //unlink($old);
-                $olds->fwrite($old . \PHP_EOL);
+            if ($glob = glob($oldcache)) {
+                foreach ($glob as $old) {
+                    //unlink($old);
+                    $olds->fwrite($old . \PHP_EOL);
+                }
             }
             if (!file_exists(dirname($cachename))) {
                 mkdir(dirname($cachename), 0777, true);
@@ -142,19 +147,22 @@ function downloadPackages($config, $globals, $providers)
                 $res = $req->getResponse();
                 $globals->q->enqueue($req);
 
-                echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
                 if (200 === $res->getStatusCode()) {
                     $cachefile = $cachedir
                         . str_replace("$config->packagistUrl/", '', $res->getUrl());
-                    foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
-                        //unlink($old);
-                        $olds->fwrite($old . \PHP_EOL);
+
+                    if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
+                        foreach ($glob as $old) {
+                            //unlink($old);
+                            $olds->fwrite($old . \PHP_EOL);
+                        }
                     }
                     if (!file_exists(dirname($cachefile))) {
                         mkdir(dirname($cachefile), 0777, true);
                     }
                     file_put_contents($cachefile, $res->getBody());
                 } else {
+                    error_log($res->getStatusCode(). "\t". $res->getUrl());
                     $globals->retry = true;
                 }
             }
@@ -168,20 +176,21 @@ function downloadPackages($config, $globals, $providers)
     foreach ($globals->mh as $req) {
         $res = $req->getResponse();
 
-        echo $res->getStatusCode(), "\t", $res->getUrl(), PHP_EOL;
-
         if (200 === $res->getStatusCode()) {
             $cachefile = $cachedir
                 . str_replace("$config->packagistUrl/", '', $res->getUrl());
-            foreach (glob("{$cachedir}p/$req->packageName\$*")  as $old) {
-                //unlink($old);
-                $olds->fwrite($old . \PHP_EOL);
+            if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
+                foreach ($glob as $old) {
+                    //unlink($old);
+                    $olds->fwrite($old . \PHP_EOL);
+                }
             }
             if (!file_exists(dirname($cachefile))) {
                 mkdir(dirname($cachefile), 0777, true);
             }
             file_put_contents($cachefile, $res->getBody());
         } else {
+            error_log($res->getStatusCode(). "\t". $res->getUrl());
             $globals->retry = true;
         }
     }
@@ -195,7 +204,7 @@ function flushFiles($config)
         $config->cachedir . 'packages.json'
     );
 
-    echo 'finished! flushing...', PHP_EOL;
+    error_log('finished! flushing...');
 
 //    sleep(10); //何秒あれば十分なのか？
 
@@ -208,4 +217,35 @@ function flushFiles($config)
 
     unset($olds);
     unlink($config->olds);
+}
+
+/**
+ * ダウンロードされたファイルが正しいか確認する
+ *
+ */
+function checkFiles($config)
+{
+    $cachedir = $config->cachedir;
+
+    $packagejson = json_decode(file_get_contents($cachedir.'packages.json.new'));
+
+    $i = $j = 0;
+    foreach ($packagejson->{'provider-includes'} as $tpl => $provider) {
+        $providerjson = str_replace('%hash%', $provider->sha256, $tpl);
+        $packages = json_decode(file_get_contents($cachedir.$providerjson));
+
+        foreach ($packages->providers as $tpl2 => $sha) {
+            if (!file_exists($file = $cachedir . "p/$tpl2\$$sha->sha256.json")) {
+                ++$i;
+            } elseif ($sha->sha256 !== hash_file('sha256', $file)) {
+                ++$i;
+                unlink($file);
+            } else {
+                ++$j;
+            }
+        }
+    }
+
+    error_log($i . ' / ' . $i + $j);
+    return $i;
 }

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "54cd6124aff449c2a286c3129938f2cb",
+    "hash": "233a8a155176dfc0939d1683068bf904",
     "packages": [
         {
             "name": "spindle/httpclient",
@@ -56,6 +56,11 @@
     "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.3",
+        "ext-json": "*",
+        "ext-hash": "*",
+        "ext-curl": "*"
+    },
     "platform-dev": []
 }

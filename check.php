@@ -8,9 +8,11 @@ if (file_exists(__DIR__ . '/config.php')) {
     $config = require __DIR__ . '/config.default.php';
 }
 
+cli_set_process_title('fofofofofofo');
+
 $cachedir = $config->cachedir;
 
-$packagejson = json_decode(file_get_contents("{$cachedir}packages.json"));
+$packagejson = json_decode(file_get_contents($cachedir.'packages.json'));
 
 $i = $j = 0;
 foreach ($packagejson->{'provider-includes'} as $tpl => $provider) {
@@ -20,7 +22,11 @@ foreach ($packagejson->{'provider-includes'} as $tpl => $provider) {
     foreach ($packages->providers as $tpl2 => $sha) {
         if (!file_exists($file = $cachedir . "p/$tpl2\$$sha->sha256.json")) {
             ++$i;
-            echo $tpl, "\t", $tpl2, PHP_EOL;
+            echo "$tpl\t$tpl2 file not exists\n";
+        } elseif ($sha->sha256 !== hash_file('sha256', $file)) {
+            ++$i;
+            unlink($file);
+            echo "$tpl\t$tpl2\tsha256 not match: {$sha->sha256}\n";
         } else {
             ++$j;
         }

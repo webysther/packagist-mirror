@@ -21,6 +21,6 @@
     "scripts": {
         "crawl": "php parallel.php",
         "test": "php check.php",
-        "archive": "tar cjf packagist.tar.bz2 cache/"
+        "compress": "tar cjf packagist.tar.bz2 cache/"
     }
 }
