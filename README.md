@@ -8,6 +8,8 @@ Requirement
 ------------------
 - PHP > 5.3
 - ext-curl
+- ext-hash
+- ext-json
 
 
 Install
