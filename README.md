@@ -10,6 +10,9 @@ Requirement
 - ext-curl
 - ext-hash
 - ext-json
+- ext-zlib
+- ext-PDO
+- ext-pdo\_sqlite
 
 
 Install
@@ -52,9 +55,9 @@ return (object)array(
     //'cachedir' => '/usr/share/nginx/html/',
     //'cachedir' => '/usr/local/apache2/htdocs/',
     'packagistUrl' => 'https://packagist.org',
-    //'packagistUrl' => 'http://composer-proxy.jp/proxy/packagist',
-    'olds' => __DIR__ . '/cache/.olds',
     'maxConnections' => 4,
+    'lockfile' => __DIR__ . '/cache/.lock',
+    'expiredDb' => __DIR__ . '/cache/.expired.db
 );
 ```
 
@@ -70,4 +73,19 @@ return (object)array(
 並列ダウンロードの並列数です。
 増やした方が速くダウンロードできますが、
 オリジンに負荷をかけるので適当なところにしてください。
+
+### expiredDb
+ファイル更新によって古くなったjsonが記録されています。
+
+## License
+
+著作権は放棄するものとします。
+利用に際して制限はありませんし、作者への連絡や著作権表示なども必要ありません。
+スニペット的にコードをコピーして使っても問題ありません。
+
+[ライセンスの原文](LICENSE)
+
+CC0-1.0 (No Rights Reserved)
+- https://creativecommons.org/publicdomain/zero/1.0/
+- http://sciencecommons.jp/cc0/about (Japanese)
 
