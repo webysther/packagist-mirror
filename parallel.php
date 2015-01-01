@@ -14,8 +14,8 @@ if (file_exists(__DIR__ . '/config.php')) {
     $config = require __DIR__ . '/config.default.php';
 }
 
-if (file_exists($config->olds)) {
-    throw new \RuntimeException("$config->olds exists");
+if (file_exists($config->lockfile)) {
+    throw new \RuntimeException("$config->lockfile exists");
 }
 
 $globals = new \stdClass;
@@ -76,7 +76,7 @@ function downloadProviders($config, $globals)
     }
 
     $providers = array();
-    $olds = new \SplFileObject($config->olds, 'a');
+    touch($config->lockfile);
 
     foreach ($packages->{'provider-includes'} as $tpl => $version) {
         $fileurl = str_replace('%hash%', $version->sha256, $tpl);
@@ -93,9 +93,7 @@ function downloadProviders($config, $globals)
             $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
             if ($glob = glob($oldcache)) {
                 foreach ($glob as $old) {
-                    //unlink($old);
                     $globals->expiredManager->add($old, time());
-                    //$olds->fwrite($old . \PHP_EOL);
                 }
             }
             if (!file_exists(dirname($cachename))) {
@@ -121,7 +119,7 @@ function downloadPackages($config, $globals, $providers)
     $i = 0;
     $urls = array();
 
-    $olds = new \SplFileObject($config->olds, 'a');
+    touch($config->lockfile);
 
     foreach ($providers as $providerjson) {
         $list = json_decode(file_get_contents($providerjson));
@@ -157,9 +155,7 @@ function downloadPackages($config, $globals, $providers)
 
                     if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                         foreach ($glob as $old) {
-                            //unlink($old);
                             $globals->expiredManager->add($old, time());
-                            //$olds->fwrite($old . \PHP_EOL);
                         }
                     }
                     if (!file_exists(dirname($cachefile))) {
@@ -187,8 +183,6 @@ function downloadPackages($config, $globals, $providers)
                 . str_replace("$config->packagistUrl/", '', $res->getUrl());
             if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                 foreach ($glob as $old) {
-                    //unlink($old);
-                    //$olds->fwrite($old . \PHP_EOL);
                     $globals->expiredManager->add($old, time());
                 }
             }
@@ -218,15 +212,7 @@ function flushFiles($config)
 
     error_log('finished! flushing...');
 
-//    $olds = new \SplFileObject($config->olds, 'r');
-//
-//    foreach ($olds as $oldfile) {
-//        $oldfile = rtrim($oldfile);
-//        if (file_exists($oldfile)) unlink($oldfile);
-//    }
-//
-//    unset($olds);
-    unlink($config->olds);
+    unlink($config->lockfile);
 }
 
 /**

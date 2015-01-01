@@ -8,7 +8,7 @@ return (object)array(
     //'cachedir' => '/usr/share/nginx/html/',
     //'cachedir' => '/usr/local/apache2/htdocs/',
     'packagistUrl' => 'https://packagist.org',
-    'olds' => __DIR__ . '/cache/.olds',
+    'lockfile' => __DIR__ . '/cache/.lock',
     'expiredDb' => __DIR__ . '/cache/.expired.db',
     'maxConnections' => 2,
 );
