@@ -9,5 +9,6 @@ return (object)array(
     //'cachedir' => '/usr/local/apache2/htdocs/',
     'packagistUrl' => 'https://packagist.org',
     'olds' => __DIR__ . '/cache/.olds',
+    'expiredDb' => __DIR__ . '/cache/.expired.db',
     'maxConnections' => 2,
 );

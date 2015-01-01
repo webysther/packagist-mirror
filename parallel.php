@@ -1,7 +1,10 @@
 <?php
 namespace Spindle\HttpClient;
 
+use hirak\PackagistCrawler\ExpiredFileManager;
+
 set_time_limit(0);
+ini_set('memory_limit', '1G');
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -17,6 +20,7 @@ if (file_exists($config->olds)) {
 
 $globals = new \stdClass;
 $globals->q = new \SplQueue;
+$globals->expiredManager = new ExpiredFileManager($config->expiredDb);
 for ($i=0; $i<$config->maxConnections; ++$i) {
     $req = new Request;
     $req->setOption('encoding', 'gzip');
@@ -25,6 +29,7 @@ for ($i=0; $i<$config->maxConnections; ++$i) {
 }
 
 $globals->mh = new Multi;
+clearExpiredFiles($globals->expiredManager);
 
 do {
     $globals->retry = false;
@@ -37,8 +42,7 @@ flushFiles($config);
 exit;
 
 /**
- * packages.json & provider-latest$xxx.json downloader
- *
+ * packages.json & provider-xxx$xxx.json downloader
  */
 function downloadProviders($config, $globals)
 {
@@ -49,11 +53,7 @@ function downloadProviders($config, $globals)
     $req = new Request($config->packagistUrl . '/packages.json');
     $req->setOptions(array(
         'encoding' => 'gzip',
-        'timeCondition' => \CURL_TIMECOND_IFMODSINCE,
     ));
-    if (file_exists($packagesCache)) {
-        $req->setOption('timeValue', filemtime($packagesCache));
-    }
 
     $res = $req->send();
 
@@ -61,7 +61,7 @@ function downloadProviders($config, $globals)
         $packages = json_decode($res->getBody());
         foreach (explode(' ', 'notify notify-batch search') as $k) {
             if (0 === strpos($packages->$k, '/')) {
-                $packages->$k = 'http://packagist.org' . $packages->$k;
+                $packages->$k = 'https://packagist.org' . $packages->$k;
             }
         }
         file_put_contents($packagesCache . '.new', json_encode($packages));
@@ -94,13 +94,15 @@ function downloadProviders($config, $globals)
             if ($glob = glob($oldcache)) {
                 foreach ($glob as $old) {
                     //unlink($old);
-                    $olds->fwrite($old . \PHP_EOL);
+                    $globals->expiredManager->add($old, time());
+                    //$olds->fwrite($old . \PHP_EOL);
                 }
             }
             if (!file_exists(dirname($cachename))) {
                 mkdir(dirname($cachename), 0777, true);
             }
             file_put_contents($cachename, $res->getBody());
+            file_put_contents($cachename . '.gz', gzencode($res->getBody()));
         } else {
             $globals->retry = true;
         }
@@ -156,13 +158,15 @@ function downloadPackages($config, $globals, $providers)
                     if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                         foreach ($glob as $old) {
                             //unlink($old);
-                            $olds->fwrite($old . \PHP_EOL);
+                            $globals->expiredManager->add($old, time());
+                            //$olds->fwrite($old . \PHP_EOL);
                         }
                     }
                     if (!file_exists(dirname($cachefile))) {
                         mkdir(dirname($cachefile), 0777, true);
                     }
                     file_put_contents($cachefile, $res->getBody());
+                    file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
                 } else {
                     error_log($res->getStatusCode(). "\t". $res->getUrl());
                     $globals->retry = true;
@@ -184,13 +188,15 @@ function downloadPackages($config, $globals, $providers)
             if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                 foreach ($glob as $old) {
                     //unlink($old);
-                    $olds->fwrite($old . \PHP_EOL);
+                    //$olds->fwrite($old . \PHP_EOL);
+                    $globals->expiredManager->add($old, time());
                 }
             }
             if (!file_exists(dirname($cachefile))) {
                 mkdir(dirname($cachefile), 0777, true);
             }
             file_put_contents($cachefile, $res->getBody());
+            file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
         } else {
             error_log($res->getStatusCode(). "\t". $res->getUrl());
             $globals->retry = true;
@@ -205,25 +211,26 @@ function flushFiles($config)
         $config->cachedir . 'packages.json.new',
         $config->cachedir . 'packages.json'
     );
+    file_put_contents(
+        $config->cachedir . 'packages.json.gz',
+        gzencode(file_get_contents($config->cachedir . 'packages.json'))
+    );
 
     error_log('finished! flushing...');
 
-//    sleep(10); //何秒あれば十分なのか？
-
-    $olds = new \SplFileObject($config->olds, 'r');
-
-    foreach ($olds as $oldfile) {
-        $oldfile = rtrim($oldfile);
-        if (file_exists($oldfile)) unlink($oldfile);
-    }
-
-    unset($olds);
+//    $olds = new \SplFileObject($config->olds, 'r');
+//
+//    foreach ($olds as $oldfile) {
+//        $oldfile = rtrim($oldfile);
+//        if (file_exists($oldfile)) unlink($oldfile);
+//    }
+//
+//    unset($olds);
     unlink($config->olds);
 }
 
 /**
- * ダウンロードされたファイルが正しいか確認する
- *
+ * check sha256
  */
 function checkFiles($config)
 {
@@ -250,4 +257,15 @@ function checkFiles($config)
 
     error_log('' . $i . ' / ' . ($i + $j));
     return $i;
+}
+
+function clearExpiredFiles(ExpiredFileManager $expiredManager)
+{
+    $expiredFiles = $expiredManager->getExpiredFileList();
+
+    foreach ($expiredFiles as $file) {
+        if (file_exists($file)) {
+            unlink($file) and $expiredManager->delete($file);
+        }
+    }
 }

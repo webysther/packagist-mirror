@@ -13,7 +13,15 @@
         "php": ">=5.3",
         "ext-json": "*",
         "ext-hash": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-PDO": "*",
+        "ext-zlib": "*",
+        "ext-pdo_sqlite": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "hirak\\PackagistCrawler\\": "src/"
+        }
     },
     "bin": [
         "parallel.php"
