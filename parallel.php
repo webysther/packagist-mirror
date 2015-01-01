@@ -51,9 +51,7 @@ function downloadProviders($config, $globals)
     $packagesCache = $cachedir . 'packages.json';
 
     $req = new Request($config->packagistUrl . '/packages.json');
-    $req->setOptions(array(
-        'encoding' => 'gzip',
-    ));
+    $req->setOption('encoding', 'gzip');
 
     $res = $req->send();
 
@@ -66,13 +64,13 @@ function downloadProviders($config, $globals)
         }
         file_put_contents($packagesCache . '.new', json_encode($packages));
     } else {
-        //throw new \RuntimeException('no changes', $res->getStatusCode());
+        //no changes';
         copy($packagesCache, $packagesCache . '.new');
         $packages = json_decode(file_get_contents($packagesCache));
     }
 
     if (empty($packages->{'provider-includes'})) {
-        throw new \RuntimeException('packages.json schema change?');
+        throw new \RuntimeException('packages.json schema changed?');
     }
 
     $providers = array();
