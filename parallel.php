@@ -124,8 +124,11 @@ function downloadPackages($config, $globals, $providers)
         if (!$list || empty($list->providers)) continue;
 
         $list = $list->providers;
+        $all = count((array)$list);
 
+        $sum = 0;
         foreach ($list as $packageName => $provider) {
+            ++$sum;
             $url = "$config->packagistUrl/p/$packageName\$$provider->sha256.json";
             $cachefile = $cachedir . str_replace("$config->packagistUrl/", '', $url);
             if (file_exists($cachefile)) continue;
@@ -142,6 +145,7 @@ function downloadPackages($config, $globals, $providers)
             do {
                 $requests = $globals->mh->getFinishedResponses(); //block
             } while (0 === count($requests));
+            //error_log("downloaded: $sum / $all");
 
             foreach ($requests as $req) {
                 $res = $req->getResponse();
@@ -239,7 +243,7 @@ function checkFiles($config)
         }
     }
 
-    error_log('' . $i . ' / ' . ($i + $j));
+    error_log($i . ' / ' . ($i + $j));
     return $i;
 }
 
