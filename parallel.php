@@ -254,6 +254,8 @@ function clearExpiredFiles(ExpiredFileManager $expiredManager)
     foreach ($expiredFiles as $file) {
         if (file_exists($file)) {
             unlink($file) and $expiredManager->delete($file);
+        } else {
+            $expiredManager->delete($file);
         }
     }
 }

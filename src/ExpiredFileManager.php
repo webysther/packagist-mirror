@@ -96,7 +96,7 @@ class ExpiredFileManager
      */
     function getExpiredFileList($until=null)
     {
-        empty($until) or $until = $_SERVER['REQUEST_TIME'] - 24 * 60 * 60;
+        isset($until) or $until = $_SERVER['REQUEST_TIME'] - 24 * 60 * 60;
 
         $stmt = $this->pdo->prepare(
             'SELECT path FROM expired WHERE expiredAt <= :expiredAt'
