@@ -36,6 +36,7 @@ do {
     $providers = downloadProviders($config, $globals);
     downloadPackages($config, $globals, $providers);
     $globals->retry = checkFiles($config);
+    generateHtml($config);
 } while ($globals->retry);
 
 flushFiles($config);
@@ -258,4 +259,12 @@ function clearExpiredFiles(ExpiredFileManager $expiredManager)
             $expiredManager->delete($file);
         }
     }
+}
+
+function generateHtml($_config)
+{
+    $url = $_config->url;
+    ob_start();
+    include __DIR__ . '/index.html.php';
+    file_put_contents($_config->cachedir . '/index.html', ob_get_clean());
 }

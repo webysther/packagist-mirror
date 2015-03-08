@@ -11,4 +11,5 @@ return (object)array(
     'lockfile' => __DIR__ . '/cache/.lock',
     'expiredDb' => __DIR__ . '/cache/.expired.db',
     'maxConnections' => 2,
+    'url' => 'http://localhost',
 );
