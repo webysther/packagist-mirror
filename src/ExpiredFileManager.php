@@ -1,6 +1,6 @@
 <?php
 /**
- * @license PSR-0 1.0
+ * @license CC0-1.0
  */
 namespace hirak\PackagistCrawler;
 
