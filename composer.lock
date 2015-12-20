@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "92d3720761e1be97d75495963f837477",
+    "hash": "b85d6f76b08d95ed2feb2e2cbc1d50c2",
+    "content-hash": "c82d4030f1ae6e5946b50d6c7a1b32ed",
     "packages": [
         {
             "name": "spindle/httpclient",
@@ -58,7 +59,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3",
+        "php": ">=5.4",
         "ext-json": "*",
         "ext-hash": "*",
         "ext-curl": "*",

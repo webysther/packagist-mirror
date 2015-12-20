@@ -10,7 +10,7 @@
     ],
     "require": {
         "spindle/httpclient": "1.*",
-        "php": ">=5.3",
+        "php": ">=5.4",
         "ext-json": "*",
         "ext-hash": "*",
         "ext-curl": "*",
