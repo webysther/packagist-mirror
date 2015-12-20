@@ -12,7 +12,10 @@ class ExpiredFileManager
     /** @type PDO $pdo */
     private $pdo;
 
-    function __construct($dbpath)
+    /** @type int $expire */
+    private $expire;
+
+    function __construct($dbpath, $expire)
     {
         if (!is_string($dbpath)) {
             throw new \InvalidArgumentException('expect string but passed ' . gettype($dbpath));
@@ -21,6 +24,8 @@ class ExpiredFileManager
         if (file_exists($dbpath) && !is_writable($dbpath)) {
             throw new \RuntimeException($dbpath . ' is not writable');
         }
+
+        $this->expire = $expire;
 
         $this->pdo = $pdo = new PDO("sqlite:$dbpath", null, null, array(
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -96,7 +101,7 @@ class ExpiredFileManager
      */
     function getExpiredFileList($until=null)
     {
-        isset($until) or $until = $_SERVER['REQUEST_TIME'] - 24 * 60 * 60;
+        isset($until) or $until = $_SERVER['REQUEST_TIME'] - $this->expire * 60;
 
         $stmt = $this->pdo->prepare(
             'SELECT path FROM expired WHERE expiredAt <= :expiredAt'

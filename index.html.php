@@ -27,7 +27,7 @@ word-wrap: break-word;
 <p>
 <a href="https://packagist.org">https://packagist.org</a>に配置されたパッケージメタファイルの内容を毎日ミラーしています。アジア圏では.orgを参照するより、.jpミラーを参照したほうが<a href="https://getcomposer.org">composer</a>が高速になります。</p>
 
-<p>最終更新： <?= date('c') ?>
+<p>最終更新： <?= date('Y年m月d日 H:i:s') ?>
 
 <h2>enable</h2>
 
@@ -49,4 +49,3 @@ $ composer config -g --unset repositories.packagist
 </address>
 </body>
 </html>
-
