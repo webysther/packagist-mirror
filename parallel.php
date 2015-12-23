@@ -35,7 +35,7 @@ do {
     $globals->retry = false;
     $providers = downloadProviders($config, $globals);
     downloadPackages($config, $globals, $providers);
-    //$globals->retry = checkFiles($config);
+    $globals->retry = checkFiles($config);
     generateHtml($config);
 } while ($globals->retry);
 

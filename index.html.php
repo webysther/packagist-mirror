@@ -52,7 +52,7 @@ h3.cmd {
 <body>
 <header>
 <h1 class="banner">Packagist<span style="color:red">●</span>JP</h1>
-<p align="center">最終同期： <?= date('Y年n月j日 H:i:s') ?> (JST)</p>
+<p align="center">最終同期： <?= date('Y年n月j日 H:i:s') ?> (JST) (2分毎に同期)</p>
 </header>
 
 
@@ -85,7 +85,6 @@ h3.cmd {
 
 <p>Travis-CIなどで<code>composer install</code>する際は、github.comなどとのやり取りになっており、ミラーを有効にしたところで全く高速化されません。</p>
 
-<p>現状、同期は一日一回ですが、もう少し頻度を上げるべく開発しています。</p>
 
 <h2>免責事項</h2>
 
