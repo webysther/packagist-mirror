@@ -18,6 +18,12 @@ if (file_exists($config->lockfile)) {
     throw new \RuntimeException("$config->lockfile exists");
 }
 
+
+touch($config->lockfile);
+register_shutdown_function(function() use($config) {
+    unlink($config->lockfile);
+});
+
 $globals = new \stdClass;
 $globals->q = new \SplQueue;
 $globals->expiredManager = new ExpiredFileManager($config->expiredDb, $config->expireMinutes);
@@ -35,7 +41,7 @@ do {
     $globals->retry = false;
     $providers = downloadProviders($config, $globals);
     downloadPackages($config, $globals, $providers);
-    //$globals->retry = checkFiles($config);
+    $globals->retry = checkFiles($config);
     generateHtml($config);
 } while ($globals->retry);
 
@@ -75,7 +81,6 @@ function downloadProviders($config, $globals)
     }
 
     $providers = [];
-    touch($config->lockfile);
 
     foreach ($packages->{'provider-includes'} as $tpl => $version) {
         $fileurl = str_replace('%hash%', $version->sha256, $tpl);
@@ -120,8 +125,6 @@ function downloadPackages($config, $globals, $providers)
     $cachedir = $config->cachedir;
     $i = 0;
     $urls = [];
-
-    touch($config->lockfile);
 
     foreach ($providers as $providerjson) {
         $list = json_decode(file_get_contents($providerjson));
@@ -223,8 +226,6 @@ function flushFiles($config)
     );
 
     error_log('finished! flushing...');
-
-    unlink($config->lockfile);
 }
 
 /**
