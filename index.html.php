@@ -57,11 +57,11 @@ h3.cmd {
 
 
 <div class="pure-u-1-1" style="margin: 1em;">
-<p>PHPのライブラリリポジトリである<a href="https://packagist.org">https://packagist.org</a>の非公式ミラーサイトです。packagist.orgの代わりにこちらを参照することで、<code>composer update</code>の応答速度が速くなります。特にフランスから遠い、アジア圏では顕著な効果が得られます。</p>
+<p>PHPのライブラリリポジトリである<a href="https://packagist.org">https://packagist.org</a>のミラーサイトです。packagist.orgの代わりにこちらを参照することで、<code>composer update</code>の応答速度が速くなります。特にフランスから遠い、アジア圏では顕著な効果が得られます。</p>
 <p>有効にするには以下のコマンドを打ち込んでください。</p>
 </div>
 
-    
+
 <h3 class="cmd">enable</h3>
 <pre><code>$ composer config -g repositories.packagist composer <?= $url ?></code></pre>
 
