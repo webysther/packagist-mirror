@@ -97,7 +97,7 @@ function downloadProviders($config, $globals)
             $res = $req->send();
 
             if (200 === $res->getStatusCode()) {
-                $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
+                $oldcache = $cachedir . str_replace('%hash%.json', '*', $tpl);
                 if ($glob = glob($oldcache)) {
                     foreach ($glob as $old) {
                         $globals->expiredManager->add($old, time());
