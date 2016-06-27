@@ -1,6 +1,7 @@
 <?php
 namespace Spindle\HttpClient;
 
+use ProgressBar\Manager as ProgressBarManager;
 use hirak\PackagistCrawler\ExpiredFileManager;
 
 set_time_limit(0);
@@ -82,35 +83,39 @@ function downloadProviders($config, $globals)
 
     $providers = [];
 
+    $numberOfProviders = count( (array)$packages->{'provider-includes'} );
+    $progressBar = new ProgressBarManager(0, $numberOfProviders);
+    $progressBar->setFormat('Downloading Providers: %current%/%max% [%bar%] %percent%%');
+
     foreach ($packages->{'provider-includes'} as $tpl => $version) {
         $fileurl = str_replace('%hash%', $version->sha256, $tpl);
         $cachename = $cachedir . $fileurl;
         $providers[] = $cachename;
 
-        if (file_exists($cachename)) continue;
+        if (!file_exists($cachename)){
+            $req->setOption('url', $config->packagistUrl . '/' . $fileurl);
+            $res = $req->send();
 
-        $req->setOption('url', $config->packagistUrl . '/' . $fileurl);
-        $res = $req->send();
-
-        error_log($res->getStatusCode(). "\t". $res->getUrl());
-        if (200 !== $res->getStatusCode()) {
-            $globals->retry = true;
-            continue;
-        }
-
-        $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
-        if ($glob = glob($oldcache)) {
-            foreach ($glob as $old) {
-                $globals->expiredManager->add($old, time());
+            if (200 === $res->getStatusCode()) {
+                $oldcache = $cachedir . str_replace('%hash%', '*', $tpl);
+                if ($glob = glob($oldcache)) {
+                    foreach ($glob as $old) {
+                        $globals->expiredManager->add($old, time());
+                    }
+                }
+                if (!file_exists(dirname($cachename))) {
+                    mkdir(dirname($cachename), 0777, true);
+                }
+                file_put_contents($cachename, $res->getBody());
+                if ($config->generateGz) {
+                    file_put_contents($cachename . '.gz', gzencode($res->getBody()));
+                }
+            } else {
+                $globals->retry = true;
             }
         }
-        if (!file_exists(dirname($cachename))) {
-            mkdir(dirname($cachename), 0777, true);
-        }
-        file_put_contents($cachename, $res->getBody());
-        if ($config->generateGz) {
-            file_put_contents($cachename . '.gz', gzencode($res->getBody()));
-        }
+
+        $progressBar->advance();
     }
 
     return $providers;
@@ -123,7 +128,8 @@ function downloadProviders($config, $globals)
 function downloadPackages($config, $globals, $providers)
 {
     $cachedir = $config->cachedir;
-    $i = 0;
+    $i = 1;
+    $numberOfProviders = count($providers);
     $urls = [];
 
     foreach ($providers as $providerjson) {
@@ -133,8 +139,13 @@ function downloadPackages($config, $globals, $providers)
         $list = $list->providers;
         $all = count((array)$list);
 
+        $progressBar = new ProgressBarManager(0, $all);
+        echo "   - Provider {$i}/{$numberOfProviders}:\n";
+        $progressBar->setFormat("      - Package: %current%/%max% [%bar%] %percent%%");
+
         $sum = 0;
         foreach ($list as $packageName => $provider) {
+            $progressBar->advance();
             ++$sum;
             $url = "$config->packagistUrl/p/$packageName\$$provider->sha256.json";
             $cachefile = $cachedir . str_replace("$config->packagistUrl/", '', $url);
@@ -152,7 +163,6 @@ function downloadPackages($config, $globals, $providers)
             do {
                 $requests = $globals->mh->getFinishedResponses(); //block
             } while (0 === count($requests));
-            //error_log("downloaded: $sum / $all");
 
             foreach ($requests as $req) {
                 $res = $req->getResponse();
@@ -181,35 +191,42 @@ function downloadPackages($config, $globals, $providers)
                 }
             }
         }
+
+        ++$i;
     }
 
 
     if (0 === count($globals->mh)) return;
     //残りの端数をダウンロード
     $globals->mh->waitResponse();
+
+    $progressBar = new ProgressBarManager(0, count($globals->mh));
+    $progressBar->setFormat("   - Remianed packages: %current%/%max% [%bar%] %percent%%");
+
     foreach ($globals->mh as $req) {
         $res = $req->getResponse();
 
-        if (200 !== $res->getStatusCode()) {
-            error_log($res->getStatusCode(). "\t". $res->getUrl());
+        if (200 === $res->getStatusCode()) {
+            $cachefile = $cachedir
+                . str_replace("$config->packagistUrl/", '', $res->getUrl());
+            if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
+                foreach ($glob as $old) {
+                    $globals->expiredManager->add($old, time());
+                }
+            }
+            if (!file_exists(dirname($cachefile))) {
+                mkdir(dirname($cachefile), 0777, true);
+            }
+            file_put_contents($cachefile, $res->getBody());
+            if ($config->generateGz) {
+                file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
+            }
+
+        } else {
             $globals->retry = true;
-            continue;
         }
 
-        $cachefile = $cachedir
-            . str_replace("$config->packagistUrl/", '', $res->getUrl());
-        if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
-            foreach ($glob as $old) {
-                $globals->expiredManager->add($old, time());
-            }
-        }
-        if (!file_exists(dirname($cachefile))) {
-            mkdir(dirname($cachefile), 0777, true);
-        }
-        file_put_contents($cachefile, $res->getBody());
-        if ($config->generateGz) {
-            file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
-        }
+        $progressBar->advance();
     }
 
 }
@@ -262,12 +279,16 @@ function clearExpiredFiles(ExpiredFileManager $expiredManager)
 {
     $expiredFiles = $expiredManager->getExpiredFileList();
 
+    $progressBar = new ProgressBarManager(0, count($expiredFiles));
+    $progressBar->setFormat("   - Clearing Expired Files: %current%/%max% [%bar%] %percent%%");
+
     foreach ($expiredFiles as $file) {
         if (file_exists($file)) {
             unlink($file) and $expiredManager->delete($file);
         } else {
             $expiredManager->delete($file);
         }
+        $progressBar->advance();
     }
 }
 

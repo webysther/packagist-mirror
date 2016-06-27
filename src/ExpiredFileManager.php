@@ -109,6 +109,12 @@ class ExpiredFileManager
         $stmt->bindValue(':expiredAt', $until, PDO::PARAM_INT);
         $stmt->execute();
         $stmt->setFetchMode(PDO::FETCH_COLUMN, 0);
-        return $stmt;
+        $list = array();
+
+        foreach ($stmt as $file){
+            $list[] = $file;
+        }
+
+        return $list;
     }
 }
