@@ -101,9 +101,7 @@ $pdo->commit();
 
 // 最後にpackages.jsonを作る
 // DBから結果的にどうなったか抽出する
-$stmt = $pdo->prepare('SELECT file, hash FROM providers WHERE provider = :provider');
-$stmt->bindValue(':provider', $providerpath);
-$stmt->execute();
+$stmt = $pdo->query('SELECT file, hash FROM providers');
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $newproviders = [];
 foreach ($stmt as $row) {
