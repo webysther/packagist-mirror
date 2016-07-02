@@ -14,8 +14,6 @@ if (file_exists(__DIR__ . '/config.php')) {
     $config = require __DIR__ . '/config.default.php';
 }
 
-cli_set_process_title('fofofofofofo');
-
 $cachedir = $config->cachedir;
 
 $packagejson = json_decode(file_get_contents($cachedir.'packages.json'));
