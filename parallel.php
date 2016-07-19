@@ -42,7 +42,7 @@ do {
     $globals->retry = false;
     $providers = downloadProviders($config, $globals);
     downloadPackages($config, $globals, $providers);
-    $globals->retry = checkFiles($config);
+    //$globals->retry = checkFiles($config);
     generateHtml($config);
 } while ($globals->retry);
 
@@ -153,6 +153,7 @@ function downloadPackages($config, $globals, $providers)
 
             $req = $globals->q->dequeue();
             $req->packageName = $packageName;
+            $req->sha256 = $provider->sha256;
             $req->setOption('url', $url);
             $globals->mh->attach($req);
             $globals->mh->start(); //non block
@@ -168,7 +169,7 @@ function downloadPackages($config, $globals, $providers)
                 $res = $req->getResponse();
                 $globals->q->enqueue($req);
 
-                if (200 !== $res->getStatusCode()) {
+                if (200 !== $res->getStatusCode() || $req->sha256 !== hash('sha256', $res)) {
                     error_log($res->getStatusCode(). "\t". $res->getUrl());
                     $globals->retry = true;
                     continue;
@@ -176,6 +177,7 @@ function downloadPackages($config, $globals, $providers)
 
                 $cachefile = $cachedir
                     . str_replace("$config->packagistUrl/", '', $res->getUrl());
+                $cachefile2 = $cachedir . '/p/' . $req->packageName . '.json';
 
                 if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                     foreach ($glob as $old) {
@@ -186,8 +188,11 @@ function downloadPackages($config, $globals, $providers)
                     mkdir(dirname($cachefile), 0777, true);
                 }
                 file_put_contents($cachefile, $res->getBody());
+                file_put_contents($cachefile2, $res->getBody());
                 if ($config->generateGz) {
-                    file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
+                    $gz = gzencode($res->getBody());
+                    file_put_contents($cachefile . '.gz', $gz);
+                    file_put_contents($cachefile2 . '.gz', $gz);
                 }
             }
         }
@@ -205,24 +210,29 @@ function downloadPackages($config, $globals, $providers)
     foreach ($globals->mh as $req) {
         $res = $req->getResponse();
 
-        if (200 === $res->getStatusCode()) {
-            $cachefile = $cachedir
-                . str_replace("$config->packagistUrl/", '', $res->getUrl());
-            if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
-                foreach ($glob as $old) {
-                    $globals->expiredManager->add($old, time());
-                }
-            }
-            if (!file_exists(dirname($cachefile))) {
-                mkdir(dirname($cachefile), 0777, true);
-            }
-            file_put_contents($cachefile, $res->getBody());
-            if ($config->generateGz) {
-                file_put_contents($cachefile . '.gz', gzencode($res->getBody()));
-            }
-
-        } else {
+        if (200 !== $res->getStatusCode() || $req->sha256 !== hash('sha256', $res)) {
+            error_log($res->getStatusCode(). "\t". $res->getUrl());
             $globals->retry = true;
+            continue;
+        }
+
+        $cachefile = $cachedir
+            . str_replace("$config->packagistUrl/", '', $res->getUrl());
+        $cachefile2 = $cachedir . '/p/' . $req->packageName . '.json';
+
+        if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
+            foreach ($glob as $old) {
+                $globals->expiredManager->add($old, time());
+            }
+        }
+        if (!file_exists(dirname($cachefile))) {
+            mkdir(dirname($cachefile), 0777, true);
+        }
+        file_put_contents($cachefile, $res->getBody());
+        if ($config->generateGz) {
+            $gz = gzencode($res->getBody());
+            file_put_contents($cachefile . '.gz', $gz);
+            file_put_contents($cachefile2 . '.gz', $gz);
         }
 
         $progressBar->advance();
