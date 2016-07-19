@@ -197,11 +197,10 @@ function downloadPackages($config, $globals, $providers)
 
 
     if (0 === count($globals->mh)) return;
-    //残りの端数をダウンロード
     $globals->mh->waitResponse();
 
     $progressBar = new ProgressBarManager(0, count($globals->mh));
-    $progressBar->setFormat("   - Remianed packages: %current%/%max% [%bar%] %percent%%");
+    $progressBar->setFormat("   - Remained packages: %current%/%max% [%bar%] %percent%%");
 
     foreach ($globals->mh as $req) {
         $res = $req->getResponse();
