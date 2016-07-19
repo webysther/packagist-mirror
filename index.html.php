@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Packagist.JP</title>
 
-
 <style>
 html, button, input, select, textarea, div {
 font-family:'Lucida Grande','Hiragino Kaku Gothic ProN',Meiryo,sans-serif !important;
@@ -63,10 +62,10 @@ h3.cmd {
 
 
 <h3 class="cmd">enable</h3>
-<pre><code>$ composer config -g repositories.packagist composer <?= $url ?></code></pre>
+<pre><code>$ composer config -g repos.packagist composer <?= $url ?></code></pre>
 
 <h3 class="cmd">disable</h3>
-<pre><code>$ composer config -g --unset repositories.packagist</code></pre>
+<pre><code>$ composer config -g --unset repos.packagist</code></pre>
 
 
 <div class="pure-u-1-1" style="margin: 1em;">
