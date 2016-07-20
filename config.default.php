@@ -14,4 +14,7 @@ return (object)array(
     'generateGz' => true,
     'expireMinutes' => 24 * 60,
     'url' => 'http://localhost',
+    'cfemail' => null,
+    'cfkey' => null,
+    'zoneid' => null,
 );

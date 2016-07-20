@@ -41,8 +41,11 @@ clearExpiredFiles($globals->expiredManager);
 do {
     $globals->retry = false;
     $providers = downloadProviders($config, $globals);
-    downloadPackages($config, $globals, $providers);
+    $mods = downloadPackages($config, $globals, $providers);
     //$globals->retry = checkFiles($config);
+    if (isset($config->cfemail, $config->cfkey, $config->zoneid)) {
+        clearCloudFlareCache($mods, $config->cfemail, $config->cfkey, $config->zoneid);
+    }
     generateHtml($config);
 } while ($globals->retry);
 
@@ -178,6 +181,7 @@ function downloadPackages($config, $globals, $providers)
                 $cachefile = $cachedir
                     . str_replace("$config->packagistUrl/", '', $res->getUrl());
                 $cachefile2 = $cachedir . '/p/' . $req->packageName . '.json';
+                $urls[] = $config->url . '/p/' . $req->packageName . '.json';
 
                 if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
                     foreach ($glob as $old) {
@@ -219,6 +223,7 @@ function downloadPackages($config, $globals, $providers)
         $cachefile = $cachedir
             . str_replace("$config->packagistUrl/", '', $res->getUrl());
         $cachefile2 = $cachedir . '/p/' . $req->packageName . '.json';
+        $urls[] = $config->url . '/p/' . $req->packageName . '.json';
 
         if ($glob = glob("{$cachedir}p/$req->packageName\$*")) {
             foreach ($glob as $old) {
@@ -238,6 +243,7 @@ function downloadPackages($config, $globals, $providers)
         $progressBar->advance();
     }
 
+    return $urls;
 }
 
 function flushFiles($config)
@@ -298,6 +304,26 @@ function clearExpiredFiles(ExpiredFileManager $expiredManager)
             $expiredManager->delete($file);
         }
         $progressBar->advance();
+    }
+}
+
+function clearCloudFlareCache(array $modifiedFiles, $email, $key, $identifier)
+{
+    $req = new Request("https://api.cloudflare.com/client/v4/zones/$identifier/purge_cache");
+    foreach (array_chunk($modifiedFiles, 30) as $mods) {
+        $req->setOptions([
+            'customRequest' => 'DELETE',
+            'verbose' => true,
+            'httpHeader' => [
+                "X-Auth-Email: $email",
+                "X-Auth-Key: $key",
+                'Content-Type: application/json',
+            ],
+            'postFields' => json_encode([
+                'files' => $mods,
+            ]),
+        ]);
+        $req->send();
     }
 }
 
