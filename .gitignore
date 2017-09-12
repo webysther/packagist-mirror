@@ -1,6 +1,6 @@
 logs
 vendor
 config.php
-packagist.tar.bz2
 optimize.db
 optimized
+cache

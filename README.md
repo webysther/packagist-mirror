@@ -1,7 +1,9 @@
 Packagist mirror
 ========================
 
-Crawl packagist.org and download all package.json. After downloading, you can distribute it with a static web server, you can create a mirror of packagist.org.
+Crawl packagist.org and download all package.json. 
+After downloading, you can distribute it with a static web server, 
+you can create a mirror of packagist.org.
 
 Requirement
 ------------------
