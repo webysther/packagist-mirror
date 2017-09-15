@@ -1,6 +1,5 @@
 logs
 vendor
-config.php
-optimize.db
-optimized
 cache
+data
+*.zip
