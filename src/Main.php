@@ -14,6 +14,7 @@ namespace League\Mirror;
 use SebastianBergmann\Version;
 use Symfony\Component\Console\Application;
 use League\Mirror\Command\Create;
+use League\Mirror\Command\Snapshot;
 
 /**
  * Entrypoint for application.
@@ -32,5 +33,6 @@ class Main extends Application
 
         // Add all commands
         $this->add(new Create());
+        $this->add(new Snapshot());
     }
 }

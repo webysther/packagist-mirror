@@ -16,25 +16,30 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Create a mirror.
+ * Make a snapshot of all data to available to other mirror.
  *
  * @author Webysther Nunes <webysther@gmail.com>
  */
-class Create extends Command
+class Snapshot extends Command
 {
     /**
      * Console description.
      *
      * @var string
      */
-    protected $description = 'Create packagist mirror';
+    protected $description = <<<'TEXT'
+Make snapshot of mirror.
+
+    <comment>Don't use this option if you plan for private mirror.</comment>
+
+TEXT;
 
     /**
      * Console params configuration.
      */
     protected function configure():void
     {
-        $this->setName('create')->setDescription($this->description);
+        $this->setName('snapshot')->setDescription($this->description);
     }
 
     /**
