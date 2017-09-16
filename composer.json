@@ -1,23 +1,31 @@
 {
     "name": "league/mirror",
     "description": "Build mirror of packagist",
+    "keywords": ["packagist", "mirror"],
     "license": "CC0-1.0",
     "authors": [
-        { "name": "Hiraku NAKANO", "email": "hiraku@tojiru.net" },
         { "name": "Webysther", "email": "websther@gmail.com" }
     ],
     "require": {
         "php": "~7",
         "guzzlehttp/guzzle": "~6",
         "lavary/crunz": "~1",
-        "vlucas/phpdotenv": "~2"
+        "vlucas/phpdotenv": "~2",
+        "symfony/console": "~3",
+        "sebastian/version": "~2"
     },
     "require-dev": {
         "webysther/composer-plugin-qa": "~1",
         "webysther/composer-meta-qa": "~1"
     },
+    "suggest": {
+        "hirak/prestissimo": "Composer parallel install plugin"
+    },
     "autoload": {
         "psr-4": { "League\\Mirror\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "League\\Mirror\\Tests\\": "tests/" }
     },
     "bin": [
         "bin/mirror"

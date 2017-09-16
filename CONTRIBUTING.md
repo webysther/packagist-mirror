@@ -25,7 +25,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/Webysth
 ## Running Tests
 
 ``` bash
-$ phpunit
+$ composer qa:paratest
 ```
 
 

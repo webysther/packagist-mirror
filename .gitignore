@@ -1,7 +1,3 @@
-logs
 vendor
-cache
-data
 legacy
-*.zip
-*.phar
+.env

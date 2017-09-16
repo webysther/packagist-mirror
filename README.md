@@ -30,7 +30,7 @@ The following versions of PHP are supported by this version.
 ## Testing
 
 ``` bash
-$ phpunit
+$ composer qa:paratest
 ```
 
 ## Contributing
@@ -39,8 +39,8 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Credits
 
-- [Hiraku NAKANO](https://github.com/hirak)
 - [Webysther Nunes](https://github.com/Webysther)
+- [Hiraku NAKANO](https://github.com/hirak)
 - [All Contributors](https://github.com/Webysther/mirror/contributors)
 
 ## License

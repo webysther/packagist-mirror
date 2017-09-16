@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of the Packagist Mirror.
+ *
+ * For the full license information, please view the LICENSE.md
+ * file that was distributed with this source code.
+ */
+
+$autoload = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoload)) {
+    die(
+        'You need to set up the project dependencies '.
+        'using the following commands:' . PHP_EOL .
+        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
+        'php composer.phar install' . PHP_EOL
+    );
+}
+
+require $autoload;
+
+if (!file_exists(__DIR__ . '/../.env')) {
+    copy('.env.example', '.env');
+}
+
+$dotenv = new Dotenv\Dotenv(__DIR__.'/../');
+$dotenv->load();
+
+$main = new League\Mirror\Main;
+$main->run();
