@@ -7,12 +7,19 @@
         { "name": "Webysther", "email": "websther@gmail.com" }
     ],
     "require": {
-        "php": ">=7.0"
+        "php": "~7",
+        "guzzlehttp/guzzle": "~6",
+        "lavary/crunz": "~1",
+        "vlucas/phpdotenv": "~2"
+    },
+    "require-dev": {
+        "webysther/composer-plugin-qa": "~1",
+        "webysther/composer-meta-qa": "~1"
     },
     "autoload": {
-        "psr-4": { "League\\Mirror": "src/" }
+        "psr-4": { "League\\Mirror\\": "src/" }
     },
     "bin": [
-        "bin/parallel.php"
+        "bin/mirror"
     ]
 }
