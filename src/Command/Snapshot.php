@@ -28,10 +28,8 @@ class Snapshot extends Command
      * @var string
      */
     protected $description = <<<'TEXT'
-Make snapshot of mirror.
-
-    <comment>Don't use this option if you plan for private mirror.</comment>
-
+Make snapshot of mirror. <comment>(Don't use this option
+ if you plan for private mirror)</comment>
 TEXT;
 
     /**
@@ -39,7 +37,8 @@ TEXT;
      */
     protected function configure():void
     {
-        $this->setName('snapshot')->setDescription($this->description);
+        $this->setName('snapshot')
+             ->setDescription(str_replace(PHP_EOL, '', $this->description));
     }
 
     /**

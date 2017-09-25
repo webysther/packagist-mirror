@@ -22,12 +22,31 @@ if (!file_exists($autoload)) {
 
 require $autoload;
 
+// Prepare using default .env
 if (!file_exists(__DIR__ . '/../.env')) {
     copy('.env.example', '.env');
 }
 
+// Load env
 $dotenv = new Dotenv\Dotenv(__DIR__.'/../');
 $dotenv->load();
 
-$main = new League\Mirror\Main;
-$main->run();
+// Using Sebastian version formatter
+$version = new SebastianBergmann\Version(
+    getenv('APP_VERSION'),
+    __DIR__.'/../'
+);
+
+$cli = new Symfony\Component\Console\Application(
+    getenv('APP_NAME'),
+    $version->getVersion()
+);
+
+$cli->add(new League\Mirror\Command\Create);
+
+// if is public snapshot option is on
+if(getenv('MIRROR_PUBLIC')){
+    $cli->add(new League\Mirror\Command\Snapshot);
+}
+
+$cli->run();
