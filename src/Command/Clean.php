@@ -191,18 +191,16 @@ class Clean extends Command
     {
         $cachedir = getenv('PUBLIC_DIR').'/';
         $uri = $cachedir.'p/%s$%s.json';
-
-        $scrub = false;
-        if ($this->input->hasOption('scrub') && $this->input->getOption('scrub')) {
-            $scrub = true;
-        }
+        $increment = 0;
 
         foreach ($this->changed as $urlProvider) {
             $provider = json_decode(file_get_contents($urlProvider));
             $list = $provider->providers;
             $total = count((array) $list);
+            ++$increment;
 
             $this->output->writeln(
+                '['.$increment.'/'.count($this->changed).'] '.
                 'Check old packages for provider '.
                 '<info>'.$this->shortname($urlProvider).'</>'
             );
@@ -220,7 +218,7 @@ class Clean extends Command
                 $folder = $cachedir.'p/'.dirname($name);
 
                 // This folder was changed by last download?
-                if (!in_array($folder, $this->packages) && !$scrub) {
+                if (count($this->packages) && !in_array($folder, $this->packages)) {
                     continue;
                 }
 

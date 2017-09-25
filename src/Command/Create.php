@@ -80,6 +80,10 @@ class Create extends Command
 
         // Flush old SHA256 files
         $clean = new Clean();
+        if (isset($this->packages) && count($this->packages)) {
+            $clean->setChangedPackage($this->packages);
+        }
+
         if (!$clean->flush($input, $output)) {
             return 1;
         }
