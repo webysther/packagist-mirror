@@ -24,7 +24,7 @@ require $autoload;
 
 // Prepare using default .env
 if (!file_exists(__DIR__ . '/../.env')) {
-    copy('.env.example', '.env');
+    copy(__DIR__.'/../.env.example', __DIR__ . '/../.env');
 }
 
 // Load env
