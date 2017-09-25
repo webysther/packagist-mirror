@@ -20,6 +20,16 @@ Via Composer
 $ composer require league/mirror
 ```
 
+Via Docker
+
+```shell
+docker run --name packagist \
+           --restart=always \
+           -v /var/www/html:/public \
+           webysther/composer-mirror
+```
+
+
 ## Requirements
 
 The following versions of PHP are supported by this version.
