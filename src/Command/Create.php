@@ -383,6 +383,7 @@ class Create extends Command
                 'fulfilled' => function ($response, $name) {
                     $json = (string) $response->getBody();
                     file_put_contents($name, $json);
+                    $this->createLink($name);
                     $this->packages[] = dirname($name);
                     $this->bar->progress();
                 },
@@ -437,6 +438,27 @@ class Create extends Command
 
             yield $cachename => new Request('GET', $fileurl);
         }
+    }
+
+    /**
+     * Create a simbolic link to hash file.
+     *
+     * Sample:
+     * p/ac/firewall.json ~> p/ac/firewall$668f06f(...).json
+     *
+     * @param  string $path Path to file
+     * @return void
+     */
+    protected function createLink(string $target):void
+    {
+        $link = $this->shortname($target);
+        $link = str_replace('*', '', $link);
+
+        if(file_exists($link)){
+            unlink($link);
+        }
+
+        symlink(basename($target), $link);
     }
 
     /**

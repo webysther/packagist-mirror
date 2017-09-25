@@ -206,9 +206,7 @@ class Clean extends Command
             );
             $this->bar = new CliProgressBar($total, 0);
             $this->bar->display();
-
             $this->flushPackage($list);
-
             $this->bar->progress($total);
             $this->bar->end();
             $this->output->writeln('');
@@ -246,7 +244,8 @@ class Clean extends Command
                 FilesystemIterator::SKIP_DOTS
             );
 
-            if (iterator_count($fi) < 2) {
+            // If only have symlink and file dont exist old files
+            if (iterator_count($fi) < 3) {
                 continue;
             }
 
