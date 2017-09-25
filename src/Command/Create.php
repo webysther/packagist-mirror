@@ -14,17 +14,13 @@ namespace League\Mirror\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Process\Process;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
 use stdClass;
 use Generator;
-use FilesystemIterator;
-use utilphp\util;
-use Carbon\Carbon;
 use Dariuszp\CliProgressBar;
+use League\Mirror\Util;
 
 /**
  * Create a mirror.
@@ -38,7 +34,7 @@ class Create extends Command
      *
      * @var string
      */
-    protected $description = 'Create packagist mirror';
+    protected $description = 'Create/update packagist mirror';
 
     /**
      * Console params configuration.
@@ -56,9 +52,9 @@ class Create extends Command
      *
      * @return int 0 if pass, any another is error
      */
-    protected function execute(InputInterface $input, OutputInterface $output):int
+    public function execute(InputInterface $input, OutputInterface $output):int
     {
-        $start = Carbon::now();
+        $util = new Util();
 
         $this->input = $input;
         $this->output = $output;
@@ -66,9 +62,6 @@ class Create extends Command
             'base_uri' => 'https://'.getenv('MAIN_MIRROR').'/',
             'headers' => ['Accept-Encoding' => 'gzip'],
         ]);
-
-        // Show Kilobytes
-        $currentDisk = $this->getBytesFromPublic();
 
         // Download providers, with repository, is incremental
         if (!$this->downloadProviders()) {
@@ -86,56 +79,18 @@ class Create extends Command
         }
 
         // Flush old SHA256 files
-        if (!$this->flush()) {
+        $clean = new Clean();
+        if (!$clean->flush($input, $output)) {
             return 1;
         }
 
-        // Current kilobytes diference
-        $nextDisk = $this->getBytesFromPublic();
-        $saved = $currentDisk - $nextDisk;
-
-        $currentDisk = util::size_format($currentDisk);
-        $nextDisk = util::size_format($nextDisk);
-
-        $style = new SymfonyStyle($input, $output);
-        $style->setDecorated(true);
-        $style->section('Results');
-
-        if ($currentDisk != $nextDisk) {
-            $this->output->writeln(
-                '<comment>Before:'.$currentDisk.'</>'.PHP_EOL.
-                '<info>Current:'.$nextDisk.'</>'.PHP_EOL
-            );
+        if (file_exists($cachedir.'.init')) {
+            unlink($cachedir.'.init');
         }
 
-        // More than 4 Kib?
-        if ($saved > 4096) {
-            $saved = util::size_format($saved);
-            $this->output->writeln('A total of '.$saved.' was saved.'.PHP_EOL);
-        }
-
-        $memory = util::size_format(memory_get_peak_usage(true));
-        $time = Carbon::now()->diffForHumans($start);
-
-        $this->output->writeln("Total memory usage:\t".$memory);
-        $this->output->writeln("Total disk usage:\t".$nextDisk);
-        $this->output->writeln("Total execution:\t".$time);
+        $util->showResults($input, $output);
 
         return 0;
-    }
-
-    /**
-     * Get kilobytes on directory public.
-     *
-     * @return int Bytes used
-     */
-    protected function getBytesFromPublic():int
-    {
-        $process = new Process('du -s '.getenv('PUBLIC_DIR').PHP_EOL);
-        $process->setTimeout(3600)->run();
-
-        // Show bytes
-        return ((int) current(explode('  ', $process->getOutput()))) * 1000;
     }
 
     /**
@@ -318,8 +273,6 @@ class Create extends Command
 
         $this->packages = [];
 
-        $cachedir = getenv('PUBLIC_DIR').'/';
-
         $totalProviders = count($this->providers);
         $currentProvider = 0;
         foreach ($this->providers as $provider => $packages) {
@@ -395,120 +348,6 @@ class Create extends Command
 
             yield $cachename => new Request('GET', $fileurl);
         }
-    }
-
-    /**
-     * Flush old cached files by checking recursive
-     * diff of packages and .packages.json.
-     *
-     * bool True if work, false otherside
-     */
-    protected function flush():bool
-    {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $packages = $cachedir.'packages.json';
-
-        $json = file_get_contents($packages);
-        $providers = json_decode($json);
-        $includes = $providers->{'provider-includes'};
-        $changed = [];
-
-        foreach ($includes as $template => $hash) {
-            $fileurl = $cachedir.str_replace('%hash%', '*', $template);
-            $glob = glob($fileurl, GLOB_NOSORT);
-
-            // If have files and more than 1 to exists old ones
-            if (count($glob) > 1) {
-                $fileurlCurrent = $cachedir;
-                $fileurlCurrent .= str_replace(
-                    '%hash%',
-                    $hash->sha256,
-                    $template
-                );
-
-                $changed[] = $fileurlCurrent;
-
-                $this->output->writeln(
-                    'Check old file of <info>'.$this->shortname($fileurlCurrent).'</>'
-                );
-
-                foreach ($glob as $file) {
-                    if ($file == $fileurlCurrent) {
-                        continue;
-                    }
-
-                    $this->output->writeln(
-                        'Old file <fg=blue;>'.$file.'</> was removed!'
-                    );
-                    unlink($file);
-                }
-            }
-        }
-
-        $uri = $cachedir.'p/%s$%s.json';
-
-        foreach ($changed as $urlProvider) {
-            $provider = $this->providers[$urlProvider];
-            $list = $provider->providers;
-            $total = count((array) $list);
-
-            $this->output->writeln(
-                'Check old packages for provider '.
-                '<info>'.$this->shortname($urlProvider).'</>'
-            );
-            $this->bar = new CliProgressBar($total, 0);
-            $this->bar->display();
-
-            // Search for packages changed
-            foreach ($list as $name => $hash) {
-                $this->bar->progress();
-
-                if (file_exists($cachedir.'.init')) {
-                    continue;
-                }
-
-                $folder = $cachedir.'p/'.dirname($name);
-
-                // This folder was changed by last download?
-                if (!in_array($folder, $this->packages)) {
-                    continue;
-                }
-
-                $fi = new \FilesystemIterator(
-                    $cachedir.'p/'.dirname($name),
-                    \FilesystemIterator::SKIP_DOTS
-                );
-
-                if (iterator_count($fi) < 2) {
-                    continue;
-                }
-
-                $fileurlCurrent = sprintf($uri, $name, $hash->sha256);
-                $fileurl = sprintf($uri, $name, '*');
-                $glob = glob($fileurl, GLOB_NOSORT);
-
-                // If have files and more than 1 to exists old ones
-                if (count($glob) > 1) {
-                    foreach ($glob as $file) {
-                        if ($file == $fileurlCurrent) {
-                            continue;
-                        }
-
-                        unlink($file);
-                    }
-                }
-            }
-
-            $this->bar->progress($total);
-            $this->bar->end();
-            $this->output->writeln('');
-        }
-
-        if (file_exists($cachedir.'.init')) {
-            unlink($cachedir.'.init');
-        }
-
-        return true;
     }
 
     /**
