@@ -17,6 +17,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Dariuszp\CliProgressBar;
 use League\Mirror\Util;
+use FilesystemIterator;
+use stdClass;
 
 /**
  * Clean mirror outdated files.
@@ -189,8 +191,6 @@ class Clean extends Command
      */
     protected function flushPackages():bool
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $uri = $cachedir.'p/%s$%s.json';
         $increment = 0;
 
         foreach ($this->changed as $urlProvider) {
@@ -207,45 +207,7 @@ class Clean extends Command
             $this->bar = new CliProgressBar($total, 0);
             $this->bar->display();
 
-            // Search for packages changed
-            foreach ($list as $name => $hash) {
-                $this->bar->progress();
-
-                if (file_exists($cachedir.'.init')) {
-                    continue;
-                }
-
-                $folder = $cachedir.'p/'.dirname($name);
-
-                // This folder was changed by last download?
-                if (count($this->packages) && !in_array($folder, $this->packages)) {
-                    continue;
-                }
-
-                $fi = new \FilesystemIterator(
-                    $cachedir.'p/'.dirname($name),
-                    \FilesystemIterator::SKIP_DOTS
-                );
-
-                if (iterator_count($fi) < 2) {
-                    continue;
-                }
-
-                $fileurlCurrent = sprintf($uri, $name, $hash->sha256);
-                $fileurl = sprintf($uri, $name, '*');
-                $glob = glob($fileurl, GLOB_NOSORT);
-
-                // If have files and more than 1 to exists old ones
-                if (count($glob) > 1) {
-                    foreach ($glob as $file) {
-                        if ($file == $fileurlCurrent) {
-                            continue;
-                        }
-
-                        unlink($file);
-                    }
-                }
-            }
+            $this->flushPackage($list);
 
             $this->bar->progress($total);
             $this->bar->end();
@@ -253,5 +215,56 @@ class Clean extends Command
         }
 
         return true;
+    }
+
+    /**
+     * Flush from one provider
+     *
+     * @param  stdClass $list List of packages
+     * @return void
+     */
+    protected function flushPackage(stdClass $list):void
+    {
+        $cachedir = getenv('PUBLIC_DIR').'/';
+        $uri = $cachedir.'p/%s$%s.json';
+
+        foreach ($list as $name => $hash) {
+            $this->bar->progress();
+
+            if (file_exists($cachedir.'.init')) {
+                continue;
+            }
+
+            $folder = $cachedir.'p/'.dirname($name);
+
+            // This folder was changed by last download?
+            if (count($this->packages) && !in_array($folder, $this->packages)) {
+                continue;
+            }
+
+            $fi = new FilesystemIterator(
+                $cachedir.'p/'.dirname($name),
+                FilesystemIterator::SKIP_DOTS
+            );
+
+            if (iterator_count($fi) < 2) {
+                continue;
+            }
+
+            $fileurlCurrent = sprintf($uri, $name, $hash->sha256);
+            $fileurl = sprintf($uri, $name, '*');
+            $glob = glob($fileurl, GLOB_NOSORT);
+
+            // If have files and more than 1 to exists old ones
+            if (count($glob) > 1) {
+                foreach ($glob as $file) {
+                    if ($file == $fileurlCurrent) {
+                        continue;
+                    }
+
+                    unlink($file);
+                }
+            }
+        }
     }
 }

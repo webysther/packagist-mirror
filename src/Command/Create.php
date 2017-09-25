@@ -88,6 +88,7 @@ class Create extends Command
             return 1;
         }
 
+        $cachedir = getenv('PUBLIC_DIR').'/';
         if (file_exists($cachedir.'.init')) {
             unlink($cachedir.'.init');
         }
