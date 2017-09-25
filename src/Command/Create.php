@@ -112,11 +112,15 @@ class Create extends Command
 
         if (file_exists($dotPackages)) {
             if (file_exists($packages)) {
-                $this->output->writeln('Removing old packages.json');
+                $this->output->writeln(
+                    '<comment>Removing old packages.json</>'
+                );
                 unlink($packages);
             }
 
-            $this->output->writeln('Switch .packages.json to packages.json');
+            $this->output->writeln(
+                'Switch <info>.packages.json</> to <info>packages.json</>'
+            );
             copy($dotPackages, $packages);
         }
 
@@ -133,45 +137,14 @@ class Create extends Command
         $cachedir = getenv('PUBLIC_DIR').'/';
         $packages = $cachedir.'packages.json';
 
-        if (!file_exists($cachedir)) {
-            mkdir($cachedir, 0777, true);
-        }
-
-        $this->output->writeln('Loading providers information');
-
-        $response = $this->client->get('packages.json');
-
-        // Maybe 4xx or 5xx
-        if ($response->getStatusCode() >= 400) {
-            $this->output->writeln('Error download source of providers');
-
-            return false;
-        }
-
-        $json = (string) $response->getBody();
-        $providers = json_decode($json);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->output->writeln('JSON from main mirror isn\'t valid');
-
+        if( !($providers = $this->loadMainPackagesInformation()) ){
             return false;
         }
 
         $providers = $this->addFullPathProviders($providers);
 
-        // No provider changed? Just relax...
-        if (file_exists($packages) && !file_exists($cachedir.'.init')) {
-            $newSHA256 = hash(
-                'sha256',
-                file_get_contents($cachedir.'.packages.json')
-            );
-
-            if ($newSHA256 == hash('sha256', file_get_contents($packages))) {
-                unlink($cachedir.'.packages.json');
-                $this->output->writeln('Up-to-date');
-
-                return true;
-            }
+        if(!$this->checkPackagesWasChanged()){
+            return true;
         }
 
         if (empty($providers->{'provider-includes'})) {
@@ -216,10 +189,79 @@ class Create extends Command
         // Force the pool of requests to complete.
         $promise->wait();
 
-        $this->bar->progress(10);
+        $this->bar->progress($includes);
         $this->bar->end();
         $this->output->writeln('');
         $this->showErrors($this->errors);
+
+        return true;
+    }
+
+    /**
+     * Load main packages.json
+     *
+     * @return bool|stdClass False or the object of packages.json
+     */
+    protected function loadMainPackagesInformation()
+    {
+        $cachedir = getenv('PUBLIC_DIR').'/';
+
+        if (!file_exists($cachedir)) {
+            mkdir($cachedir, 0777, true);
+        }
+
+        $this->output->writeln('Loading providers information');
+
+        $response = $this->client->get('packages.json');
+
+        // Maybe 4xx or 5xx
+        if ($response->getStatusCode() >= 400) {
+            $this->output->writeln('Error download source of providers');
+
+            return false;
+        }
+
+        $json = (string) $response->getBody();
+        $providers = json_decode($json);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->output->writeln('JSON from main mirror isn\'t valid');
+
+            return false;
+        }
+
+        return $providers;
+    }
+
+    /**
+     * Check if packages.json was changed, this reduce load over main packagist
+     *
+     * @return bool True if is equal, false otherside
+     */
+    protected function checkPackagesWasChanged():bool
+    {
+        $cachedir = getenv('PUBLIC_DIR').'/';
+        $packages = $cachedir.'packages.json';
+
+        if(!file_exists($cachedir.'.packages.json')){
+            $this->output->writeln('<error>.packages.json don\'t found</>');
+            return false;
+        }
+
+        // No provider changed? Just relax...
+        if (file_exists($packages) && !file_exists($cachedir.'.init')) {
+            $newSHA256 = hash(
+                'sha256',
+                file_get_contents($cachedir.'.packages.json')
+            );
+
+            if ($newSHA256 == hash('sha256', file_get_contents($packages))) {
+                unlink($cachedir.'.packages.json');
+                $this->output->writeln('<info>Up-to-date</>');
+
+                return false;
+            }
+        }
 
         return true;
     }
