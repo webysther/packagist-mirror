@@ -27,6 +27,12 @@ docker run --name packagist \
            --restart=always \
            -v /var/www/html:/public \
            webysther/composer-mirror
+
+# Add to cron
+* * * * * docker run --name packagist -v /var/www/html:/public --restart=always webysther/composer-mirror; docker start packagist
+
+# Monitoring
+docker logs -f packagist
 ```
 
 
