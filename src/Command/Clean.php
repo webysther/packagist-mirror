@@ -218,10 +218,9 @@ class Clean extends Command
     }
 
     /**
-     * Flush from one provider
+     * Flush from one provider.
      *
-     * @param  stdClass $list List of packages
-     * @return void
+     * @param stdClass $list List of packages
      */
     protected function flushPackage(stdClass $list):void
     {

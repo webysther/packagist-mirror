@@ -19,6 +19,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
 use stdClass;
 use Generator;
+use Exception;
 use Dariuszp\CliProgressBar;
 use League\Mirror\Util;
 
@@ -156,15 +157,7 @@ class Create extends Command
             return false;
         }
 
-        // Add full path for services of mirror don't provide only packagist.org
-        foreach (['notify', 'notify-batch', 'search'] as $key) {
-            $path = parse_url($providers->$key){'path'};
-            $providers->$key = 'https://'.getenv('MAIN_MIRROR').'/'.$path;
-        }
-        $fail = file_put_contents(
-            $cachedir.'.packages.json', // .packages.json
-            json_encode($providers, JSON_PRETTY_PRINT)
-        );
+        $providers = $this->addFullPathProviders($providers);
 
         // No provider changed? Just relax...
         if (file_exists($packages) && !file_exists($cachedir.'.init')) {
@@ -179,12 +172,6 @@ class Create extends Command
 
                 return true;
             }
-        }
-
-        if (false === $fail) {
-            $this->output->writeln('Error to create file \'.packages.json\'...');
-
-            return false;
         }
 
         if (empty($providers->{'provider-includes'})) {
@@ -207,6 +194,7 @@ class Create extends Command
             return true;
         }
 
+        $this->errors = [];
         $this->providers = [];
         $pool = new Pool($this->client, $generator, [
             'concurrency' => getenv('MAX_CONNECTIONS'),
@@ -217,6 +205,7 @@ class Create extends Command
                 $this->bar->progress();
             },
             'rejected' => function ($reason, $name) {
+                $this->errors[$name] = $reason;
                 $this->bar->progress();
             },
         ]);
@@ -230,8 +219,58 @@ class Create extends Command
         $this->bar->progress(10);
         $this->bar->end();
         $this->output->writeln('');
+        $this->showErrors($this->errors);
 
         return true;
+    }
+
+    /**
+     * Show errors formatted.
+     *
+     * @param array $errors Errors
+     */
+    protected function showErrors(array $errors):void
+    {
+        if (!count($errors)) {
+            return;
+        }
+
+        foreach ($errors as $name => $reason) {
+            $this->output->writeln(
+                "File $name failed with error: ".$reason->getMessage()
+            );
+        }
+        $this->output->writeln('');
+    }
+
+    /**
+     * Add base url of packagist.org to services on packages.json of
+     * mirror don't support.
+     *
+     * @param stdClass $providers List of providers from packages.json
+     */
+    protected function addFullPathProviders(stdClass $providers):stdClass
+    {
+        $cachedir = getenv('PUBLIC_DIR').'/';
+
+        // Add full path for services of mirror don't provide only packagist.org
+        foreach (['notify', 'notify-batch', 'search'] as $key) {
+            // Just in case packagist.org add full path in future
+            $path = parse_url($providers->$key){'path'};
+            $providers->$key = 'https://'.getenv('MAIN_MIRROR').'/'.$path;
+        }
+        $fail = file_put_contents(
+            $cachedir.'.packages.json', // .packages.json
+            json_encode($providers, JSON_PRETTY_PRINT)
+        );
+
+        if (false === $fail) {
+            throw new Exception(
+                'Error to create file \'.packages.json\'...'
+            );
+        }
+
+        return $providers;
     }
 
     /**
@@ -295,6 +334,7 @@ class Create extends Command
 
             $this->bar = new CliProgressBar($total, 0);
             $this->bar->display();
+            $this->errors = [];
 
             $pool = new Pool($this->client, $generator, [
                 'concurrency' => getenv('MAX_CONNECTIONS'),
@@ -305,6 +345,7 @@ class Create extends Command
                     $this->bar->progress();
                 },
                 'rejected' => function ($reason, $name) {
+                    $this->errors[$name] = $reason;
                     $this->bar->progress();
                 },
             ]);
@@ -318,6 +359,7 @@ class Create extends Command
             $this->bar->progress($total);
             $this->bar->end();
             $this->output->writeln('');
+            $this->showErrors($this->errors);
             $this->packages = array_unique($this->packages);
         }
 
