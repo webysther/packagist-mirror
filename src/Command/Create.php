@@ -89,6 +89,8 @@ class Create extends Command
             return 1;
         }
 
+        $this->generateHtml();
+
         $cachedir = getenv('PUBLIC_DIR').'/';
         if (file_exists($cachedir.'.init')) {
             unlink($cachedir.'.init');
@@ -471,5 +473,17 @@ class Create extends Command
     protected function shortname(string $name):string
     {
         return preg_replace('/\$(\w*)/', '*', $name);
+    }
+
+    /**
+     * Generate HTML of index.html
+     *
+     * @return void
+     */
+    protected function generateHtml():void
+    {
+        ob_start();
+        include __DIR__ . '/../../resources/index.html.php';
+        file_put_contents(getenv('PUBLIC_DIR') . '/index.html', ob_get_clean());
     }
 }

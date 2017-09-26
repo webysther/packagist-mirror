@@ -58,7 +58,7 @@ h3.cmd {
 </header>
 <?php date_default_timezone_set('America/Sao_Paulo'); ?>
 <p align="center">Atualizado em <?= date('d/m/y H\hi') ?> horário de Brasília</p>
-<p align="center">(recriado a cada 10 minutos)</p>
+<p align="center">(recriado a cada minuto)</p>
 
 <br>
 <div class="pure-u-1-1" style="margin: 1em;">
