@@ -333,7 +333,7 @@ class Create extends Command
         foreach (['notify', 'notify-batch', 'search'] as $key) {
             // Just in case packagist.org add full path in future
             $path = parse_url($providers->$key){'path'};
-            $providers->$key = 'https://'.getenv('MAIN_MIRROR').'/'.$path;
+            $providers->$key = 'https://'.getenv('MAIN_MIRROR').$path;
         }
         $fail = file_put_contents(
             $cachedir.'.packages.json', // .packages.json
