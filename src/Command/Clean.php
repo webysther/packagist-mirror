@@ -53,6 +53,18 @@ class Clean extends Command
                  null,
                  InputOption::VALUE_NONE,
                  'Check all directories for old files, use only to check all disk'
+             )
+             ->addOption(
+                 'info',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Show information about disk usage, execution time and memory usage'
+             )
+             ->addOption(
+                 'no-progress',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Don\'t show progress bar'
              );
     }
 
@@ -66,7 +78,11 @@ class Clean extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
-        $util = new Util();
+        $info = false;
+        if ($input->getOption('info')) {
+            $info = true;
+            $util = new Util();
+        }
 
         if (!$this->flush($input, $output)) {
             return 1;
@@ -76,7 +92,9 @@ class Clean extends Command
             $output->writeln('Nothing to clean');
         }
 
-        $util->showResults($input, $output);
+        if ($info) {
+            $util->showResults($input, $output);
+        }
 
         return 0;
     }
@@ -205,11 +223,10 @@ class Clean extends Command
                 '<info>'.$this->shortname($urlProvider).'</>'
             );
             $this->bar = new CliProgressBar($total, 0);
-            $this->bar->display();
             $this->flushPackage($list);
-            $this->bar->progress($total);
-            $this->bar->end();
-            $this->output->writeln('');
+            !$this->hasQuiet() && $this->bar->progress($total);
+            !$this->hasQuiet() && $this->bar->end();
+            !$this->hasQuiet() && $this->output->writeln('');
         }
 
         return true;
@@ -226,7 +243,7 @@ class Clean extends Command
         $uri = $cachedir.'p/%s$%s.json';
 
         foreach ($list as $name => $hash) {
-            $this->bar->progress();
+            !$this->hasQuiet() && $this->bar->progress();
 
             if (file_exists($cachedir.'.init')) {
                 continue;
@@ -264,5 +281,17 @@ class Clean extends Command
                 }
             }
         }
+    }
+
+    /**
+     * Is quiet mode?
+     *
+     * @return bool True if is quiet
+     */
+    protected function hasQuiet():bool
+    {
+        return $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
+            || $this->input->getOption('no-progress')
+            || $this->input->getOption('no-ansi');
     }
 }

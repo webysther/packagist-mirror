@@ -14,6 +14,7 @@ namespace League\Mirror\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
@@ -42,7 +43,20 @@ class Create extends Command
      */
     protected function configure():void
     {
-        $this->setName('create')->setDescription($this->description);
+        $this->setName('create')
+             ->setDescription($this->description)
+             ->addOption(
+                 'info',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Show information about disk usage, execution time and memory usage'
+             )
+             ->addOption(
+                 'no-progress',
+                 null,
+                 InputOption::VALUE_NONE,
+                 'Don\'t show progress bar'
+             );
     }
 
     /**
@@ -55,7 +69,11 @@ class Create extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
-        $util = new Util();
+        $info = false;
+        if ($input->getOption('info')) {
+            $info = true;
+            $util = new Util();
+        }
 
         $this->input = $input;
         $this->output = $output;
@@ -96,9 +114,23 @@ class Create extends Command
             unlink($cachedir.'.init');
         }
 
-        $util->showResults($input, $output);
+        if ($info) {
+            $util->showResults($input, $output);
+        }
 
         return 0;
+    }
+
+    /**
+     * Is quiet mode?
+     *
+     * @return bool True if is quiet
+     */
+    protected function hasQuiet():bool
+    {
+        return $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
+            || $this->input->getOption('no-progress')
+            || $this->input->getOption('no-ansi');
     }
 
     /**
@@ -139,13 +171,13 @@ class Create extends Command
         $cachedir = getenv('PUBLIC_DIR').'/';
         $packages = $cachedir.'packages.json';
 
-        if( !($providers = $this->loadMainPackagesInformation()) ){
+        if (!($providers = $this->loadMainPackagesInformation())) {
             return false;
         }
 
         $providers = $this->addFullPathProviders($providers);
 
-        if(!$this->checkPackagesWasChanged()){
+        if (!$this->checkPackagesWasChanged()) {
             return true;
         }
 
@@ -157,7 +189,6 @@ class Create extends Command
 
         $includes = count((array) $providers->{'provider-includes'});
         $this->bar = new CliProgressBar($includes, 0);
-        $this->bar->display();
 
         $generator = $this->downloadProvideIncludes(
             $providers->{'provider-includes'}
@@ -177,11 +208,11 @@ class Create extends Command
                 $json = (string) $response->getBody();
                 file_put_contents($name, $json);
                 $this->providers[$name] = json_decode($json);
-                $this->bar->progress();
+                !$this->hasQuiet() && $this->bar->progress();
             },
             'rejected' => function ($reason, $name) {
                 $this->errors[$name] = $reason;
-                $this->bar->progress();
+                !$this->hasQuiet() && $this->bar->progress();
             },
         ]);
 
@@ -191,16 +222,16 @@ class Create extends Command
         // Force the pool of requests to complete.
         $promise->wait();
 
-        $this->bar->progress($includes);
-        $this->bar->end();
-        $this->output->writeln('');
+        !$this->hasQuiet() && $this->bar->progress($includes);
+        !$this->hasQuiet() && $this->bar->end();
+        !$this->hasQuiet() && $this->output->writeln('');
         $this->showErrors($this->errors);
 
         return true;
     }
 
     /**
-     * Load main packages.json
+     * Load main packages.json.
      *
      * @return bool|stdClass False or the object of packages.json
      */
@@ -236,7 +267,7 @@ class Create extends Command
     }
 
     /**
-     * Check if packages.json was changed, this reduce load over main packagist
+     * Check if packages.json was changed, this reduce load over main packagist.
      *
      * @return bool True if is equal, false otherside
      */
@@ -245,8 +276,9 @@ class Create extends Command
         $cachedir = getenv('PUBLIC_DIR').'/';
         $packages = $cachedir.'packages.json';
 
-        if(!file_exists($cachedir.'.packages.json')){
+        if (!file_exists($cachedir.'.packages.json')) {
             $this->output->writeln('<error>.packages.json don\'t found</>');
+
             return false;
         }
 
@@ -334,7 +366,7 @@ class Create extends Command
 
             // Only if exists
             if (file_exists($cachename) && !file_exists($cachedir.'.init')) {
-                $this->bar->progress();
+                !$this->hasQuiet() && $this->bar->progress();
                 continue;
             }
 
@@ -377,7 +409,6 @@ class Create extends Command
             $generator = $this->downloadPackage($list);
 
             $this->bar = new CliProgressBar($total, 0);
-            $this->bar->display();
             $this->errors = [];
 
             $pool = new Pool($this->client, $generator, [
@@ -387,11 +418,11 @@ class Create extends Command
                     file_put_contents($name, $json);
                     $this->createLink($name);
                     $this->packages[] = dirname($name);
-                    $this->bar->progress();
+                    !$this->hasQuiet() && $this->bar->progress();
                 },
                 'rejected' => function ($reason, $name) {
                     $this->errors[$name] = $reason;
-                    $this->bar->progress();
+                    !$this->hasQuiet() && $this->bar->progress();
                 },
             ]);
 
@@ -401,9 +432,9 @@ class Create extends Command
             // Force the pool of requests to complete.
             $promise->wait();
 
-            $this->bar->progress($total);
-            $this->bar->end();
-            $this->output->writeln('');
+            !$this->hasQuiet() && $this->bar->progress($total);
+            !$this->hasQuiet() && $this->bar->end();
+            !$this->hasQuiet() && $this->output->writeln('');
             $this->showErrors($this->errors);
             $this->packages = array_unique($this->packages);
         }
@@ -429,7 +460,7 @@ class Create extends Command
 
             // Only if exists
             if (file_exists($cachename)) {
-                $this->bar->progress();
+                !$this->hasQuiet() && $this->bar->progress();
                 continue;
             }
 
@@ -448,15 +479,14 @@ class Create extends Command
      * Sample:
      * p/ac/firewall.json ~> p/ac/firewall$668f06f(...).json
      *
-     * @param  string $path Path to file
-     * @return void
+     * @param string $path Path to file
      */
     protected function createLink(string $target):void
     {
         $link = $this->shortname($target);
         $link = str_replace('*', '', $link);
 
-        if(file_exists($link)){
+        if (file_exists($link)) {
             unlink($link);
         }
 
@@ -476,14 +506,12 @@ class Create extends Command
     }
 
     /**
-     * Generate HTML of index.html
-     *
-     * @return void
+     * Generate HTML of index.html.
      */
     protected function generateHtml():void
     {
         ob_start();
-        include __DIR__ . '/../../resources/index.html.php';
-        file_put_contents(getenv('PUBLIC_DIR') . '/index.html', ob_get_clean());
+        include __DIR__.'/../../resources/index.html.php';
+        file_put_contents(getenv('PUBLIC_DIR').'/index.html', ob_get_clean());
     }
 }

@@ -54,7 +54,6 @@ class Util
         $nextDisk = File::size_format($nextDisk, 1);
 
         $style = new SymfonyStyle($input, $output);
-        $style->setDecorated(true);
         $style->section('Results');
 
         if ($currentDisk != $nextDisk) {
