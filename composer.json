@@ -9,7 +9,6 @@
     "require": {
         "php": "~7",
         "guzzlehttp/guzzle": "~6",
-        "lavary/crunz": "~1",
         "vlucas/phpdotenv": "~2",
         "symfony/console": "~3",
         "sebastian/version": "~2",

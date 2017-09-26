@@ -23,18 +23,9 @@ $ composer require league/mirror
 Via Docker
 
 ```shell
-docker run --name packagist \
-           --restart=always \
-           -v /var/www/html:/public \
-           webysther/composer-mirror
-
-# Add to cron
-* * * * * docker run --name packagist -v /var/www/html:/public --restart=always webysther/composer-mirror; docker start packagist
-
-# Monitoring
-docker logs -f packagist
+# Add to /etc/crontab to create/update the mirror
+* * * * * root docker run --rm --name packagist -v /var/www/html:/public webysther/composer-mirror
 ```
-
 
 ## Requirements
 
