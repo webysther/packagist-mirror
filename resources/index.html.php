@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Packagist.JP</title>
+<title>Packagist</title>
 
 <style>
 html, button, input, select, textarea, div {
@@ -19,9 +19,9 @@ font-size: 16px;
 line-height: 1.3;
 word-wrap: break-word;
 }
-pre {
+code.more {
 background-color: #3d3d5c;
-padding: 0.5em;
+padding: 0.8em;
 color: white;
 }
 h1 {
@@ -33,16 +33,16 @@ margin:0;
     text-align: center;
 }
 @media screen and (min-width : 768px){
-    .banner{ font-size : 500%;} 
+    .banner{ font-size : 500%;}
 }
- 
+
 @media screen and (min-width : 1024px) {
-    .banner{ font-size : 700%;} 
+    .banner{ font-size : 700%;}
 }
 h3.cmd {
     width: 10em;
     background-color: #B88A7A;
-    margin: 0 0 -25px 1em;
+    margin: 0 0 -15px 1em;
     padding: 0.5em;
 }
 
@@ -50,51 +50,76 @@ h3.cmd {
 </head>
 <body>
 <header>
-<h1 class="banner">Packagist<span style="color:red">●</span>JP</h1>
-<p align="center">最終同期： <?= date('Y年n月j日 H:i:s') ?> (JST) (2分毎に同期)</p>
+<h1 class="banner">Packagist
+  <span>
+     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/320px-Flag_of_Brazil.svg.png" alt="Brazil flag" height="75">
+  </span>
+</h1>
 </header>
+<?php date_default_timezone_set('America/Sao_Paulo'); ?>
+<p align="center">Atualizado em <?= date('d/m/y H\hi') ?> horário de Brasília</p>
+<p align="center">(recriado a cada 10 minutos)</p>
 
-
+<br>
 <div class="pure-u-1-1" style="margin: 1em;">
-<p>PHPのライブラリリポジトリである<a href="https://packagist.org">https://packagist.org</a>のミラーサイトです。packagist.orgの代わりにこちらを参照することで、<code>composer update</code>の応答速度が速くなります。特にフランスから遠い、アジア圏では顕著な効果が得られます。</p>
-<p>有効にするには以下のコマンドを打ち込んでください。</p>
+
+<p>
+É um espelho do repositório de bibliotecas PHP <a href="https://packagist.org">https://packagist.org</a>. Ao referir-se aqui em vez de packagist.org, o comando <code>composer update</code> é mais rápido caso esteja na América Latina.
+</p>
+
+<p>Por favor, digite o seguinte comando para habilitar esse espelho.</p>
+
 </div>
 
 
-<h3 class="cmd">enable</h3>
-<pre><code>$ composer config -g repos.packagist composer <?= $url ?></code></pre>
+<h3 class="cmd">habilitar</h3>
+<p>
+<code class="more">$ composer config -g repos.packagist composer https://packagist.com.br</code>
+</p>
 
-<h3 class="cmd">disable</h3>
-<pre><code>$ composer config -g --unset repos.packagist</code></pre>
+<h3 class="cmd">desabilitar</h3>
+<p>
+<code class="more">$ composer config -g --unset repos.packagist</code>
+</p>
 
 
 <div class="pure-u-1-1" style="margin: 1em;">
 
-<p>なお、このサイトでは<a href="https://getcomposer.org/">composer自体</a>やpackagist.orgにあるパッケージ情報ページ、検索機能などはミラーしておりません。それぞれ本家サイトをご利用ください。</p>
+<p>Para outras informações, utilize o site principal <a href="https://getcomposer.org/">composer</a>, nele é possível encontrar todas as informações relevantes de como utilizar o repositório de bibliotecas.</p>
 
-<h2>仕組み</h2>
+<h2>Como funciona</h2>
 
-<p>composer updateを実行すると、composerはpackagist.orgからパッケージ情報が書かれたJSONファイルをダウンロードし、必要なパッケージやそれに依存するパッケージのJSONファイルを個別にダウンロードしていきます。パッケージの複雑さにもよりますが、update時にダウンロードするJSONファイルは数十から数百に達します。composerは現状全ファイルに対してTLSのコネクション確立からやり直すので、packagist.orgとcomposerを実行しているクライアントとの物理的な距離(RTT)が大きく影響します。</p>
+<p>Ao executar <code>composer update</code> é realizado o download de um arquivo JSON que contém as informações do repositório e suas respectivas versões, dessa forma é possível ao composer realizar o download do código correto que foi especificado pelo seu sistema. Dependendo da complexidade do pacote um número maior de pacotes é carregado, aumento o número de vezes que é necessário perguntar ao servidor do packagist por mais arquivos JSON, quando o servidor se encontra em uma distância geográfica grande (RTT) a velocidade para cada conexão de pedido de arquivos é demorado. Com o espelho é possível reduzir esse tempo e também reduzir a carga sobre o servidor principal, aumentando a disponibilidade.</p>
 
-<p>本サイトは日本のさくらVPSを使って配信しています。<a href="https://github.com/hirak/packagist-crawler">hirak/packagist-crawler</a>というスクリプトを使って、あらかじめpackagist.orgをクロールし、同期時点でのパッケージの情報が書かれた全JSONファイルをダウンロードしてあります。</p>
+<p>Este site está localizado em São Paulo - Brasil, como o servidor DNS e o CDN utilizado. Ele utiliza o pacote <a href="https://github.com/hirak/packagist-crawler">hirak/packagist-crawler</a> para realizar o download e guardar uma versão mais recente de todos os arquivos JSON. </p>
 
-<p>配信は普通のnginxを使い、高負荷時の対策として手前にCDN(CloudFlare)を置いてあります。単にそれだけのサイトです。</p>
+<p>As requisições aos arquivos do projeto em si são realizadas ao <a href="http://github.com">github</a> ou outro gerenciador de repositórios, observe que isso não ficará mais rápido. Para melhorar o desempenho de carregamento é recomendado utilizar o <a href="https://github.com/hirak/prestissimo"
+>prestissimo</a> que permite realizar download paralelo.
 
-<p>このため、ミラーサイトを使った場合に高速化するのは<code>composer update</code>, <code>composer require</code>, <code>composer remove</code>などメタファイルのやり取りが発生する場合だけになります。</p>
+<h2>Benchmark</h2>
 
-<p>Travis-CIなどで<code>composer install</code>する際は、github.comなどとのやり取りになっており、ミラーを有効にしたところで全く高速化されません。</p>
+<h3>Execução de instalação padrão do Laravel</h3>
 
+<code class="more">$ composer create-project --prefer-dist laravel/laravel blog</code>
 
-<h2>免責事項</h2>
+<p>packagist.org: 4 minutos e 14 segundos</p>
+<p>packagist.com.br: 3 minutos e 10 segundos</p>
 
-<p>このサイトは <a href="https://twitter.com/Hiraku">@Hiraku</a> が個人的に運営しています。スペック的には今の数万倍のアクセスが来ようが余裕で捌けますので自由に使っていただいて構いません。利用に際して料金等はかかりませんが、個人運営ですので、障害が起きても何ら保障は致しかねます。その点だけご了承ください。</p>
+<code class="more">$ composer update</code>
 
-<p>packagist.jpはただのミラーサイトで、JSONの加工は行っていないので、何か不具合があれば上記disableコマンドで設定を外し、本家packagist.orgを参照するようにしてみてください。</p>
+<p>packagist.org: 1 minutos e 41 segundos</p>
+<p>packagist.com.br: 1 minuto e 4 segundos</p>
 
-<p>使い方の疑問や要望など、答えられる範囲では答えますので、お尋ねください。</p>
+<h2>Considerações legais</h2>
+
+<p>Observe que esse é um site espelho apenas, mantido por <a href="https://twitter.com/webysther">@webysther</a> para permitir uma melhor disponibilidade principalmente no Brasil.<p>
+
+<p>É esperado que ele suporte um grande tráfego de dados, mas não existem garantias sobre sua disponibilidade ou sequer suporte oficial do time que mantém o packagist.org.</p>
+
+<p>Caso o espelho aparente ficar muito lento ou desatualizado recomendamos reportar para <a href="https://twitter.com/webysther">@webysther</a> e desabilitar temporariamente.</p>
 
 </div>
 
-<address style="text-align:center">Copyright (C) 2014, Hiraku (hiraku at tojiru.net)</address>
+<address style="text-align:center"><a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR" target="_blank">CC-BY-SA 4.0 BR</a>, Webysther Nunes</address>
 </body>
 </html>
