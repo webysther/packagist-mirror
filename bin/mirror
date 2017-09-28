@@ -45,9 +45,4 @@ $cli = new Symfony\Component\Console\Application(
 $cli->add(new League\Mirror\Command\Create);
 $cli->add(new League\Mirror\Command\Clean);
 
-// if is public snapshot option is on
-if(getenv('MIRROR_PUBLIC')){
-    $cli->add(new League\Mirror\Command\Snapshot);
-}
-
 $cli->run();
