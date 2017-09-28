@@ -73,21 +73,17 @@ class Util
         $time = Carbon::now()->diffForHumans($this->start);
 
         $output->writeln("Total memory usage:\t".$memory);
-        $output->writeln("Total disk usage:\t".$nextDisk);
+        $output->writeln("Total disk free:\t".$nextDisk);
         $output->writeln("Total execution:\t".$time);
     }
 
     /**
-     * Get kilobytes on directory public.
+     * Get bytes usage of partition public directory.
      *
-     * @return int Bytes used
+     * @return float Bytes used
      */
-    public function getBytesFromPublic():int
+    public function getBytesFromPublic():float
     {
-        $process = new Process('du -s '.getenv('PUBLIC_DIR').PHP_EOL);
-        $process->setTimeout(3600)->run();
-
-        // Show bytes
-        return ((int) current(explode('  ', $process->getOutput()))) * 1000;
+        return disk_free_space(getenv('PUBLIC_DIR'));
     }
 }
