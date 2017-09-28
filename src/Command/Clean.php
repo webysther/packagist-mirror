@@ -261,8 +261,8 @@ class Clean extends Command
                 FilesystemIterator::SKIP_DOTS
             );
 
-            // If only have symlink and file dont exist old files
-            if (iterator_count($fi) < 3) {
+            // If only have the file dont exist old files
+            if (iterator_count($fi) < 2) {
                 continue;
             }
 

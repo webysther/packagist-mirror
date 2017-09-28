@@ -243,7 +243,9 @@ class Create extends Command
             mkdir($cachedir, 0777, true);
         }
 
-        $this->output->writeln('Loading providers information');
+        $this->output->writeln(
+            'Loading providers from '.getenv('MAIN_MIRROR')
+        );
 
         $response = $this->client->get('packages.json');
 
@@ -376,7 +378,11 @@ class Create extends Command
                 mkdir(dirname($cachename), 0777, true);
             }
 
-            yield $cachename => new Request('GET', $fileurl);
+            yield $cachename => new Request(
+                'GET',
+                $fileurl,
+                ['curl' => [CURLMOPT_PIPELINING => 2]]
+            );
         }
     }
 
@@ -416,7 +422,6 @@ class Create extends Command
                 'fulfilled' => function ($response, $name) {
                     $json = (string) $response->getBody();
                     file_put_contents($name, $json);
-                    $this->createLink($name);
                     $this->packages[] = dirname($name);
                     !$this->hasQuiet() && $this->bar->progress();
                 },
@@ -469,28 +474,12 @@ class Create extends Command
                 mkdir(dirname($cachename), 0777, true);
             }
 
-            yield $cachename => new Request('GET', $fileurl);
+            yield $cachename => new Request(
+                'GET',
+                $fileurl,
+                ['curl' => [CURLMOPT_PIPELINING => 2]]
+            );
         }
-    }
-
-    /**
-     * Create a simbolic link to hash file.
-     *
-     * Sample:
-     * p/ac/firewall.json ~> p/ac/firewall$668f06f(...).json
-     *
-     * @param string $path Path to file
-     */
-    protected function createLink(string $target):void
-    {
-        $link = $this->shortname($target);
-        $link = str_replace('*', '', $link);
-
-        if (file_exists($link)) {
-            unlink($link);
-        }
-
-        symlink(basename($target), $link);
     }
 
     /**
