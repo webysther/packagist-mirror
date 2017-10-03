@@ -9,14 +9,11 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace League\Mirror\Command;
+namespace Webs\Mirror\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Dariuszp\CliProgressBar;
-use League\Mirror\Util;
 use FilesystemIterator;
 use stdClass;
 
@@ -25,7 +22,7 @@ use stdClass;
  *
  * @author Webysther Nunes <webysther@gmail.com>
  */
-class Clean extends Command
+class Clean extends Base
 {
     /**
      * Console description.
@@ -46,6 +43,7 @@ class Clean extends Command
      */
     protected function configure():void
     {
+        parent::configure();
         $this->setName('clean')
              ->setDescription($this->description)
              ->addOption(
@@ -53,18 +51,6 @@ class Clean extends Command
                  null,
                  InputOption::VALUE_NONE,
                  'Check all directories for old files, use only to check all disk'
-             )
-             ->addOption(
-                 'info',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Show information about disk usage, execution time and memory usage'
-             )
-             ->addOption(
-                 'no-progress',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Don\'t show progress bar'
              );
     }
 
@@ -76,24 +62,14 @@ class Clean extends Command
      *
      * @return int 0 if pass, any another is error
      */
-    public function execute(InputInterface $input, OutputInterface $output):int
+    public function childExecute(InputInterface $input, OutputInterface $output):int
     {
-        $info = false;
-        if ($input->getOption('info')) {
-            $info = true;
-            $util = new Util();
-        }
-
         if (!$this->flush($input, $output)) {
             return 1;
         }
 
         if (!count($this->changed)) {
             $output->writeln('Nothing to clean');
-        }
-
-        if ($info) {
-            $util->showResults($input, $output);
         }
 
         return 0;
@@ -124,18 +100,6 @@ class Clean extends Command
     }
 
     /**
-     * Find hash and replace by *.
-     *
-     * @param string $name Name of provider or package
-     *
-     * @return string Shortname
-     */
-    protected function shortname(string $name):string
-    {
-        return preg_replace('/\$(\w*)/', '*', $name);
-    }
-
-    /**
      * Add information about how package is checked.
      *
      * @param array $list List of name packages
@@ -153,9 +117,9 @@ class Clean extends Command
     protected function flushProviders():bool
     {
         $cachedir = getenv('PUBLIC_DIR').'/';
-        $packages = $cachedir.'packages.json';
+        $packages = $cachedir.'packages.json.gz';
 
-        $json = file_get_contents($packages);
+        $json = gzuncompress(file_get_contents($packages));
         $providers = json_decode($json);
         $includes = $providers->{'provider-includes'};
         $this->changed = [];
@@ -166,7 +130,7 @@ class Clean extends Command
         }
 
         foreach ($includes as $template => $hash) {
-            $fileurl = $cachedir.str_replace('%hash%', '*', $template);
+            $fileurl = $cachedir.str_replace('%hash%', '*', $template).'.gz';
             $glob = glob($fileurl, GLOB_NOSORT);
 
             // If have files and more than 1 to exists old ones
@@ -176,7 +140,7 @@ class Clean extends Command
                     '%hash%',
                     $hash->sha256,
                     $template
-                );
+                ).'.gz';
 
                 $this->changed[] = $fileurlCurrent;
 
@@ -212,7 +176,7 @@ class Clean extends Command
         $increment = 0;
 
         foreach ($this->changed as $urlProvider) {
-            $provider = json_decode(file_get_contents($urlProvider));
+            $provider = json_decode(gzuncompress(file_get_contents($urlProvider)));
             $list = $provider->providers;
             $total = count((array) $list);
             ++$increment;
@@ -222,11 +186,10 @@ class Clean extends Command
                 'Check old packages for provider '.
                 '<info>'.$this->shortname($urlProvider).'</>'
             );
-            $this->bar = new CliProgressBar($total, 0);
+            $this->progressBarStart($total);
             $this->flushPackage($list);
-            !$this->hasQuiet() && $this->bar->progress($total);
-            !$this->hasQuiet() && $this->bar->end();
-            !$this->hasQuiet() && $this->output->writeln('');
+            $this->progressBarUpdate($total);
+            $this->progressBarFinish();
         }
 
         return true;
@@ -240,10 +203,10 @@ class Clean extends Command
     protected function flushPackage(stdClass $list):void
     {
         $cachedir = getenv('PUBLIC_DIR').'/';
-        $uri = $cachedir.'p/%s$%s.json';
+        $uri = $cachedir.'p/%s$%s.json.gz';
 
         foreach ($list as $name => $hash) {
-            !$this->hasQuiet() && $this->bar->progress();
+            $this->progressBarUpdate();
 
             if (file_exists($cachedir.'.init')) {
                 continue;
@@ -281,17 +244,5 @@ class Clean extends Command
                 }
             }
         }
-    }
-
-    /**
-     * Is quiet mode?
-     *
-     * @return bool True if is quiet
-     */
-    protected function hasQuiet():bool
-    {
-        return $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
-            || $this->input->getOption('no-progress')
-            || $this->input->getOption('no-ansi');
     }
 }

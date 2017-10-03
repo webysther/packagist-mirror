@@ -42,7 +42,7 @@ $cli = new Symfony\Component\Console\Application(
     $version->getVersion()
 );
 
-$cli->add(new League\Mirror\Command\Create);
-$cli->add(new League\Mirror\Command\Clean);
+$cli->add(new Webs\Mirror\Command\Create);
+$cli->add(new Webs\Mirror\Command\Clean);
 
 $cli->run();

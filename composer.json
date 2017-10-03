@@ -25,10 +25,10 @@
         "hirak/prestissimo": "Composer parallel install plugin"
     },
     "autoload": {
-        "psr-4": { "League\\Mirror\\": "src/" }
+        "psr-4": { "Webs\\Mirror\\": "src/" }
     },
     "autoload-dev": {
-        "psr-4": { "League\\Mirror\\Tests\\": "tests/" }
+        "psr-4": { "Webs\\Mirror\\Tests\\": "tests/" }
     },
     "bin": [
         "bin/mirror"
