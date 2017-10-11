@@ -22,19 +22,20 @@ if (!file_exists($autoload)) {
 
 require $autoload;
 
+chdir(__DIR__.'/..');
+
 // Prepare using default .env
-if (!file_exists(__DIR__ . '/../.env')) {
-    copy(__DIR__.'/../.env.example', __DIR__ . '/../.env');
+if (!file_exists('.env')) {
+    copy('.env.example', '.env');
 }
 
 // Load env
-$dotenv = new Dotenv\Dotenv(__DIR__.'/../');
+$dotenv = new Dotenv\Dotenv();
 $dotenv->load();
 
 // Using Sebastian version formatter
 $version = new SebastianBergmann\Version(
-    getenv('APP_VERSION'),
-    __DIR__.'/../'
+    getenv('APP_VERSION')
 );
 
 $cli = new Symfony\Component\Console\Application(
