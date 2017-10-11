@@ -56,6 +56,7 @@ class Create extends Base
         $this->client = new Client([
             'base_uri' => 'https://'.getenv('MAIN_MIRROR').'/',
             'headers' => ['Accept-Encoding' => 'gzip'],
+            'decode_content' => false
         ]);
 
         // Download providers, with repository, is incremental
@@ -152,10 +153,10 @@ class Create extends Base
         if (file_exists($packages) && !file_exists($cachedir.'.init')) {
             $newSHA256 = hash(
                 'sha256',
-                gzuncompress(file_get_contents($tempPackages))
+                gzdecode(file_get_contents($tempPackages))
             );
 
-            if ($newSHA256 == hash('sha256', gzuncompress(file_get_contents($packages)))) {
+            if ($newSHA256 == hash('sha256', gzdecode(file_get_contents($packages)))) {
                 unlink($tempPackages);
                 $this->output->writeln('<info>Up-to-date</>');
 
@@ -236,8 +237,8 @@ class Create extends Base
             'concurrency' => getenv('MAX_CONNECTIONS'),
             'fulfilled' => function ($response, $name) {
                 $json = (string) $response->getBody();
-                file_put_contents($name, gzcompress($json));
-                $this->providers[$name] = json_decode($json);
+                file_put_contents($name, $json);
+                $this->providers[$name] = json_decode(gzdecode($json));
                 $this->progressBarUpdate();
             },
             'rejected' => function ($reason, $name) {
@@ -331,7 +332,7 @@ class Create extends Base
         }
         $fail = file_put_contents(
             $cachedir.'.packages.json.gz', // .packages.json
-            gzcompress(json_encode($providers, JSON_PRETTY_PRINT))
+            gzencode(json_encode($providers, JSON_PRETTY_PRINT))
         );
 
         if (false === $fail) {
@@ -376,8 +377,7 @@ class Create extends Base
             $pool = new Pool($this->client, $generator, [
                 'concurrency' => getenv('MAX_CONNECTIONS'),
                 'fulfilled' => function ($response, $name) {
-                    $json = (string) $response->getBody();
-                    file_put_contents($name, gzcompress($json));
+                    file_put_contents($name, (string) $response->getBody());
                     $this->packages[] = dirname($name);
                     $this->progressBarUpdate();
                 },
