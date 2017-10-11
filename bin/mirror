@@ -22,6 +22,8 @@ if (!file_exists($autoload)) {
 
 require $autoload;
 
+// Minimal memory requeriments
+ini_set('memory_limit', '256M');
 chdir(__DIR__.'/..');
 
 // Prepare using default .env
@@ -30,12 +32,12 @@ if (!file_exists('.env')) {
 }
 
 // Load env
-$dotenv = new Dotenv\Dotenv();
+$dotenv = new Dotenv\Dotenv(getcwd());
 $dotenv->load();
 
 // Using Sebastian version formatter
 $version = new SebastianBergmann\Version(
-    getenv('APP_VERSION')
+    getenv('APP_VERSION'), getcwd()
 );
 
 $cli = new Symfony\Component\Console\Application(
