@@ -119,7 +119,7 @@ class Clean extends Base
         $cachedir = getenv('PUBLIC_DIR').'/';
         $packages = $cachedir.'packages.json.gz';
 
-        $json = gzuncompress(file_get_contents($packages));
+        $json = gzdecode(file_get_contents($packages));
         $providers = json_decode($json);
         $includes = $providers->{'provider-includes'};
         $this->changed = [];
@@ -176,7 +176,7 @@ class Clean extends Base
         $increment = 0;
 
         foreach ($this->changed as $urlProvider) {
-            $provider = json_decode(gzuncompress(file_get_contents($urlProvider)));
+            $provider = json_decode(gzdecode(file_get_contents($urlProvider)));
             $list = $provider->providers;
             $total = count((array) $list);
             ++$increment;
