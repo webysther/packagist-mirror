@@ -99,11 +99,11 @@ abstract class Base extends Command
     }
 
     /**
-     * Determine mode operation
+     * Determine mode operation.
      */
     protected function determineMode():void
     {
-        $this->hasQuiet = $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
+        $this->hasQuiet = $this->output->isQuiet()
                             || $this->input->getOption('no-progress')
                             || $this->input->getOption('no-ansi');
     }

@@ -13,6 +13,7 @@ namespace Webs\Mirror\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
@@ -41,6 +42,12 @@ class Create extends Base
     {
         parent::configure();
         $this->setName('create')->setDescription($this->description);
+        $this->addOption(
+            'loop',
+            null,
+            InputOption::VALUE_NONE,
+            'Real-time monitoring'
+        );
     }
 
     /**
@@ -56,7 +63,7 @@ class Create extends Base
         $this->client = new Client([
             'base_uri' => 'https://'.getenv('MAIN_MIRROR').'/',
             'headers' => ['Accept-Encoding' => 'gzip'],
-            'decode_content' => false
+            'decode_content' => false,
         ]);
 
         // Download providers, with repository, is incremental
@@ -84,12 +91,12 @@ class Create extends Base
             return 1;
         }
 
-        $this->generateHtml();
-
         $cachedir = getenv('PUBLIC_DIR').'/';
         if (file_exists($cachedir.'.init')) {
             unlink($cachedir.'.init');
         }
+
+        $this->generateHtml();
 
         return 0;
     }
@@ -159,6 +166,10 @@ class Create extends Base
             if ($newSHA256 == hash('sha256', gzdecode(file_get_contents($packages)))) {
                 unlink($tempPackages);
                 $this->output->writeln('<info>Up-to-date</>');
+                if ($this->isInfinite()) {
+                    sleep(1);
+                    $this->childExecute($this->input, $this->output);
+                }
 
                 return false;
             }
@@ -209,7 +220,7 @@ class Create extends Base
         $providers = $this->addFullPathProviders($providers);
 
         if (!$this->checkPackagesWasChanged()) {
-            return true;
+            return false;
         }
 
         if (empty($providers->{'provider-includes'})) {
@@ -449,17 +460,23 @@ class Create extends Base
     }
 
     /**
-     * Check if is gzip, if not compress
+     * Check if is gzip, if not compress.
      *
-     * @param  string  $gzip
+     * @param string $gzip
+     *
      * @return string
      */
     protected function parseGzip(string $gzip):string
     {
-        if(mb_strpos($gzip, "\x1f" . "\x8b" . "\x08") !== 0){
+        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
             return gzencode($gzip);
         }
 
         return $gzip;
+    }
+
+    protected function isInfinite():bool
+    {
+        return $this->input->hasOption('loop') && $this->input->getOption('loop');
     }
 }

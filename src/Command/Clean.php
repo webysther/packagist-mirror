@@ -156,7 +156,7 @@ class Clean extends Base
                     }
 
                     $this->output->writeln(
-                        'Old file <fg=blue;>'.$file.'</> was removed!'
+                        'Old provider <fg=blue;>'.$file.'</> was removed!'
                     );
                     unlink($file);
                 }
@@ -189,6 +189,7 @@ class Clean extends Base
             $this->progressBarStart($total);
             $this->flushPackage($list);
             $this->progressBarFinish();
+            $this->showRemovedPackages();
         }
 
         return true;
@@ -204,6 +205,7 @@ class Clean extends Base
         $cachedir = getenv('PUBLIC_DIR').'/';
         $uri = $cachedir.'p/%s$%s.json.gz';
 
+        $this->packageRemoved = [];
         foreach ($list as $name => $hash) {
             $this->progressBarUpdate();
 
@@ -239,9 +241,22 @@ class Clean extends Base
                         continue;
                     }
 
+                    $this->packageRemoved[] = $file;
                     unlink($file);
                 }
             }
+        }
+    }
+
+    /**
+     * Show packages removed.
+     */
+    protected function showRemovedPackages():void
+    {
+        foreach ($this->packageRemoved as $file) {
+            $this->output->writeln(
+                'Old package <fg=blue;>'.$file.'</> was removed!'
+            );
         }
     }
 }
