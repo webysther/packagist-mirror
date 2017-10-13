@@ -61,7 +61,7 @@ class Create extends Base
     public function childExecute(InputInterface $input, OutputInterface $output):int
     {
         $this->client = new Client([
-            'base_uri' => 'https://'.getenv('MAIN_MIRROR').'/',
+            'base_uri' => getenv('MAIN_MIRROR').'/',
             'headers' => ['Accept-Encoding' => 'gzip'],
             'decode_content' => false,
         ]);
@@ -108,12 +108,6 @@ class Create extends Base
      */
     protected function loadMainPackagesInformation()
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-
-        if (!file_exists($cachedir)) {
-            mkdir($cachedir, 0777, true);
-        }
-
         $this->output->writeln(
             'Loading providers from <info>'.getenv('MAIN_MIRROR').'</>'
         );
@@ -131,7 +125,19 @@ class Create extends Base
         $providers = json_decode($json);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->output->writeln('JSON from main mirror isn\'t valid');
+            $this->output->writeln('<error>Invalid JSONM</>');
+
+            return false;
+        }
+
+        $providers = $this->addFullPathProviders($providers);
+
+        if (!$this->checkPackagesWasChanged($providers)) {
+            return false;
+        }
+
+        if (empty($providers->{'provider-includes'})) {
+            $this->output->writeln('<error>Not found providers information</>');
 
             return false;
         }
@@ -144,27 +150,16 @@ class Create extends Base
      *
      * @return bool True if is equal, false otherside
      */
-    protected function checkPackagesWasChanged():bool
+    protected function checkPackagesWasChanged($providers):bool
     {
         $cachedir = getenv('PUBLIC_DIR').'/';
         $packages = $cachedir.'packages.json.gz';
-        $tempPackages = $cachedir.'.packages.json.gz';
-
-        if (!file_exists($tempPackages)) {
-            $this->output->writeln('<error>.packages.json don\'t found</>');
-
-            return false;
-        }
+        $dotPackages = $cachedir.'.packages.json.gz';
+        $newPackages = gzencode(json_encode($providers, JSON_PRETTY_PRINT));
 
         // No provider changed? Just relax...
         if (file_exists($packages) && !file_exists($cachedir.'.init')) {
-            $newSHA256 = hash(
-                'sha256',
-                gzdecode(file_get_contents($tempPackages))
-            );
-
-            if ($newSHA256 == hash('sha256', gzdecode(file_get_contents($packages)))) {
-                unlink($tempPackages);
+            if (md5(file_get_contents($packages)) == md5($newPackages)) {
                 $this->output->writeln('<info>Up-to-date</>');
                 if ($this->isInfinite()) {
                     sleep(1);
@@ -173,6 +168,16 @@ class Create extends Base
 
                 return false;
             }
+        }
+
+        if (!file_exists($cachedir)) {
+            mkdir($cachedir, 0777, true);
+        }
+
+        if (false === file_put_contents($dotPackages, $newPackages)) {
+            $this->output->writeln('<error>.packages.json not found</>');
+
+            return false;
         }
 
         return true;
@@ -214,18 +219,6 @@ class Create extends Base
     protected function downloadProviders():bool
     {
         if (!($providers = $this->loadMainPackagesInformation())) {
-            return false;
-        }
-
-        $providers = $this->addFullPathProviders($providers);
-
-        if (!$this->checkPackagesWasChanged()) {
-            return false;
-        }
-
-        if (empty($providers->{'provider-includes'})) {
-            $this->output->writeln('Not found providers information...');
-
             return false;
         }
 
@@ -339,17 +332,7 @@ class Create extends Base
         foreach (['notify', 'notify-batch', 'search'] as $key) {
             // Just in case packagist.org add full path in future
             $path = parse_url($providers->$key){'path'};
-            $providers->$key = 'https://'.getenv('MAIN_MIRROR').$path;
-        }
-        $fail = file_put_contents(
-            $cachedir.'.packages.json.gz', // .packages.json
-            gzencode(json_encode($providers, JSON_PRETTY_PRINT))
-        );
-
-        if (false === $fail) {
-            throw new Exception(
-                'Error to create file \'.packages.json\'...'
-            );
+            $providers->$key = getenv('MAIN_MIRROR').$path;
         }
 
         return $providers;
