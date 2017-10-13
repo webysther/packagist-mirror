@@ -377,7 +377,8 @@ class Create extends Base
             $pool = new Pool($this->client, $generator, [
                 'concurrency' => getenv('MAX_CONNECTIONS'),
                 'fulfilled' => function ($response, $name) {
-                    file_put_contents($name, (string) $response->getBody());
+                    $gzip = (string) $response->getBody();
+                    file_put_contents($name, $this->parseGzip($gzip));
                     $this->packages[] = dirname($name);
                     $this->progressBarUpdate();
                 },
@@ -445,5 +446,20 @@ class Create extends Base
         ob_start();
         include __DIR__.'/../../resources/index.html.php';
         file_put_contents(getenv('PUBLIC_DIR').'/index.html', ob_get_clean());
+    }
+
+    /**
+     * Check if is gzip, if not compress
+     *
+     * @param  string  $gzip
+     * @return string
+     */
+    protected function parseGzip(string $gzip):string
+    {
+        if(mb_strpos($gzip, "\x1f" . "\x8b" . "\x08") !== 0){
+            return gzencode($gzip);
+        }
+
+        return $gzip;
     }
 }
