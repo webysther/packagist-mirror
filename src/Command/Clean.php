@@ -133,6 +133,12 @@ class Clean extends Base
             $fileurl = $cachedir.str_replace('%hash%', '*', $template).'.gz';
             $glob = glob($fileurl, GLOB_NOSORT);
 
+            $this->output->writeln(
+                'Check old file of <info>'.
+                $fileurl.
+                '</>'
+            );
+
             // If have files and more than 1 to exists old ones
             if (count($glob) > 1 || $scrub) {
                 $fileurlCurrent = $cachedir;
@@ -143,12 +149,6 @@ class Clean extends Base
                 ).'.gz';
 
                 $this->changed[] = $fileurlCurrent;
-
-                $this->output->writeln(
-                    'Check old file of <info>'.
-                    $this->shortname($fileurlCurrent).
-                    '</>'
-                );
 
                 foreach ($glob as $file) {
                     if ($file == $fileurlCurrent) {
@@ -188,7 +188,6 @@ class Clean extends Base
             );
             $this->progressBarStart($total);
             $this->flushPackage($list);
-            $this->progressBarUpdate($total);
             $this->progressBarFinish();
         }
 

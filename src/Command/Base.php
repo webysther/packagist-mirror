@@ -54,14 +54,17 @@ abstract class Base extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
+        $this->input = $input;
+        $this->output = $output;
+
         $info = false;
         if ($input->getOption('info')) {
             $info = true;
             $util = new Util();
         }
 
-        $this->input = $input;
-        $this->output = $output;
+        $this->determineMode();
+
         if ($this->childExecute($input, $output)) {
             return 1;
         }
@@ -96,15 +99,13 @@ abstract class Base extends Command
     }
 
     /**
-     * Is quiet mode?
-     *
-     * @return bool True if is quiet
+     * Determine mode operation
      */
-    protected function hasQuiet():bool
+    protected function determineMode():void
     {
-        return $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
-            || $this->input->getOption('no-progress')
-            || $this->input->getOption('no-ansi');
+        $this->hasQuiet = $this->output->getVerbosity() == OutputInterface::VERBOSITY_QUIET
+                            || $this->input->getOption('no-progress')
+                            || $this->input->getOption('no-ansi');
     }
 
     /**
@@ -114,7 +115,7 @@ abstract class Base extends Command
      */
     protected function progressBarStart(int $total):void
     {
-        if ($this->hasQuiet()) {
+        if ($this->hasQuiet) {
             return;
         }
 
@@ -128,7 +129,7 @@ abstract class Base extends Command
      */
     protected function progressBarUpdate(int $current = 0):void
     {
-        if ($this->hasQuiet()) {
+        if ($this->hasQuiet) {
             return;
         }
 
@@ -146,11 +147,10 @@ abstract class Base extends Command
      */
     protected function progressBarFinish():void
     {
-        if ($this->hasQuiet()) {
+        if ($this->hasQuiet) {
             return;
         }
 
         $this->bar->end();
-        $this->output->writeln('');
     }
 }
