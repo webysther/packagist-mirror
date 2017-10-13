@@ -122,6 +122,8 @@ class Clean extends Base
         $json = gzdecode(file_get_contents($packages));
         $providers = json_decode($json);
         $includes = $providers->{'provider-includes'};
+        $this->hasInit = file_exists($cachedir.'.init');
+        $this->countedFolder = [];
         $this->changed = [];
 
         $scrub = false;
@@ -202,50 +204,68 @@ class Clean extends Base
      */
     protected function flushPackage(stdClass $list):void
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $uri = $cachedir.'p/%s$%s.json.gz';
+        $base = getenv('PUBLIC_DIR').'/p/';
+        $countPackages = (bool) count($this->packages);
 
         $this->packageRemoved = [];
         foreach ($list as $name => $hash) {
             $this->progressBarUpdate();
 
-            if (file_exists($cachedir.'.init')) {
+            if ($this->hasInit) {
                 continue;
             }
 
-            $folder = $cachedir.'p/'.dirname($name);
+            $folder = dirname($name);
 
             // This folder was changed by last download?
-            if (count($this->packages) && !in_array($folder, $this->packages)) {
+            if ($countPackages && !in_array($base.$folder, $this->packages)) {
                 continue;
             }
-
-            $fi = new FilesystemIterator(
-                $cachedir.'p/'.dirname($name),
-                FilesystemIterator::SKIP_DOTS
-            );
 
             // If only have the file dont exist old files
-            if (iterator_count($fi) < 2) {
+            if ($this->countFiles($base.$folder) < 2) {
                 continue;
             }
 
-            $fileurlCurrent = sprintf($uri, $name, $hash->sha256);
-            $fileurl = sprintf($uri, $name, '*');
-            $glob = glob($fileurl, GLOB_NOSORT);
+            $glob = glob($base.$name.'$*.json.gz', GLOB_NOSORT);
 
-            // If have files and more than 1 to exists old ones
-            if (count($glob) > 1) {
-                foreach ($glob as $file) {
-                    if ($file == $fileurlCurrent) {
-                        continue;
-                    }
+            // If only have the file dont exist old files
+            if (count($glob) < 2) {
+                continue;
+            }
 
-                    $this->packageRemoved[] = $file;
-                    unlink($file);
-                }
+            // Remove current value
+            $file = $base.$name.'$'.$hash->sha256.'.json.gz';
+            $glob = array_diff($glob, [$file]);
+            foreach ($glob as $file) {
+                $this->packageRemoved[] = $file;
+                unlink($file);
             }
         }
+    }
+
+    /**
+     * Count files inside folder.
+     *
+     * @param string $folder
+     *
+     * @return int
+     */
+    protected function countFiles(string $folder):int
+    {
+        if (isset($this->countedFolder[$folder])) {
+            return $this->countedFolder[$folder];
+        }
+
+        $count = iterator_count(
+            new FilesystemIterator($folder, FilesystemIterator::SKIP_DOTS)
+        );
+
+        if ($count > 1) {
+            $this->countedFolder[$folder] = $count;
+        }
+
+        return $count;
     }
 
     /**
