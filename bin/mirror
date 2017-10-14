@@ -22,8 +22,7 @@ if (!file_exists($autoload)) {
 
 require $autoload;
 
-// Minimal memory requeriments
-ini_set('memory_limit', '256M');
+ini_set('memory_limit', '-1');
 chdir(__DIR__.'/..');
 
 // Prepare using default .env

@@ -13,13 +13,13 @@ namespace Webs\Mirror\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
 use stdClass;
 use Generator;
 use Exception;
+use Webs\Mirror\Circular;
 
 /**
  * Create a mirror.
@@ -42,12 +42,6 @@ class Create extends Base
     {
         parent::configure();
         $this->setName('create')->setDescription($this->description);
-        $this->addOption(
-            'loop',
-            null,
-            InputOption::VALUE_NONE,
-            'Real-time monitoring'
-        );
     }
 
     /**
@@ -65,6 +59,9 @@ class Create extends Base
             'headers' => ['Accept-Encoding' => 'gzip'],
             'decode_content' => false,
         ]);
+
+        $this->hasInit = false;
+        $this->loadMirrors();
 
         // Download providers, with repository, is incremental
         if (!$this->downloadProviders()) {
@@ -91,9 +88,8 @@ class Create extends Base
             return 1;
         }
 
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        if (file_exists($cachedir.'.init')) {
-            unlink($cachedir.'.init');
+        if ($this->hasInit) {
+            unlink(getenv('PUBLIC_DIR').'/.init');
         }
 
         $this->generateHtml();
@@ -157,15 +153,20 @@ class Create extends Base
         $dotPackages = $cachedir.'.packages.json.gz';
         $newPackages = gzencode(json_encode($providers, JSON_PRETTY_PRINT));
 
+        // if 'p/...' folder not found
+        if (!file_exists($cachedir.'p')) {
+            touch($cachedir.'.init');
+            mkdir($cachedir.'p', 0777, true);
+        }
+
+        if(file_exists($cachedir.'.init')){
+            $this->hasInit = true;
+        }
+
         // No provider changed? Just relax...
-        if (file_exists($packages) && !file_exists($cachedir.'.init')) {
+        if (file_exists($packages) && !$this->hasInit) {
             if (md5(file_get_contents($packages)) == md5($newPackages)) {
                 $this->output->writeln('<info>Up-to-date</>');
-                if ($this->isInfinite()) {
-                    sleep(1);
-                    $this->childExecute($this->input, $this->output);
-                }
-
                 return false;
             }
         }
@@ -280,15 +281,9 @@ class Create extends Base
             $cachename = $cachedir.$fileurl.'.gz';
 
             // Only if exists
-            if (file_exists($cachename) && !file_exists($cachedir.'.init')) {
+            if (file_exists($cachename) && !$this->hasInit) {
                 $this->progressBarUpdate();
                 continue;
-            }
-
-            // if 'p/...' folder not found
-            if (!file_exists(dirname($cachename))) {
-                touch($cachedir.'.init');
-                mkdir(dirname($cachename), 0777, true);
             }
 
             yield $cachename => new Request(
@@ -315,6 +310,7 @@ class Create extends Base
                 "File $name failed with error: ".$reason->getMessage()
             );
         }
+
         $this->output->writeln('');
     }
 
@@ -369,7 +365,7 @@ class Create extends Base
             $this->errors = [];
 
             $pool = new Pool($this->client, $generator, [
-                'concurrency' => getenv('MAX_CONNECTIONS'),
+                'concurrency' => getenv('MAX_CONNECTIONS')*$this->circular->count(),
                 'fulfilled' => function ($response, $name) {
                     $gzip = (string) $response->getBody();
                     file_put_contents($name, $this->parseGzip($gzip));
@@ -420,8 +416,14 @@ class Create extends Base
             }
 
             // if 'p/...' folder not found
-            if (!file_exists(dirname($cachename))) {
-                mkdir(dirname($cachename), 0777, true);
+            $subdir = dirname($cachename);
+            if (!file_exists($subdir)) {
+                mkdir($subdir, 0777, true);
+            }
+
+            if($this->hasInit){
+                $fileurl = $this->circular->current() .'/'.$fileurl;
+                $this->circular->next();
             }
 
             yield $cachename => new Request(
@@ -438,7 +440,7 @@ class Create extends Base
     protected function generateHtml():void
     {
         ob_start();
-        include __DIR__.'/../../resources/index.html.php';
+        include getcwd().'/resources/index.html.php';
         file_put_contents(getenv('PUBLIC_DIR').'/index.html', ob_get_clean());
     }
 
@@ -458,8 +460,10 @@ class Create extends Base
         return $gzip;
     }
 
-    protected function isInfinite():bool
+    protected function loadMirrors()
     {
-        return $this->input->hasOption('loop') && $this->input->getOption('loop');
+        $mirrors = explode(',', getenv('DATA_MIRROR'));
+        $mirrors[] = getenv('MAIN_MIRROR');
+        $this->circular = Circular::fromArray($mirrors);
     }
 }
