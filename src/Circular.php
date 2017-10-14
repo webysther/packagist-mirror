@@ -14,7 +14,7 @@ namespace Webs\Mirror;
 use SplFixedArray;
 
 /**
- * Circular array
+ * Circular array.
  *
  * @author Webysther Nunes <webysther@gmail.com>
  */
@@ -22,8 +22,9 @@ class Circular extends SplFixedArray
 {
     public function next()
     {
-        if($this->key()+1 == $this->count()){
+        if ($this->key() + 1 == $this->count()) {
             $this->rewind();
+
             return;
         }
 
@@ -32,12 +33,17 @@ class Circular extends SplFixedArray
 
     public static function fromArray($array, $save_indexes = true)
     {
-        $circular = new Circular(count($array));
+        $circular = new self(count($array));
 
         foreach ($array as $key => $value) {
             $circular[$key] = $value;
         }
 
         return $circular;
+    }
+
+    public function toArray()
+    {
+        return parent::toArray();
     }
 }

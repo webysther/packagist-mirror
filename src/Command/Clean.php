@@ -157,9 +157,12 @@ class Clean extends Base
                         continue;
                     }
 
-                    $this->output->writeln(
-                        'Old provider <fg=blue;>'.$file.'</> was removed!'
-                    );
+                    if($this->output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL){
+                        $this->output->writeln(
+                            'Old provider <fg=blue;>'.$file.'</> was removed!'
+                        );
+                    }
+
                     unlink($file);
                 }
             }
@@ -273,6 +276,10 @@ class Clean extends Base
      */
     protected function showRemovedPackages():void
     {
+        if($this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE){
+            return;
+        }
+
         foreach ($this->packageRemoved as $file) {
             $this->output->writeln(
                 'Old package <fg=blue;>'.$file.'</> was removed!'

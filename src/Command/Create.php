@@ -18,7 +18,6 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Pool;
 use stdClass;
 use Generator;
-use Exception;
 use Webs\Mirror\Circular;
 
 /**
@@ -58,6 +57,8 @@ class Create extends Base
             'base_uri' => getenv('MAIN_MIRROR').'/',
             'headers' => ['Accept-Encoding' => 'gzip'],
             'decode_content' => false,
+            'timeout' => 30,
+            'connect_timeout' => 15,
         ]);
 
         $this->hasInit = false;
@@ -118,10 +119,10 @@ class Create extends Base
         }
 
         $json = (string) $response->getBody();
-        $providers = json_decode($json);
+        $providers = json_decode(gzdecode($this->parseGzip($json)));
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->output->writeln('<error>Invalid JSONM</>');
+            $this->output->writeln('<error>Invalid JSON</>');
 
             return false;
         }
@@ -159,7 +160,7 @@ class Create extends Base
             mkdir($cachedir.'p', 0777, true);
         }
 
-        if(file_exists($cachedir.'.init')){
+        if (file_exists($cachedir.'.init')) {
             $this->hasInit = true;
         }
 
@@ -167,6 +168,7 @@ class Create extends Base
         if (file_exists($packages) && !$this->hasInit) {
             if (md5(file_get_contents($packages)) == md5($newPackages)) {
                 $this->output->writeln('<info>Up-to-date</>');
+
                 return false;
             }
         }
@@ -301,17 +303,120 @@ class Create extends Base
      */
     protected function showErrors(array $errors):void
     {
-        if (!count($errors)) {
+        if (!count($errors) || $this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
             return;
         }
 
         foreach ($errors as $name => $reason) {
-            $this->output->writeln(
-                "File $name failed with error: ".$reason->getMessage()
+            $shortname = $this->shortname($name);
+            $error = $reason->getCode();
+            $host = $reason->getRequest()->getUri()->getHost();
+
+            $this->output->write(
+                "<comment>$shortname</> failed from <info>$host</> with HTTP error"
             );
+
+            if (!$error) {
+                $this->output->writeln(
+                    ':'.PHP_EOL.'<error>'.$reason->getMessage().'</>'
+                );
+                continue;
+            }
+
+            $this->output->writeln(" <error>$error</>");
         }
 
         $this->output->writeln('');
+    }
+
+    /**
+     * Disable mirror when due lots of errors.
+     */
+    protected function disableDueErrors(array $errors)
+    {
+        if (!count($errors)) {
+            return;
+        }
+
+        $counter = [];
+
+        foreach ($errors as $reason) {
+            $uri = $reason->getRequest()->getUri();
+            $host = $uri->getScheme().'://'.$uri->getHost();
+
+            if (!isset($counter[$host])) {
+                $counter[$host] = 0;
+            }
+
+            ++$counter[$host];
+        }
+
+        $mirrors = $this->circular->toArray();
+        $circular = [];
+
+        foreach ($mirrors as $mirror) {
+            if ($counter[$mirror] > 1000) {
+                $this->output->writeln(
+                    PHP_EOL
+                    .'<error>Due to '.$counter[$mirror].' errors mirror '.$mirror.' will be disabled</>'.
+                    PHP_EOL
+                );
+                continue;
+            }
+
+            $circular[] = $mirror;
+        }
+
+        putenv('DATA_MIRROR='.implode(',', $circular));
+        $this->loadMirrors();
+    }
+
+    protected function fallback(array $files, stdClass $list, string $provider):void
+    {
+        $total = count($files);
+
+        if (!$total) {
+            return;
+        }
+
+        $circular = $this->circular;
+        $this->circular = Circular::fromArray([getenv('MAIN_MIRROR')]);
+
+        $shortname = $this->shortname($provider);
+
+        $this->output->writeln(
+            'Fallback packages from <info>'.$shortname.
+            '</> provider to main mirror <info>'.getenv('MAIN_MIRROR').'</>'
+        );
+
+        $generator = $this->downloadPackage($list);
+        $this->progressBarStart($total);
+        $this->errors = [];
+
+        $pool = new Pool($this->client, $generator, [
+            'concurrency' => getenv('MAX_CONNECTIONS'),
+            'fulfilled' => function ($response, $name) {
+                $gzip = (string) $response->getBody();
+                file_put_contents($name, $this->parseGzip($gzip));
+                $this->packages[] = dirname($name);
+                $this->progressBarUpdate();
+            },
+            'rejected' => function ($reason, $name) {
+                $this->errors[$name] = $reason;
+                $this->progressBarUpdate();
+            },
+        ]);
+
+        $promise = $pool->promise();
+
+        // Force the pool of requests to complete.
+        $promise->wait();
+
+        $this->progressBarUpdate();
+        $this->progressBarFinish();
+        $this->showErrors($this->errors);
+        $this->packages = array_unique($this->packages);
+        $this->circular = $circular;
     }
 
     /**
@@ -322,8 +427,6 @@ class Create extends Base
      */
     protected function addFullPathProviders(stdClass $providers):stdClass
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-
         // Add full path for services of mirror don't provide only packagist.org
         foreach (['notify', 'notify-batch', 'search'] as $key) {
             // Just in case packagist.org add full path in future
@@ -365,7 +468,7 @@ class Create extends Base
             $this->errors = [];
 
             $pool = new Pool($this->client, $generator, [
-                'concurrency' => getenv('MAX_CONNECTIONS')*$this->circular->count(),
+                'concurrency' => getenv('MAX_CONNECTIONS') * $this->circular->count(),
                 'fulfilled' => function ($response, $name) {
                     $gzip = (string) $response->getBody();
                     file_put_contents($name, $this->parseGzip($gzip));
@@ -387,6 +490,8 @@ class Create extends Base
             $this->progressBarUpdate();
             $this->progressBarFinish();
             $this->showErrors($this->errors);
+            $this->disableDueErrors($this->errors);
+            $this->fallback($this->errors, $list, $provider);
             $this->packages = array_unique($this->packages);
         }
 
@@ -421,8 +526,8 @@ class Create extends Base
                 mkdir($subdir, 0777, true);
             }
 
-            if($this->hasInit){
-                $fileurl = $this->circular->current() .'/'.$fileurl;
+            if ($this->hasInit) {
+                $fileurl = $this->circular->current().'/'.$fileurl;
                 $this->circular->next();
             }
 
@@ -462,8 +567,14 @@ class Create extends Base
 
     protected function loadMirrors()
     {
+        $this->circular = Circular::fromArray($this->getMirrors());
+    }
+
+    protected function getMirrors():array
+    {
         $mirrors = explode(',', getenv('DATA_MIRROR'));
         $mirrors[] = getenv('MAIN_MIRROR');
-        $this->circular = Circular::fromArray($mirrors);
+
+        return $mirrors;
     }
 }
