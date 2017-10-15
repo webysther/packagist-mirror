@@ -585,7 +585,7 @@ class Create extends Base
     }
 
     /**
-     * Create a simbolic link
+     * Create a simbolic link.
      *
      * @param string $path Path to file
      */
@@ -593,7 +593,7 @@ class Create extends Base
     {
         // From .json.gz to .json
         $link = substr($target, 0, -3);
-        if(!file_exists($link)){
+        if (!file_exists($link)) {
             symlink(basename($target), substr($target, 0, -3));
         }
     }

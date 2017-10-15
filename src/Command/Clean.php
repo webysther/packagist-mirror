@@ -157,7 +157,7 @@ class Clean extends Base
                         continue;
                     }
 
-                    if($this->output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL){
+                    if ($this->output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
                         $this->output->writeln(
                             'Old provider <fg=blue;>'.$file.'</> was removed!'
                         );
@@ -274,7 +274,7 @@ class Clean extends Base
      */
     protected function showRemovedPackages():void
     {
-        if($this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE){
+        if ($this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
             return;
         }
 
@@ -286,7 +286,7 @@ class Clean extends Base
     }
 
     /**
-     * Remove a simbolic link
+     * Remove a simbolic link.
      *
      * @param string $path Path to file
      */
@@ -294,7 +294,7 @@ class Clean extends Base
     {
         // From .json.gz to .json
         $link = substr($target, 0, -3);
-        if(is_link($link)){
+        if (is_link($link)) {
             unlink($link);
         }
     }
