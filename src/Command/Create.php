@@ -183,6 +183,8 @@ class Create extends Base
             return false;
         }
 
+        $this->createLink($dotPackages);
+
         return true;
     }
 
@@ -209,6 +211,7 @@ class Create extends Base
                 'Switch <info>.packages.json</> to <info>packages.json</>'
             );
             copy($dotPackages, $packages);
+            $this->createLink($packages);
         }
 
         return true;
@@ -245,6 +248,7 @@ class Create extends Base
             'fulfilled' => function ($response, $name) {
                 $json = (string) $response->getBody();
                 file_put_contents($name, $json);
+                $this->createLink($name);
                 $this->providers[$name] = json_decode(gzdecode($json));
                 $this->progressBarUpdate();
             },
@@ -398,6 +402,7 @@ class Create extends Base
             'fulfilled' => function ($response, $name) {
                 $gzip = (string) $response->getBody();
                 file_put_contents($name, $this->parseGzip($gzip));
+                $this->createLink($name);
                 $this->packages[] = dirname($name);
                 $this->progressBarUpdate();
             },
@@ -472,6 +477,7 @@ class Create extends Base
                 'fulfilled' => function ($response, $name) {
                     $gzip = (string) $response->getBody();
                     file_put_contents($name, $this->parseGzip($gzip));
+                    $this->createLink($name);
                     $this->packages[] = dirname($name);
                     $this->progressBarUpdate();
                 },
@@ -576,5 +582,19 @@ class Create extends Base
         $mirrors[] = getenv('MAIN_MIRROR');
 
         return $mirrors;
+    }
+
+    /**
+     * Create a simbolic link
+     *
+     * @param string $path Path to file
+     */
+    protected function createLink(string $target):void
+    {
+        // From .json.gz to .json
+        $link = substr($target, 0, -3);
+        if(!file_exists($link)){
+            symlink(basename($target), substr($target, 0, -3));
+        }
     }
 }

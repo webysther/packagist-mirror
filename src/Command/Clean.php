@@ -164,6 +164,7 @@ class Clean extends Base
                     }
 
                     unlink($file);
+                    $this->removeLink($file);
                 }
             }
         }
@@ -225,8 +226,8 @@ class Clean extends Base
                 continue;
             }
 
-            // If only have the file dont exist old files
-            if ($this->countFiles($base.$folder) < 2) {
+            // If only have the file and link dont exist old files
+            if ($this->countFiles($base.$folder) < 3) {
                 continue;
             }
 
@@ -243,6 +244,7 @@ class Clean extends Base
             foreach ($glob as $file) {
                 $this->packageRemoved[] = $file;
                 unlink($file);
+                $this->removeLink($file);
             }
         }
     }
@@ -260,15 +262,11 @@ class Clean extends Base
             return $this->countedFolder[$folder];
         }
 
-        $count = iterator_count(
+        $this->countedFolder[$folder] = iterator_count(
             new FilesystemIterator($folder, FilesystemIterator::SKIP_DOTS)
         );
 
-        if ($count > 1) {
-            $this->countedFolder[$folder] = $count;
-        }
-
-        return $count;
+        return $this->countedFolder[$folder];
     }
 
     /**
@@ -284,6 +282,20 @@ class Clean extends Base
             $this->output->writeln(
                 'Old package <fg=blue;>'.$file.'</> was removed!'
             );
+        }
+    }
+
+    /**
+     * Remove a simbolic link
+     *
+     * @param string $path Path to file
+     */
+    protected function removeLink(string $target):void
+    {
+        // From .json.gz to .json
+        $link = substr($target, 0, -3);
+        if(is_link($link)){
+            unlink($link);
         }
     }
 }
