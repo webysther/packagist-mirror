@@ -88,6 +88,8 @@ class Clean extends Base
         $this->input = $input;
         $this->output = $output;
 
+        $this->determineMode();
+
         if (!$this->flushProviders()) {
             return false;
         }
