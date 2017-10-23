@@ -1,5 +1,5 @@
 {
-    "name": "league/mirror",
+    "name": "webs/mirror",
     "description": "Build mirror of packagist",
     "keywords": ["packagist", "mirror"],
     "license": "CC0-1.0",
