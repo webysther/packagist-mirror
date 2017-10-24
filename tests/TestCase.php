@@ -20,7 +20,7 @@ abstract class TestCase extends BaseTestCase
 
         chdir(__DIR__.'/..');
 
-        $dotenv = new Dotenv(getcwd());
+        $dotenv = new Dotenv(getcwd(), '.env.tests');
         $dotenv->load();
     }
 }
