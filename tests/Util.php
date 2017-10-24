@@ -2,10 +2,9 @@
 
 namespace Webs\Mirror\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Webs\Mirror\Util;
 
-class UtilTest extends PHPUnit_Framework_TestCase
+class UtilTest extends TestCase
 {
     public function testNothing()
     {
