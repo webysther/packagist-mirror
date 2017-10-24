@@ -1,13 +1,13 @@
-# Mirror
+# Packagist Mirror Creation
 
-[![Packagist](https://goo.gl/7HFLGg)](https://packagist.org/packages/webysther/mirror)
-[![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
 [![Build Status](https://goo.gl/8XxkEZ)](https://travis-ci.org/Webysther/mirror)
+[![Minimum PHP Version](https://goo.gl/PnnkKQ)](https://php.net/)
+[![Packagist](https://goo.gl/7HFLGg)](https://packagist.org/packages/webysther/mirror)
 [![Coverage Status](https://goo.gl/jn3gpk)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
 [![Quality Score](https://goo.gl/Mo4Ekf)](https://scrutinizer-ci.com/g/Webysther/mirror)
-[![Total Downloads](https://goo.gl/N36ZYq)](https://packagist.org/packages/webysther/mirror)
+[![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
 
-Crawl packagist.org and download all package.json.
+Crawl packagist and download all metadata about packages.
 
 After downloading, you can distribute it with a static web server, 
 you can create a mirror of packagist.org.
