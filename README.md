@@ -5,7 +5,7 @@
 [![Build Status](https://goo.gl/8eQyo1)](https://travis-ci.org/Webysther/mirror)
 [![Coverage Status](https://goo.gl/ifLLHp)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
 [![Quality Score](https://goo.gl/KEcWnT)](https://scrutinizer-ci.com/g/Webysther/mirror)
-[![Total Downloads](https://goo.gl/CwaHHb)](https://packagist.org/packages/league/mirror)
+[![Total Downloads](https://goo.gl/CwaHHb)](https://packagist.org/packages/webysther/mirror)
 
 Crawl packagist.org and download all package.json.
 
@@ -17,7 +17,7 @@ you can create a mirror of packagist.org.
 Via Composer
 
 ``` bash
-$ composer require league/mirror
+$ composer require webysther/mirror
 ```
 
 Via Docker
