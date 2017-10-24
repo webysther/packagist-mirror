@@ -1,11 +1,11 @@
 # Mirror
 
-[![Latest Version](https://goo.gl/xcVtpF)](https://github.com/Webysther/mirror/releases)
+[![Packagist](https://goo.gl/7HFLGg)](https://packagist.org/packages/webysther/mirror)
 [![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
-[![Build Status](https://goo.gl/8eQyo1)](https://travis-ci.org/Webysther/mirror)
-[![Coverage Status](https://goo.gl/ifLLHp)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
-[![Quality Score](https://goo.gl/KEcWnT)](https://scrutinizer-ci.com/g/Webysther/mirror)
-[![Total Downloads](https://goo.gl/CwaHHb)](https://packagist.org/packages/webysther/mirror)
+[![Build Status](https://goo.gl/8XxkEZ)](https://travis-ci.org/Webysther/mirror)
+[![Coverage Status](https://goo.gl/jn3gpk)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
+[![Quality Score](https://goo.gl/Mo4Ekf)](https://scrutinizer-ci.com/g/Webysther/mirror)
+[![Total Downloads](https://goo.gl/N36ZYq)](https://packagist.org/packages/webysther/mirror)
 
 Crawl packagist.org and download all package.json.
 
