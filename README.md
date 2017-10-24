@@ -22,10 +22,7 @@ $ composer require webysther/mirror
 
 Via Docker
 
-```shell
-# Add to /etc/crontab to create/update the mirror
-* * * * * root docker run --rm --name packagist -v /var/www/html:/public webysther/composer-mirror
-```
+Follow to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
 
 ## Requirements
 
