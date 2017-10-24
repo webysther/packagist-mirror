@@ -1,70 +1,55 @@
-Packagist mirror
-========================
+# Mirror
 
-Crawl packagist.org and download all package.json. After downloading, you can distribute it with a static web server, you can create a mirror of packagist.org.
+[![Latest Version](https://goo.gl/xcVtpF)](https://github.com/Webysther/mirror/releases)
+[![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
+[![Build Status](https://goo.gl/8eQyo1)](https://travis-ci.org/Webysther/mirror)
+[![Coverage Status](https://goo.gl/ifLLHp)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
+[![Quality Score](https://goo.gl/KEcWnT)](https://scrutinizer-ci.com/g/Webysther/mirror)
+[![Total Downloads](https://goo.gl/CwaHHb)](https://packagist.org/packages/league/mirror)
 
-Requirement
-------------------
-- PHP > 5.3
-- ext-curl
-- ext-hash
-- ext-json
-- ext-zlib
-- ext-PDO
-- ext-pdo\_sqlite
+Crawl packagist.org and download all package.json.
 
+After downloading, you can distribute it with a static web server, 
+you can create a mirror of packagist.org.
 
-Install
-------------------
+## Install
 
-```sh
-$ git clone https://github.com/hirak/packagist-crawler
-$ cd packagist-crawler
-$ composer install
+Via Composer
+
+``` bash
+$ composer require league/mirror
 ```
 
-Configuration
-------------------
+Via Docker
 
-- config.default.php
-- config.php
-
-With either of these files, you can change the behavior.
-If you want to fix it, copy config.default.php to config.php,
-Please customize the one of config.php.
-
-```php
-<?php
-return (object)array(
-    // This is the directory that stores downloaded packages.json.
-    'cachedir' => __DIR__ . '/cache/',
-    //'cachedir' => '/usr/share/nginx/html/', # nginx
-    //'cachedir' => '/usr/local/apache2/htdocs/', # apache
-    
-    // This is the URL of the download packagist.org. You can specify another mirror site that already exists.
-    'packagistUrl' => 'https://packagist.org',
-    
-    // Parallel number of parallel downloads. Since it places a load on the origin, please make it a suitable place.
-    'maxConnections' => 4,
-    
-    // Lock execution, if this file exists parallel.php dont execute
-    'lockfile' => __DIR__ . '/cache/.lock',
-    
-    // The old json is recorded by the file update.
-    'expiredDb' => __DIR__ . '/cache/.expired.db
-);
+```shell
+# Add to /etc/crontab to create/update the mirror
+* * * * * root docker run --rm --name packagist -v /var/www/html:/public webysther/composer-mirror
 ```
 
-Download
-------------------
+## Requirements
 
-```sh
-$ php parallel.php
+The following versions of PHP are supported by this version.
 
-(...few minutes...)
+* PHP 7.0
+* PHP 7.1
 
-$ ls cache/
-p/
-packages.json
+## Testing
+
+``` bash
+$ composer qa:paratest
 ```
 
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
+
+## Credits
+
+- [Webysther Nunes](https://github.com/Webysther)
+- [Hiraku NAKANO](https://github.com/hirak)
+- [All Contributors](https://github.com/Webysther/mirror/contributors)
+
+## License
+
+Public domain. Please see [License File](LICENSE.md) for more information.
