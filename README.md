@@ -9,8 +9,7 @@
 
 Crawl packagist and download all metadata about packages.
 
-After downloading, you can distribute it with a static web server, 
-you can create a mirror of packagist.org.
+After downloading, you can distribute it with a static web server.
 
 ## Install
 
