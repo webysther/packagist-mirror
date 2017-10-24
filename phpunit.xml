@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<phpunit bootstrap="vendor/autoload.php" verbose="true" debug="true" colors="true">
+<phpunit bootstrap="vendor/autoload.php">
     <testsuites>
-        <testsuite name='all_tests'>
-            <directory suffix='.php'>tests</directory>
+        <testsuite name='Test Suite'>
+            <directory>./tests</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <blacklist>
-            <directory>./vendor/</directory>
-            <directory>./tests/</directory>
-        </blacklist>
+        <whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
     </filter>
 </phpunit>
