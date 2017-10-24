@@ -1,10 +1,10 @@
-# Packagist Mirror Creation
+# Packagist Mirror
 
-[![Build Status](https://goo.gl/8XxkEZ)](https://travis-ci.org/Webysther/mirror)
+[![Build Status](https://goo.gl/PfY1J8)](https://travis-ci.org/Webysther/packagist-mirror)
 [![Minimum PHP Version](https://goo.gl/PnnkKQ)](https://php.net/)
-[![Packagist](https://goo.gl/7HFLGg)](https://packagist.org/packages/webysther/mirror)
-[![Coverage Status](https://goo.gl/jn3gpk)](https://scrutinizer-ci.com/g/Webysther/mirror/code-structure)
-[![Quality Score](https://goo.gl/Mo4Ekf)](https://scrutinizer-ci.com/g/Webysther/mirror)
+[![Packagist](https://goo.gl/155cHZ)](https://packagist.org/packages/webysther/packagist-mirror)
+[![Coverage Status](https://goo.gl/heUgvv)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror/code-structure)
+[![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
 
 Crawl packagist and download all metadata about packages.
@@ -17,7 +17,7 @@ you can create a mirror of packagist.org.
 Via Composer
 
 ``` bash
-$ composer require webysther/mirror
+$ composer require webysther/packagist-mirror
 ```
 
 Via Docker
@@ -45,7 +45,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 - [Webysther Nunes](https://github.com/Webysther)
 - [Hiraku NAKANO](https://github.com/hirak)
-- [All Contributors](https://github.com/Webysther/mirror/contributors)
+- [All Contributors](https://github.com/Webysther/packagist-mirror/contributors)
 
 ## License
 
