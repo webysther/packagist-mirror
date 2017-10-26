@@ -15,7 +15,8 @@
         "illuminate/support": "~5.5",
         "brandonwamboldt/utilphp": "~1",
         "nesbot/carbon": "~1",
-        "dariuszp/cli-progress-bar": "~1"
+        "dariuszp/cli-progress-bar": "~1",
+        "php-snippets/circular-array": "~1"
     },
     "require-dev": {
         "webysther/composer-plugin-qa": "~1",

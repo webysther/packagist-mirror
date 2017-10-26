@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "02912fcea786bfb299adbbea8307ee85",
+    "content-hash": "a9993391e91b89f07a912e632b6942a6",
     "packages": [
         {
             "name": "brandonwamboldt/utilphp",
@@ -486,6 +486,52 @@
                 "time"
             ],
             "time": "2017-01-16T07:55:07+00:00"
+        },
+        {
+            "name": "php-snippets/circular-array",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPSnippets/CircularArray.git",
+                "reference": "95bdc494cc00f153e582a15d3d1cb8fbde46af73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPSnippets/CircularArray/zipball/95bdc494cc00f153e582a15d3d1cb8fbde46af73",
+                "reference": "95bdc494cc00f153e582a15d3d1cb8fbde46af73",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "suggest": {
+                "hirak/prestissimo": "Composer parallel install plugin"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPSnippets\\DataStructures\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Webysther",
+                    "email": "websther@gmail.com"
+                }
+            ],
+            "description": "Fixed circular array data structure",
+            "keywords": [
+                "array",
+                "circular"
+            ],
+            "time": "2017-10-26T19:54:37+00:00"
         },
         {
             "name": "psr/container",
