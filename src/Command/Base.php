@@ -153,4 +153,36 @@ abstract class Base extends Command
 
         $this->bar->end();
     }
+
+    /**
+     * Check if is gzip, if not compress.
+     *
+     * @param string $gzip
+     *
+     * @return string
+     */
+    protected function parseGzip(string $gzip):string
+    {
+        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
+            return gzencode($gzip);
+        }
+
+        return $gzip;
+    }
+
+    /**
+     * Check if is gzip, if yes uncompress.
+     *
+     * @param string $gzip
+     *
+     * @return string
+     */
+    protected function unparseGzip(string $gzip):string
+    {
+        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
+            return $gzip;
+        }
+
+        return gzdecode($gzip);
+    }
 }

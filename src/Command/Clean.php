@@ -184,7 +184,9 @@ class Clean extends Base
         $increment = 0;
 
         foreach ($this->changed as $urlProvider) {
-            $provider = json_decode(gzdecode(file_get_contents($urlProvider)));
+            $provider = json_decode(
+                $this->unparseGzip(file_get_contents($urlProvider))
+            );
             $list = $provider->providers;
             $total = count((array) $list);
             ++$increment;

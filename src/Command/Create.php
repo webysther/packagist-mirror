@@ -119,7 +119,7 @@ class Create extends Base
         }
 
         $json = (string) $response->getBody();
-        $providers = json_decode(gzdecode($this->parseGzip($json)));
+        $providers = json_decode($this->unparseGzip($json));
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->output->writeln('<error>Invalid JSON</>');
@@ -249,7 +249,7 @@ class Create extends Base
                 $json = (string) $response->getBody();
                 file_put_contents($name, $json);
                 $this->createLink($name);
-                $this->providers[$name] = json_decode(gzdecode($json));
+                $this->providers[$name] = json_decode($this->unparseGzip($json));
                 $this->progressBarUpdate();
             },
             'rejected' => function ($reason, $name) {
@@ -553,22 +553,6 @@ class Create extends Base
         ob_start();
         include getcwd().'/resources/index.html.php';
         file_put_contents(getenv('PUBLIC_DIR').'/index.html', ob_get_clean());
-    }
-
-    /**
-     * Check if is gzip, if not compress.
-     *
-     * @param string $gzip
-     *
-     * @return string
-     */
-    protected function parseGzip(string $gzip):string
-    {
-        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
-            return gzencode($gzip);
-        }
-
-        return $gzip;
     }
 
     protected function loadMirrors()
