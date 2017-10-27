@@ -44,7 +44,15 @@ $cli = new Symfony\Component\Console\Application(
     $version->getVersion()
 );
 
-$cli->add(new Webs\Mirror\Command\Create);
+$create = new Webs\Mirror\Command\Create();
+$create->addProgressBar(new Webs\Mirror\ProgressBar);
+$create->addFilesystem(new Webs\Mirror\Filesystem(getenv('PUBLIC_DIR')));
+$create->addHttp(new Webs\Mirror\Http(
+    new new Webs\Mirror\Mirror(getenv('MAIN_MIRROR'), explode(',', getenv('DATA_MIRROR'))),
+    getenv('MAX_CONNECTIONS')
+));
+
+$cli->add($create);
 $cli->add(new Webs\Mirror\Command\Clean);
 
 $cli->run();
