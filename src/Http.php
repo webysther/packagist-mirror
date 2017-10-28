@@ -37,7 +37,7 @@ class Http
     /**
      * @var Mirror
      */
-    protected $mirrors;
+    protected $mirror;
 
     /**
      * @var array
@@ -64,12 +64,12 @@ class Http
      * @param Mirror $mirror
      * @param int    $maxConnections
      */
-    public function __construct(Mirror $mirrors, int $maxConnections)
+    public function __construct(Mirror $mirror, int $maxConnections)
     {
         $this->config['base_uri'] = $mirrors->getMaster().'/';
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
-        $this->mirrors = $mirrors;
+        $this->mirror = $mirror;
     }
 
     /**
@@ -123,22 +123,24 @@ class Http
 
     /**
      * @param  Generator $requests
-     * @param  Closure   $callback
+     * @param  Closure   $success
+     * @param  Closure   $finally
      * @return Http
      */
-    public function pool(Generator $requests, Closure $success, Closure $error):Http
+    public function pool(Generator $requests, Closure $success, Closure $finally):Http
     {
         $this->poolErrors = [];
         new Pool($this->client, $requests,
             [
                 'concurrency' => $this->maxConnections,
-                'fulfilled' => function ($response, $name) {
+                'fulfilled' => function ($response, $path) {
                     $body = (string) $response->getBody();
-                    $success($this->decode($body), $name);
+                    $success($this->decode($body), $path);
+                    $finally();
                 },
-                'rejected' => function ($reason, $name) {
-                    $this->poolErrors[$name] = $reason;
-                    $error($reason, $name);
+                'rejected' => function ($reason, $path) {
+                    $this->poolErrors[$path] = $reason;
+                    $finally();
                 },
             ]
         )->promise()->wait();
@@ -152,5 +154,13 @@ class Http
     public function getPoolErrors():array
     {
         return $this->poolErrors;
+    }
+
+    /**
+     * @return Mirror
+     */
+    public function getMirror():Mirror
+    {
+        return $this->mirror;
     }
 }

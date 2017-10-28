@@ -104,11 +104,16 @@ class Clean extends Base
     /**
      * Add information about how package is checked.
      *
-     * @param array $list List of name packages
+     * @param array $packages List of name packages
      */
-    public function setChangedPackage(array $list):void
+    public function addPackages(array $packages):Clean
     {
-        $this->packages = $list;
+        if(empty($packages)){
+            return $this;
+        }
+
+        $this->packages = $packages;
+        return $this;
     }
 
     /**

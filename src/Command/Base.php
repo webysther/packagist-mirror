@@ -54,6 +54,11 @@ class Base extends Command
     protected $http;
 
     /**
+     * @var int
+     */
+    protected $exitCode;
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -106,5 +111,35 @@ class Base extends Command
     public function addHttp(Http $http):void
     {
         $this->http = $http;
+    }
+
+    /**
+     * @param int $exit
+     * @return Create
+     */
+    protected function setExitCode(int $exit):Create
+    {
+        $this->exitCode = $exit;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getExitCode():int
+    {
+        return $this->exitCode;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function stop():bool
+    {
+        if(isset($this->exitCode)){
+            return true;
+        }
+
+        return false;
     }
 }

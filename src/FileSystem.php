@@ -165,16 +165,10 @@ class Filesystem
      *
      * @param  string       $from
      * @param  string       $to
-     * @param  bool|boolean $strict If true check $from exists e throw
-     *                              Exception if not found
      * @return Filesystem
      */
-    public function move(string $from, string $to, bool $strict = false):Filesystem
+    public function move(string $from, string $to):Filesystem
     {
-        if(!$this->has($from)){
-            $strict && throw new Exception("File $from not found", 1);
-        }
-
         $this->filesystem->rename($from, $to);
         return $this;
     }

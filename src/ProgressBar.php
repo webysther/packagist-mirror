@@ -42,6 +42,11 @@ class ProgressBar implements IProgressBar
      */
     protected $progressBar;
 
+    /**s
+     * @var int
+     */
+    protected $total;
+
     /**
      * {@inheritdoc}
      */
@@ -71,42 +76,47 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function start(int $total):void
+    public function start(int $total):ProgressBar
     {
         if ($this->disabled) {
-            return;
+            return $this;
         }
 
+        $this->total = $total;
         $this->progressBar = new CliProgressBar($total, 0);
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function update(int $current = 0):void
+    public function progress(int $current = 0):ProgressBar
     {
         if ($this->disabled) {
-            return;
+            return $this;
         }
 
         if ($current) {
             $this->progressBar->progress($current);
 
-            return;
+            return $this;
         }
 
         $this->progressBar->progress();
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function end():void
+    public function end():ProgressBar
     {
         if ($this->disabled) {
-            return;
+            return $this;
         }
 
+        $this->progressBar->progress($this->total);
         $this->progressBar->end();
+        return $this;
     }
 }

@@ -36,6 +36,11 @@ class Mirror
     protected $all;
 
     /**
+     * @var array
+     */
+    protected $data;
+
+    /**
      * @param string $master
      * @param array  $slaves
      */
@@ -43,9 +48,8 @@ class Mirror
     {
         $this->master = $master;
         $this->slaves = $slaves;
-        $this->all = CircularArray::fromArray(
-            array_unique(array_merge([$master], $slaves))
-        );
+        $this->data = array_unique(array_merge([$master], $slaves));
+        $this->all = CircularArray::fromArray($this->data);
     }
 
     /**
@@ -75,5 +79,16 @@ class Mirror
     {
         $this->all->next();
         return $this->all->current();
+    }
+
+    /**
+     * @param  string $value
+     * @return CircularArray
+     */
+    public function remove(string $value):CircularArray
+    {
+        $this->data = array_diff($this->data, [$value]);
+        $this->all = CircularArray::fromArray($this->data);s
+        return $this->all;
     }
 }

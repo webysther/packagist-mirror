@@ -50,7 +50,7 @@ interface IProgressBar
      * @param  int|integer $current Current value to set
      * @return void
      */
-    public function update(int $current = 0):void;
+    public function progress(int $current = 0):void;
 
     /**
      * Finish progress bar.
