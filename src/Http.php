@@ -14,9 +14,6 @@ use Webs\Mirror\Mirror;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
-use Generator;
-use Closure;
-use stdClass;
 
 namespace Webs\Mirror;
 
@@ -48,7 +45,7 @@ class Http
      * @var array
      */
     protected $config = [
-        'base_uri' = '',
+        'base_uri' => '',
         'headers' => ['Accept-Encoding' => 'gzip'],
         'decode_content' => false,
         'timeout' => 30,
@@ -59,6 +56,11 @@ class Http
      * @var int
      */
     protected $maxConnections;
+
+    /**
+     * @var int
+     */
+    protected $connections;
 
     /**
      * @param Mirror $mirror
@@ -124,27 +126,36 @@ class Http
     /**
      * @param  Generator $requests
      * @param  Closure   $success
-     * @param  Closure   $finally
+     * @param  Closure   $complete
      * @return Http
      */
-    public function pool(Generator $requests, Closure $success, Closure $finally):Http
+    public function pool(Generator $requests, Closure $success, Closure $complete):Http
     {
         $this->poolErrors = [];
-        new Pool($this->client, $requests,
+        (new Pool($this->client, $requests,
             [
-                'concurrency' => $this->maxConnections,
+                'concurrency' => $this->connections,
                 'fulfilled' => function ($response, $path) {
                     $body = (string) $response->getBody();
                     $success($this->decode($body), $path);
-                    $finally();
+                    $complete();
                 },
                 'rejected' => function ($reason, $path) {
                     $this->poolErrors[$path] = $reason;
-                    $finally();
+                    $complete();
                 },
             ]
-        )->promise()->wait();
+        ))->promise()->wait();
 
+        // Reset to use only max connections for one mirror
+        $this->connections = $this->maxConnections;
+
+        return $this;
+    }
+
+    public function useMirrors():Http
+    {
+        $this->connections = $this->maxConnections * $this->mirror->getAll()->count();
         return $this;
     }
 

@@ -13,8 +13,6 @@ use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\Memory;
-use FilesystemIterator;
-use Exception;
 
 namespace Webs\Mirror;
 
@@ -48,13 +46,9 @@ class Filesystem
      * @param string  $dir        Base directory
      * @param boolean $initialize If true initialize the filesystem access
      */
-    public function __construct($baseDirectory, $initialize = true)
+    public function __construct($baseDirectory)
     {
         $this->directory = realpath($baseDirectory);
-
-        if($initialize){
-            $this->initialize();
-        }
     }
 
     /**
@@ -104,6 +98,16 @@ class Filesystem
     }
 
     /**
+     * Load a json file
+     *
+     * @see FlyFilesystem::read
+     */
+    public function readJson(string $path):string
+    {
+        return json_decode($this->read($path));
+    }
+
+    /**
      * Encode to gz before write to disk with hash checking
      *
      * @see FlyFilesystem::write
@@ -114,7 +118,11 @@ class Filesystem
         $this->filesystem->write($path, $this->encode($contents));
 
         if($this->hash($contents) != $this->hashFile($path)){
-            throw new Exception("Write file $path hash failed", 1);
+            throw new Exception("Write file $path hash failed");
+        }
+
+        if(strpos($path, '.json.gz') !== false){
+            $this->symlink($path, substr($path, 0, -3));
         }
 
         return $this;
@@ -142,7 +150,7 @@ class Filesystem
     public function symlink(string $file, string $link):Filesystem
     {
         if (!$this->has($file)) {
-            throw new Exception("File $file not found", 1);
+            throw new Exception("File $file not found");
         }
 
         if (!$this->has($link)) {
@@ -170,6 +178,11 @@ class Filesystem
     public function move(string $from, string $to):Filesystem
     {
         $this->filesystem->rename($from, $to);
+
+        if(strpos($to, '.json.gz') !== false){
+            $this->symlink($to, substr($to, 0, -3));
+        }
+
         return $this;
     }
 
@@ -183,15 +196,21 @@ class Filesystem
 
         if(is_dir($path)){
             $this->filesystem->deleteDir($fileOrDirectory);
-            return;
+            return $this;
         }
 
         if (is_link($path)) {
             unlink($path);
-            return;
+            return $this;
         }
 
         $this->filesystem->delete($fileOrDirectory);
+
+        $path = substr($to, 0, -3);
+        if (is_link($path)) {
+            unlink($path);
+        }
+
         return $this;
     }
 

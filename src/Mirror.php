@@ -88,7 +88,7 @@ class Mirror
     public function remove(string $value):CircularArray
     {
         $this->data = array_diff($this->data, [$value]);
-        $this->all = CircularArray::fromArray($this->data);s
-        return $this->all;
+        $this->all = CircularArray::fromArray($this->data);
+        return $this->getAll();
     }
 }

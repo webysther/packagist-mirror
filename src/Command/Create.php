@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webs\Mirror\ShortName;
 use stdClass;
+use Generator;
 
 /**
  * Create a mirror.
@@ -41,9 +42,27 @@ class Create extends Base
     protected $providerIncludes;
 
     /**
+     * @var string
+     */
+    protected $currentProvider;
+
+    /**
      * @var array
      */
-    protected $packages = [];
+    protected $packagesDownloaded = [];
+
+    /**
+     * @var int
+     */
+    const VV = OutputInterface::VERBOSITY_VERBOSE;
+
+    /**
+     * Main files
+     */
+    const MAIN = 'packages.json';
+    const DOT = '.packages.json';
+    const INIT = '.init';
+    const TO = 'p';
 
     /**
      * {@inheritdoc}
@@ -78,16 +97,17 @@ class Create extends Base
             return $this->exitCode;
         }
 
-        // Flush old SHA256 files
         $clean = new Clean();
-        $clean->addPackages($this->packages);
+        $clean->addPackages($this->packagesDownloaded);
         $clean->initialize($input, $output);
+
+        // Flush old SHA256 files
         if ($clean->flush()->stop()) {
             return $clean->getExitCode();
         }
 
         if ($this->initialized) {
-            $this->filesystem->remove('.init');
+            $this->filesystem->remove(self::INIT);
         }
 
         return $this->generateHtml()->exitCode;
@@ -104,8 +124,9 @@ class Create extends Base
             'Loading providers from <info>'.$this->http->getBaseUri().'</>'
         );
 
-        $json = $this->http->getJson('packages.json');
-        $this->providers = $this->addFullPathProviders($json);
+        $this->providers = $this->addFullPathProviders(
+            $this->http->getJson(self::MAIN)
+        );
         return $this;
     }
 
@@ -123,9 +144,9 @@ class Create extends Base
         $providerIncludes = $this->providers->{'provider-includes'};
 
         $this->providerIncludes = [];
-        foreach ($this->providerIncludes as $name => $hash) {
+        foreach ($providerIncludes as $name => $hash) {
             $uri = str_replace('%hash%', $hash->sha256, $name);
-            $this->providerIncludes[$hash->sha256] = $uri;
+            $this->providerIncludes[$uri] = $hash->sha256;
         }
 
 
@@ -140,31 +161,30 @@ class Create extends Base
     protected function isEqual():bool
     {
         // if 'p/...' folder not found
-        if (!$this->filesystem->has('p')) {
-            $this->filesystem->touch('.init');
+        if (!$this->filesystem->has(self::TO)) {
+            $this->filesystem->touch(self::INIT);
         }
 
-        if ($this->filesystem->has('.init')) {
+        if ($this->filesystem->has(self::INIT)) {
             $this->initialized = true;
         }
 
         $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
-        $file = 'packages.json.gz';
-        $dot = '.'.$file;
 
         // No provider changed? Just relax...
-        if ($this->filesystem->has($file) && !$this->initialized) {
-            $old = $this->filesystem->hashFile($file);
+        if ($this->canSkip(self::MAIN)) {
+            $old = $this->filesystem->hashFile(self::MAIN);
             $new = $this->filesystem->hash($newPackages);
 
             if ($old == $new) {
-                $this->output->writeln($file.' <info>updated</>');
+                $this->output->writeln(self::MAIN.' <info>updated</>');
+                $this->generateHtml();
                 $this->setExitCode(0);
                 return true;
             }
         }
 
-        $this->filesystem->write($dot, $newPackages);
+        $this->filesystem->write(self::DOT, $newPackages);
         return false;
     }
 
@@ -175,16 +195,13 @@ class Create extends Base
      */
     protected function switch():Create
     {
-        $old = 'packages.json.gz';
-        $new = '.'.$old;
-
-        if (!$this->filesystem->has($new)) {
+        // If .packages.json dont exists
+        if (!$this->filesystem->has(self::DOT)) {
             return $this;
         }
 
-        $link = substr($old, 0, -3);
-        $this->move($new, $old);
-        $this->symlink($old, $link);
+        // Move to new location
+        $this->filesystem->move(self::DOT, self::MAIN);
         return $this;
     }
 
@@ -199,22 +216,22 @@ class Create extends Base
             return $this;
         }
 
-        $this->loadProviderIncludes();
-        $this->progressBar->start(count($this->providerIncludes));
-
-        $generator = $this->getProvidersGenerator();
+        $generator = $this->loadProviderIncludes()->getProvidersGenerator();
 
         if (empty(iterator_to_array($generator))) {
             $this->output->writeln('All providers are <info>updated</>');
             return $this->setExitCode(0);
         }
 
+        $this->progressBar->start(count($this->providerIncludes));
+
         $this->http->pool(
             $generator,
+            // Success
             function ($body, $path) {
                 $this->filesystem->write($path, $body);
-                $this->filesystem->symlink($path, substr($path, 0, -3));
             },
+            // If complete, even failed and success
             function () {
                 $this->progressBar->progress();
             }
@@ -232,17 +249,30 @@ class Create extends Base
      */
     protected function getProvidersGenerator():Generator
     {
-        foreach ($this->providerIncludes as $hash => $uri) {
+        foreach ($this->providerIncludes as $uri => $hash) {
             $path = $this->filesystem->normalize($uri);
 
-            // Only if exists
-            if ($this->filesystem->has($path) && !$this->initialized) {
-                $this->progressBarUpdate();
+            // If exists and not initial download
+            if ($this->canSkip($path)) {
+                $this->progressBar->progress();
                 continue;
             }
 
             yield $path => $this->http->getRequest($uri);
         }
+    }
+
+    /**
+     * @param  string $path
+     * @return bool
+     */
+    protected function canSkip(string $path):bool
+    {
+        if ($this->filesystem->has($path) && !$this->initialized) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -252,7 +282,7 @@ class Create extends Base
      */
     protected function showErrors():Create
     {
-        if ($this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE){
+        if ($this->output->getVerbosity() < Create::VV){
             return $this;
         }
 
@@ -267,7 +297,8 @@ class Create extends Base
             $host = $reason->getRequest()->getUri()->getHost();
 
             $this->output->write(
-                "<comment>$shortname</> failed from <info>$host</> with HTTP error"
+                "<comment>$shortname</> failed from ".
+                "<info>$host</> with HTTP error"
             );
 
             if (!$error) {
@@ -280,7 +311,8 @@ class Create extends Base
             $this->output->writeln(" <error>$error</>");
         }
 
-        $this->output->writeln('');
+        $this->output->write(PHP_EOL);
+        return $this;
     }
 
     /**
@@ -323,6 +355,8 @@ class Create extends Base
             $this->output->write(PHP_EOL);
             $this->http->getMirror()->remove($mirror);
         }
+
+        return $this;
     }
 
     /**
@@ -344,155 +378,128 @@ class Create extends Base
     }
 
     /**
-     * Download packages listed on provider-*.json on public/p dir.
-     *
-     * @return bool True if work, false otherside
+     * @param  string $uri
+     * @return Create
      */
-    protected function downloadPackages():bool
+    protected function loadProviderPackages(string $uri):Create
     {
-        if (!isset($this->providers)) {
-            return true;
+        $providers = $this->filesystem->readJson($uri)->providers;
+        $this->currentProvider = $uri;
+
+        $this->providerPackages = [];
+        foreach ($providers as $name => $hash) {
+            $uri = sprintf('p/%s$%s.json', $name, $hash->sha256);
+            $this->providerPackages[$uri] = $hash->sha256;
         }
 
-        $this->packages = [];
 
-        $totalProviders = count($this->providers);
+        return $this;
+    }
+
+    /**
+     * Download packages listed on provider-*.json on public/p dir.
+     *
+     * @return Create
+     */
+    protected function downloadPackages():Create
+    {
+        $totalProviders = count($this->providerIncludes);
         $currentProvider = 0;
-        foreach ($this->providers as $provider => $packages) {
-            ++$currentProvider;
-            $list = $packages->providers;
-            $total = count((array) $list);
-            $shortname = $this->shortname($provider);
+
+        foreach ($this->providerIncludes as $uri => $hash) {
+            $shortname = $this->shortname($uri);
 
             $this->output->writeln(
-                '['.$currentProvider.'/'.$totalProviders.']'.
+                '['.++$currentProvider.'/'.$totalProviders.']'.
                 ' Loading packages from <info>'.$shortname.'</> provider'
             );
 
-            $generator = $this->downloadPackage($list);
-            $this->progressBarStart($total);
-            $this->errors = [];
+            $generator = $this->loadProviderPackages($uri)->getPackagesGenerator();
+            if (empty(iterator_to_array($generator))) {
+                continue;
+            }
 
-            $pool = new Pool($this->client, $generator, [
-                'concurrency' => getenv('MAX_CONNECTIONS') * $this->circular->count(),
-                'fulfilled' => function ($response, $name) {
-                    $gzip = (string) $response->getBody();
-                    file_put_contents($name, $this->parseGzip($gzip));
-                    $this->createLink($name);
-                    $this->packages[] = dirname($name);
-                    $this->progressBarUpdate();
-                },
-                'rejected' => function ($reason, $name) {
-                    $this->errors[$name] = $reason;
-                    $this->progressBarUpdate();
-                },
-            ]);
-
-            // Initiate the transfers and create a promise
-            $promise = $pool->promise();
-
-            // Force the pool of requests to complete.
-            $promise->wait();
-
-            $this->progressBarUpdate();
-            $this->progressBarFinish();
-            $this->showErrors($this->errors);
-            $this->disableDueErrors($this->errors);
-            $this->fallback($this->errors, $list, $provider);
-            $this->packages = array_unique($this->packages);
+            $this->progressBar->start(count($this->providerPackages));
+            $this->poolPackages($generator);
+            $this->progressBar->end();
+            $this->showErrors()->disableDueErrors()->fallback();
         }
 
-        return true;
+        return $this;
     }
 
     /**
      * Download only a package.
      *
-     * @param stdClass $list Packages links
-     *
      * @return Generator Providers downloaded
      */
-    protected function downloadPackage(stdClass $list):Generator
+    protected function getPackagesGenerator():Generator
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $uri = 'p/%s$%s.json';
-
-        foreach ($list as $name => $hash) {
-            $fileurl = sprintf($uri, $name, $hash->sha256);
-            $cachename = $cachedir.$fileurl.'.gz';
+        foreach ($this->providerPackages as $uri => $hash) {
+            $path = $this->filesystem->normalize($uri);
 
             // Only if exists
-            if (file_exists($cachename)) {
-                $this->progressBarUpdate();
+            if ($this->filesystem->has($path)) {
+                $this->progressBar->progress();
                 continue;
             }
 
-            // if 'p/...' folder not found
-            $subdir = dirname($cachename);
-            if (!file_exists($subdir)) {
-                mkdir($subdir, 0777, true);
+            if ($this->initialized) {
+                $uri = $this->http->getMirror()->getNext().'/'.$uri;
             }
 
-            if ($this->hasInit) {
-                $fileurl = $this->circular->current().'/'.$fileurl;
-                $this->circular->next();
-            }
-
-            yield $cachename => new Request(
-                'GET',
-                $fileurl,
-                ['curl' => [CURLMOPT_PIPELINING => 2]]
-            );
+            yield $path => $this->http->getRequest($uri);
         }
     }
 
-    protected function fallback(array $files, stdClass $list, string $provider):void
+    /**
+     * @param  Generator    $generator
+     * @param  bool|boolean $useMirrors
+     * @return Create
+     */
+    protected function poolPackages(Generator $generator, bool $useMirrors = true):Create
     {
-        $total = count($files);
-
-        if (!$total) {
-            return;
+        if($useMirrors){
+            $this->http->useMirrors();
         }
 
-        $circular = $this->circular;
-        $this->circular = Circular::fromArray([getenv('MAIN_MIRROR')]);
+        $this->http->pool(
+            $generator,
+            // Success
+            function ($body, $path) {
+                $this->filesystem->write($path, $body);
+                $this->packagesDownloaded[] = $path;
+            },
+            // If complete, even failed and success
+            function () {
+                $this->progressBar->progress();
+            }
+        );
 
-        $shortname = $this->shortname($provider);
+        return $this;
+    }
+
+    protected function fallback():Create
+    {
+        $total = count($this->http->getPoolErrors());
+
+        if (!$total) {
+            return $this;
+        }
+
+        $shortname = $this->shortname($this->currentProvider);
 
         $this->output->writeln(
             'Fallback packages from <info>'.$shortname.
-            '</> provider to main mirror <info>'.getenv('MAIN_MIRROR').'</>'
+            '</> provider to main mirror <info>'.$this->http->getBaseUri().'</>'
         );
 
-        $generator = $this->downloadPackage($list);
-        $this->progressBarStart($total);
-        $this->errors = [];
-
-        $pool = new Pool($this->client, $generator, [
-            'concurrency' => getenv('MAX_CONNECTIONS'),
-            'fulfilled' => function ($response, $name) {
-                $gzip = (string) $response->getBody();
-                file_put_contents($name, $this->parseGzip($gzip));
-                $this->createLink($name);
-                $this->packages[] = dirname($name);
-                $this->progressBarUpdate();
-            },
-            'rejected' => function ($reason, $name) {
-                $this->errors[$name] = $reason;
-                $this->progressBarUpdate();
-            },
-        ]);
-
-        $promise = $pool->promise();
-
-        // Force the pool of requests to complete.
-        $promise->wait();
-
-        $this->progressBarUpdate();
-        $this->progressBarFinish();
-        $this->showErrors($this->errors);
-        $this->packages = array_unique($this->packages);
-        $this->circular = $circular;
+        $this->providerPackages = $this->http->getPoolErrors();
+        $generator = $this->getPackagesGenerator();
+        $this->progressBar->start($total);
+        $this->poolPackages($generator, false);
+        $this->progressBar->end();
+        $this->showErrors();
     }
 
     /**

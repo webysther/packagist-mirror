@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c388be840a515b3133fdd4002337016c",
+    "content-hash": "7c9d0f59bda999341c21aa5d7dda4c90",
     "packages": [
         {
             "name": "dariuszp/cli-progress-bar",
@@ -3641,21 +3641,21 @@
         },
         {
             "name": "sensiolabs/security-checker",
-            "version": "v4.1.5",
+            "version": "v4.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/security-checker.git",
-                "reference": "55553c3ad6ae2121c1b1475d4c880d71b31b8f68"
+                "reference": "387b6a3b723ba35588b33d5f8d14e28ed608bd30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/55553c3ad6ae2121c1b1475d4c880d71b31b8f68",
-                "reference": "55553c3ad6ae2121c1b1475d4c880d71b31b8f68",
+                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/387b6a3b723ba35588b33d5f8d14e28ed608bd30",
+                "reference": "387b6a3b723ba35588b33d5f8d14e28ed608bd30",
                 "shasum": ""
             },
             "require": {
                 "composer/ca-bundle": "^1.0",
-                "symfony/console": "~2.7|~3.0"
+                "symfony/console": "~2.7|~3.0|~4.0"
             },
             "bin": [
                 "security-checker"
@@ -3682,7 +3682,7 @@
                 }
             ],
             "description": "A security checker for your composer.lock",
-            "time": "2017-08-22T22:18:16+00:00"
+            "time": "2017-10-29T18:48:08+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -4547,7 +4547,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "~7"
+        "php": ">=7.1"
     },
     "platform-dev": []
 }
