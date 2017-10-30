@@ -15,7 +15,7 @@
           <!-- Todas as facades estão aqui: config/app.php -->
           <property name="exceptions">
             <value>
-              \Webs\Mirror\CircularArray
+              \PHPSnippets\DataStructures\CircularArray
             </value>
           </property>
       </properties>

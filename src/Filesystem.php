@@ -15,11 +15,6 @@ use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\Memory;
-use League\Flysystem\{
-    FileNotFoundException,
-    FileExistsException,
-    NotSupportedException
-};
 use Exception;
 use FilesystemIterator;
 
@@ -81,7 +76,7 @@ class Filesystem
     {
         $fullPath = $this->getFullPath($path);
 
-        if(is_link($fullPath)){
+        if (is_link($fullPath)) {
             return $path;
         }
 
@@ -181,8 +176,8 @@ class Filesystem
     {
         try {
             return $this->filesystem->has($this->normalize($path));
-        }catch(Exception $e)
-        {}
+        } catch (Exception $e) {
+        }
 
         return false;
     }
