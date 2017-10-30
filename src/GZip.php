@@ -51,10 +51,11 @@ trait GZip
     }
 
     /**
-     * Check if is gzip
+     * Check if is gzip.
      *
-     * @param  string  $gzip
-     * @return boolean
+     * @param string $gzip
+     *
+     * @return bool
      */
     public function isGzip(string $gzip):bool
     {

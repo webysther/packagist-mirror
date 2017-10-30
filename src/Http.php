@@ -9,8 +9,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use PHPSnippets\DataStructures\CircularArray;
-use Webs\Mirror\Mirror;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
@@ -63,12 +61,17 @@ class Http
     protected $connections;
 
     /**
+     * @var bool
+     */
+    protected $usingMirrors = false;
+
+    /**
      * @param Mirror $mirror
      * @param int    $maxConnections
      */
     public function __construct(Mirror $mirror, int $maxConnections)
     {
-        $this->config['base_uri'] = $mirrors->getMaster().'/';
+        $this->config['base_uri'] = $mirror->getMaster().'/';
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
         $this->mirror = $mirror;
@@ -83,7 +86,7 @@ class Http
     }
 
     /**
-     * Client get with transparent gz decode
+     * Client get with transparent gz decode.
      *
      * @see Client::get
      */
@@ -99,7 +102,7 @@ class Http
         $json = $this->decode((string) $response->getBody());
         $decoded = json_decode($json);
 
-        if(json_last_error() !== JSON_ERROR_NONE){
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new Exception("Response not a json: $json", 1);
         }
 
@@ -107,16 +110,16 @@ class Http
     }
 
     /**
-     * Create a new get request
+     * Create a new get request.
      *
-     * @param  string       $uri
-     * @param  bool|boolean $useMirrors
+     * @param string $uri
+     *
      * @return Request
      */
-    public function getRequest(string $uri, bool $useMirrors = false):Request
+    public function getRequest(string $uri):Request
     {
         $base = $this->getBaseUri();
-        if($useMirrors){
+        if ($this->usingMirrors) {
             $base = $this->mirrors->getNext().'/';
         }
 
@@ -124,15 +127,24 @@ class Http
     }
 
     /**
-     * @param  Generator $requests
-     * @param  Closure   $success
-     * @param  Closure   $complete
+     * @param Generator $requests
+     * @param Closure   $success
+     * @param Closure   $complete
+     *
      * @return Http
      */
     public function pool(Generator $requests, Closure $success, Closure $complete):Http
     {
+        $this->connections = $this->maxConnections;
+        if ($this->usingMirrors) {
+            $mirrors = $this->mirror->getAll()->count();
+            $this->connections = $this->maxConnections * $mirrors;
+        }
+
         $this->poolErrors = [];
-        (new Pool($this->client, $requests,
+        (new Pool(
+            $this->client,
+            $requests,
             [
                 'concurrency' => $this->connections,
                 'fulfilled' => function ($response, $path) {
@@ -148,14 +160,18 @@ class Http
         ))->promise()->wait();
 
         // Reset to use only max connections for one mirror
-        $this->connections = $this->maxConnections;
+        $this->usingMirrors = false;
 
         return $this;
     }
 
+    /**
+     * @return Http
+     */
     public function useMirrors():Http
     {
-        $this->connections = $this->maxConnections * $this->mirror->getAll()->count();
+        $this->usingMirrors = true;
+
         return $this;
     }
 

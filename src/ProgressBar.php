@@ -9,8 +9,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Webs\Mirror\Console;
 use Dariuszp\CliProgressBar;
 
 namespace Webs\Mirror;
@@ -22,20 +21,12 @@ namespace Webs\Mirror;
  */
 class ProgressBar implements IProgressBar
 {
-    /**
-     * @var InputInterface
-     */
-    protected $input;
+    use Console;
 
     /**
-     * @var OutputInterface
+     * @var bool
      */
-    protected $output;
-
-    /**
-     * @var boolean
-     */
-    protected $disabled = true;
+    protected $disabled;
 
     /**
      * @var CliProgressBar
@@ -50,26 +41,22 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function addConsole(InputInterface $input, OutputInterface $output):void
-    {
-        $this->input = $input;
-        $this->output = $output;
-        $this->disabled = !$this->isEnabled();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isEnabled():bool
     {
+        if(!isset($this->disabled)){
+            return $this->disabled;
+        }
+
         $isQuiet = $this->output->isQuiet();
         $noProgress = $this->input->getOption('no-progress');
         $noAnsi = $this->input->getOption('no-ansi');
 
         if ($isQuiet || $noProgress || $noAnsi) {
+            $this->disabled = true;
             return true;
         }
 
+        $this->disabled = false;
         return false;
     }
 
@@ -84,6 +71,7 @@ class ProgressBar implements IProgressBar
 
         $this->total = $total;
         $this->progressBar = new CliProgressBar($total, 0);
+
         return $this;
     }
 
@@ -103,6 +91,7 @@ class ProgressBar implements IProgressBar
         }
 
         $this->progressBar->progress();
+
         return $this;
     }
 
@@ -117,6 +106,7 @@ class ProgressBar implements IProgressBar
 
         $this->progressBar->progress($this->total);
         $this->progressBar->end();
+
         return $this;
     }
 }

@@ -14,6 +14,7 @@ namespace Webs\Mirror\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Webs\Mirror\ShortName;
 use FilesystemIterator;
 use stdClass;
 
@@ -24,19 +25,33 @@ use stdClass;
  */
 class Clean extends Base
 {
-    /**
-     * Console description.
-     *
-     * @var string
-     */
-    protected $description = 'Clean outdated files of mirror';
+    use ShortName;
 
     /**
-     * Packages to verify first.
-     *
      * @var array
      */
-    protected $packages = [];
+    protected $changed = [];
+
+    /**
+     * @var array
+     */
+    protected $packageRemoved = [];
+
+    /**
+     * @var boolean
+     */
+    protected $isScrub = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($name = '')
+    {
+        parent::__construct('clean');
+        $this->setDescription(
+            'Clean outdated files of mirror'
+        );
+    }
 
     /**
      * Console params configuration.
@@ -44,139 +59,84 @@ class Clean extends Base
     protected function configure():void
     {
         parent::configure();
-        $this->setName('clean')
-             ->setDescription($this->description)
-             ->addOption(
-                 'scrub',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Check all directories for old files, use only to check all disk'
-             );
+        $this->addOption(
+            'scrub',
+            null,
+            InputOption::VALUE_NONE,
+            'Check all directories for old files, use only to check all disk'
+        );
     }
 
     /**
-     * Execution.
-     *
-     * @param InputInterface  $input  Input console
-     * @param OutputInterface $output Output console
-     *
-     * @return int 0 if pass, any another is error
+     * {@inheritdoc}
      */
-    public function childExecute(InputInterface $input, OutputInterface $output):int
+    public function execute(InputInterface $input, OutputInterface $output):int
     {
-        if (!$this->flush($input, $output)) {
-            return 1;
+        $this->progressBar->setConsole($input, $output);
+        $this->package->setConsole($input, $output);
+        $this->provider->setConsole($input, $output);
+
+        if ($this->input->hasOption('scrub') && $this->input->getOption('scrub')) {
+            $this->isScrub = true;
+        }
+
+        if ($this->flushProviders()->stop()) {
+            return $this->exitCode;
+        }
+
+        if ($this->flushPackages()->stop()) {
+            return $this->exitCode;
         }
 
         if (!count($this->changed)) {
-            $output->writeln('Nothing to clean');
+            $output->writeln('<info>Nothing to clean</>');
         }
 
-        return 0;
-    }
-
-    /**
-     * Flush old files.
-     *
-     * @param InputInterface  $input  Input console
-     * @param OutputInterface $output Output console
-     *
-     * @return bool True if work, false otherside
-     */
-    public function flush(InputInterface $input, OutputInterface $output):bool
-    {
-        $this->input = $input;
-        $this->output = $output;
-
-        $this->determineMode();
-
-        if (!$this->flushProviders()) {
-            return false;
-        }
-
-        if (!$this->flushPackages()) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Add information about how package is checked.
-     *
-     * @param array $packages List of name packages
-     */
-    public function addPackages(array $packages):Clean
-    {
-        if(empty($packages)){
-            return $this;
-        }
-
-        $this->packages = $packages;
-        return $this;
+        return $this->exitCode;
     }
 
     /**
      * Flush old cached files of providers.
      *
-     * @return bool True if work, false otherside
+     * @return Clean
      */
-    protected function flushProviders():bool
+    protected function flushProviders():Clean
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $packages = $cachedir.'packages.json.gz';
+        $providers = $this->package->loadMainJson();
+        $includes = array_keys($this->provider->normalize($providers));
 
-        $json = gzdecode(file_get_contents($packages));
-        $providers = json_decode($json);
-        $includes = $providers->{'provider-includes'};
-        $this->hasInit = file_exists($cachedir.'.init');
-        $this->countedFolder = [];
-        $this->changed = [];
+        $this->initialized = $this->filesystem->has(self::INIT);
 
-        $scrub = false;
-        if ($this->input->hasOption('scrub') && $this->input->getOption('scrub')) {
-            $scrub = true;
-        }
-
-        foreach ($includes as $template => $hash) {
-            $fileurl = $cachedir.str_replace('%hash%', '*', $template).'.gz';
-            $glob = glob($fileurl, GLOB_NOSORT);
+        foreach ($includes as $uri) {
+            $pattern = $this->filesystem->normalize($this->shortname($uri));
+            $glob = $this->filesystem->glob($pattern);
 
             $this->output->writeln(
                 'Check old file of <info>'.
-                $fileurl.
+                $pattern.
                 '</>'
             );
 
-            // If have files and more than 1 to exists old ones
-            if (count($glob) > 1 || $scrub) {
-                $fileurlCurrent = $cachedir;
-                $fileurlCurrent .= str_replace(
-                    '%hash%',
-                    $hash->sha256,
-                    $template
-                ).'.gz';
+            // If have one file and not scrubing
+            if (count($glob) < 2 && !$this->isScrub) {
+                continue;
+            }
 
-                $this->changed[] = $fileurlCurrent;
+            $this->changed[] = $uri;
+            $glob = array_diff($glob, [$uri]);
 
-                foreach ($glob as $file) {
-                    if ($file == $fileurlCurrent) {
-                        continue;
-                    }
-
-                    if ($this->output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
-                        $this->output->writeln(
-                            'Old provider <fg=blue;>'.$file.'</> was removed!'
-                        );
-                    }
-
-                    unlink($file);
-                    $this->removeLink($file);
+            foreach ($glob as $file) {
+                if ($this->isVerbose()) {
+                    $this->output->writeln(
+                        'Old provider <fg=blue;>'.$file.'</> was removed!'
+                    );
                 }
+
+                $this->filesystem->remove($file);
             }
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -188,22 +148,18 @@ class Clean extends Base
     {
         $increment = 0;
 
-        foreach ($this->changed as $urlProvider) {
-            $provider = json_decode(
-                $this->unparseGzip(file_get_contents($urlProvider))
-            );
-            $list = $provider->providers;
-            $total = count((array) $list);
-            ++$increment;
+        foreach ($this->changed as $uri) {
+            $providers = json_decode($this->filesystem->read($uri));
+            $list = $this->package->normalize($providers->providers);
 
             $this->output->writeln(
-                '['.$increment.'/'.count($this->changed).'] '.
+                '['.++$increment.'/'.count($this->changed).'] '.
                 'Check old packages for provider '.
-                '<info>'.$this->shortname($urlProvider).'</>'
+                '<info>'.$this->shortname($uri).'</>'
             );
-            $this->progressBarStart($total);
-            $this->flushPackage($list);
-            $this->progressBarFinish();
+            $this->progressBar->start(count($list));
+            $this->flushPackage(array_keys($list));
+            $this->progressBar->end();
             $this->showRemovedPackages();
         }
 
@@ -213,34 +169,34 @@ class Clean extends Base
     /**
      * Flush from one provider.
      *
-     * @param stdClass $list List of packages
+     * @param array $list List of packages
      */
-    protected function flushPackage(stdClass $list):void
+    protected function flushPackage(array $list):void
     {
         $base = getenv('PUBLIC_DIR').'/p/';
-        $countPackages = (bool) count($this->packages);
+        $packages = $this->package->getDownloaded();
 
-        $this->packageRemoved = [];
-        foreach ($list as $name => $hash) {
-            $this->progressBarUpdate();
+        foreach ($list as $uri) {
+            $this->progressBar->progress();
 
-            if ($this->hasInit) {
+            if ($this->initialized) {
                 continue;
             }
 
-            $folder = dirname($name);
+            $folder = dirname($uri);
 
             // This folder was changed by last download?
-            if ($countPackages && !in_array($base.$folder, $this->packages)) {
+            if (count($packages) && !in_array($folder, $packages)) {
                 continue;
             }
 
             // If only have the file and link dont exist old files
-            if ($this->countFiles($base.$folder) < 3) {
+            if ($this->filesystem->count($folder) < 3) {
                 continue;
             }
 
-            $glob = glob($base.$name.'$*.json.gz', GLOB_NOSORT);
+            $pattern = $this->shortname($this->filesystem->normalize($uri));
+            $glob = $this->filesystem->glob($pattern);
 
             // If only have the file dont exist old files
             if (count($glob) < 2) {
@@ -248,34 +204,15 @@ class Clean extends Base
             }
 
             // Remove current value
-            $file = $base.$name.'$'.$hash->sha256.'.json.gz';
-            $glob = array_diff($glob, [$file]);
+            $glob = array_diff($glob, [$this->filesystem->normalize($uri)]);
             foreach ($glob as $file) {
-                $this->packageRemoved[] = $file;
-                unlink($file);
-                $this->removeLink($file);
+                if ($this->isVerbose()) {
+                    $this->packageRemoved[] = $file;
+                }
+
+                $this->filesystem->remove($file);
             }
         }
-    }
-
-    /**
-     * Count files inside folder.
-     *
-     * @param string $folder
-     *
-     * @return int
-     */
-    protected function countFiles(string $folder):int
-    {
-        if (isset($this->countedFolder[$folder])) {
-            return $this->countedFolder[$folder];
-        }
-
-        $this->countedFolder[$folder] = iterator_count(
-            new FilesystemIterator($folder, FilesystemIterator::SKIP_DOTS)
-        );
-
-        return $this->countedFolder[$folder];
     }
 
     /**
@@ -283,28 +220,10 @@ class Clean extends Base
      */
     protected function showRemovedPackages():void
     {
-        if ($this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
-            return;
-        }
-
         foreach ($this->packageRemoved as $file) {
             $this->output->writeln(
                 'Old package <fg=blue;>'.$file.'</> was removed!'
             );
-        }
-    }
-
-    /**
-     * Remove a simbolic link.
-     *
-     * @param string $path Path to file
-     */
-    protected function removeLink(string $target):void
-    {
-        // From .json.gz to .json
-        $link = substr($target, 0, -3);
-        if (is_link($link)) {
-            unlink($link);
         }
     }
 }

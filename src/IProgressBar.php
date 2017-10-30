@@ -32,30 +32,26 @@ interface IProgressBar
     /**
      * Check if progress bar is enabled.
      *
-     * @return boolean True if enabled
+     * @return bool True if enabled
      */
     public function isEnabled():bool;
 
     /**
      * Start progress bar.
      *
-     * @param  int    $total Total
-     * @return void
+     * @param int $total Total
      */
     public function start(int $total):void;
 
     /**
      * Update progress bar to some point.
      *
-     * @param  int|integer $current Current value to set
-     * @return void
+     * @param int|int $current Current value to set
      */
     public function progress(int $current = 0):void;
 
     /**
      * Finish progress bar.
-     *
-     * @return void
      */
     public function end():void;
 }

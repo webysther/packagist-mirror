@@ -61,7 +61,7 @@ class Mirror
     }
 
     /**
-     * Get all mirrors
+     * Get all mirrors.
      *
      * @return CircularArray
      */
@@ -71,24 +71,27 @@ class Mirror
     }
 
     /**
-     * Get next item
+     * Get next item.
      *
      * @return string
      */
     public function getNext():string
     {
         $this->all->next();
+
         return $this->all->current();
     }
 
     /**
-     * @param  string $value
+     * @param string $value
+     *
      * @return CircularArray
      */
     public function remove(string $value):CircularArray
     {
         $this->data = array_diff($this->data, [$value]);
         $this->all = CircularArray::fromArray($this->data);
+
         return $this->getAll();
     }
 }

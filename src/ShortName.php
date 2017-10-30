@@ -22,6 +22,7 @@ trait ShortName
      * Find hash and replace by *.
      *
      * @param string $name Name of provider or package
+     *
      * @return string Shortname
      */
     protected function shortname(string $name):string

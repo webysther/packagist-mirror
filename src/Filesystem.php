@@ -36,28 +36,20 @@ class Filesystem
     protected $directory;
 
     /**
-     * Ephemeral cache for folder files count
+     * Ephemeral cache for folder files count.
      *
      * @var array
      */
     protected $countedFolder = [];
 
     /**
-     * @param string  $dir        Base directory
-     * @param boolean $initialize If true initialize the filesystem access
+     * @param string $dir        Base directory
+     * @param bool   $initialize If true initialize the filesystem access
      */
     public function __construct($baseDirectory)
     {
         $this->directory = realpath($baseDirectory);
-    }
 
-    /**
-     * Initialize the filesystem access
-     *
-     * @return Filesystem
-     */
-    public function initialize():Filesystem
-    {
         // Create the adapter
         $localAdapter = new Local($this->directory);
 
@@ -69,18 +61,24 @@ class Filesystem
 
         // And use that to create the file system
         $this->filesystem = new FlyFilesystem($adapter);
-        return $this;
     }
 
     /**
-     * Normalize path to use .gz
+     * Normalize path to use .gz.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function normalize(string $path):string
     {
-        if(substr($path, -3) !== '.gz'){
+        $metadata = $this->filesystem->getWithMetadata($path, ['extension']);
+
+        if ($metadata['extension'] != 'json') {
+            return $path;
+        }
+
+        if ($metadata['extension'] == 'json') {
             return $path.'.gz';
         }
 
@@ -88,40 +86,32 @@ class Filesystem
     }
 
     /**
-     * Decode from gz after read from disk
+     * Decode from gz after read from disk.
      *
      * @see FlyFilesystem::read
      */
-    protected function read(string $path):string
+    public function read(string $path):string
     {
+        $path = $this->normalize($path);
+
         return $this->decode($this->filesystem->read($path));
     }
 
     /**
-     * Load a json file
-     *
-     * @see FlyFilesystem::read
-     */
-    public function readJson(string $path):string
-    {
-        return json_decode($this->read($path));
-    }
-
-    /**
-     * Encode to gz before write to disk with hash checking
+     * Encode to gz before write to disk with hash checking.
      *
      * @see FlyFilesystem::write
      */
-    public function write(string $path, string $contents = ''):Filesystem
+    public function write(string $path, string $contents):Filesystem
     {
         $path = $this->normalize($path);
         $this->filesystem->write($path, $this->encode($contents));
 
-        if($this->hash($contents) != $this->hashFile($path)){
+        if ($this->hash($contents) != $this->hashFile($path)) {
             throw new Exception("Write file $path hash failed");
         }
 
-        if(strpos($path, '.json.gz') !== false){
+        if (strpos($path, '.json.gz') !== false) {
             $this->symlink($path, substr($path, 0, -3));
         }
 
@@ -129,22 +119,25 @@ class Filesystem
     }
 
     /**
-     * Simple touch
+     * Simple touch.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return Filesystem
      */
     public function touch(string $path):Filesystem
     {
         $this->filesystem->write($path, '');
+
         return $this;
     }
 
     /**
-     * Create a symlink
+     * Create a symlink.
      *
-     * @param  string $file
-     * @param  string $link
+     * @param string $file
+     * @param string $link
+     *
      * @return Filesystem
      */
     protected function symlink(string $file, string $link):Filesystem
@@ -153,9 +146,12 @@ class Filesystem
             throw new Exception("File $file not found");
         }
 
-        if (!$this->has($link)) {
-            symlink($this->getFullPath($file), $this->getFullPath($link));
+        $link = $this->getFullPath($link);
+        if (file_exists($link)) {
+            unlink($link);
         }
+
+        symlink($this->getFullPath($file), $link);
 
         return $this;
     }
@@ -165,23 +161,22 @@ class Filesystem
      */
     public function has(string $path):bool
     {
-        return $this->filesystem->has($path);
+        return $this->filesystem->has($this->normalize($path));
     }
 
     /**
-     * Rename less strict
+     * Rename less strict.
      *
-     * @param  string       $from
-     * @param  string       $to
+     * @param string $from
+     * @param string $target
+     *
      * @return Filesystem
      */
-    public function move(string $from, string $to):Filesystem
+    public function move(string $from, string $target):Filesystem
     {
-        $this->filesystem->rename($from, $to);
-
-        if(strpos($to, '.json.gz') !== false){
-            $this->symlink($to, substr($to, 0, -3));
-        }
+        $targetGz = $this->normalize($target);
+        $this->filesystem->rename($this->normalize($from), $targetGz);
+        $this->symlink($targetGz, $target);
 
         return $this;
     }
@@ -194,19 +189,24 @@ class Filesystem
     {
         $path = $this->getFullPath($fileOrDirectory);
 
-        if(is_dir($path)){
+        if (is_dir($path)) {
             $this->filesystem->deleteDir($fileOrDirectory);
+
             return $this;
         }
 
         if (is_link($path)) {
             unlink($path);
+
             return $this;
         }
 
+        $fileOrDirectory = $this->normalize($fileOrDirectory);
+        $path = $this->normalize($path);
+
         $this->filesystem->delete($fileOrDirectory);
 
-        $path = substr($to, 0, -3);
+        $path = substr($path, 0, -3);
         if (is_link($path)) {
             unlink($path);
         }
@@ -215,16 +215,17 @@ class Filesystem
     }
 
     /**
-     * Glob without file sort
+     * Glob without file sort.
      *
-     * @param  string $pattern
+     * @param string $pattern
+     *
      * @return array
      */
     public function glob(string $pattern):array
     {
         $return = glob($pattern, GLOB_NOSORT);
 
-        if($return === false){
+        if ($return === false) {
             return [];
         }
 
@@ -232,9 +233,10 @@ class Filesystem
     }
 
     /**
-     * Count files inside folder, if is a file, return 0
+     * Count files inside folder, if is a file, return 0.
      *
-     * @param  string $folder
+     * @param string $folder
+     *
      * @return int
      */
     public function getFolderCount(string $folder):int
@@ -242,7 +244,7 @@ class Filesystem
         $path = $this->getFullPath($folder);
         $hash = $this->hash($path);
 
-        if(!is_dir($path)){
+        if (!is_dir($path)) {
             return 0;
         }
 
@@ -257,24 +259,27 @@ class Filesystem
 
         $totalFiles = iterator_count($iterator);
         $this->countedFolder[$hash] = $totalFiles;
+
         return $totalFiles;
     }
 
     /**
-     * Get full path
+     * Get full path.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
-    public function getFullPath(string $path):string
+    protected function getFullPath(string $path):string
     {
         return $this->directory.DIRECTORY_SEPARATOR.$path;
     }
 
     /**
-     * Calculates SHA256
+     * Calculates SHA256.
      *
      * @param string $string
+     *
      * @return string
      */
     public function getHash(string $string):string
@@ -283,38 +288,15 @@ class Filesystem
     }
 
     /**
-     * Calculates SHA256 for file
+     * Calculates SHA256 for file.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     public function getHashFile(string $path):string
     {
         // dont use hash_file because content is saved with gz
         return $this->hash($this->filesystem->read($path));
-    }
-
-    /**
-     * Check diff between two string using SHA256
-     *
-     * @param  string $from
-     * @param  string $to
-     * @return boolean
-     */
-    protected function isEqual(string $from, string $to):bool
-    {
-        return $this->hash($from) === $this->hash($to);
-    }
-
-    /**
-     * Check diff between two files using SHA256
-     *
-     * @param  string $from
-     * @param  string $to
-     * @return boolean
-     */
-    protected function isEqualFile(string $from, string $to):bool
-    {
-        return $this->hashFile($from) === $this->hashFile($to);
     }
 }
