@@ -97,6 +97,7 @@ class Create extends Base
     public function setClean(Clean $clean):Create
     {
         $this->clean = $clean;
+
         return $this;
     }
 
@@ -106,6 +107,7 @@ class Create extends Base
     protected function getExitCode():int
     {
         $this->generateHtml();
+
         return $this->exitCode;
     }
 

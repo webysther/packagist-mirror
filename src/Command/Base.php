@@ -77,7 +77,7 @@ class Base extends Command
     protected $exitCode = 0;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $verboseVerbose = false;
 
@@ -118,7 +118,7 @@ class Base extends Command
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isVerbose():bool
     {
@@ -129,11 +129,13 @@ class Base extends Command
      * Add a progress bar.
      *
      * @param IProgressBar $progressBar
+     *
      * @return Base
      */
     public function setProgressBar(IProgressBar $progressBar):Base
     {
         $this->progressBar = $progressBar;
+
         return $this;
     }
 
@@ -141,11 +143,13 @@ class Base extends Command
      * Add a fileSystem.
      *
      * @param Filesystem $fileSystem
+     *
      * @return Base
      */
     public function setFilesystem(Filesystem $filesystem):Base
     {
         $this->filesystem = $filesystem;
+
         return $this;
     }
 
@@ -153,11 +157,13 @@ class Base extends Command
      * Add a http.
      *
      * @param Http $http
+     *
      * @return Base
      */
     public function setHttp(Http $http):Base
     {
         $this->http = $http;
+
         return $this;
     }
 
@@ -165,11 +171,13 @@ class Base extends Command
      * Add a provider.
      *
      * @param Provider $provider
+     *
      * @return Base
      */
     public function setProvider(Provider $provider):Base
     {
         $this->provider = $provider;
+
         return $this;
     }
 
@@ -177,11 +185,13 @@ class Base extends Command
      * Add a packages.
      *
      * @param Package $package
+     *
      * @return Base
      */
     public function setPackage(Package $package):Base
     {
         $this->package = $package;
+
         return $this;
     }
 

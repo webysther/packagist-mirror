@@ -9,7 +9,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Webs\Mirror\Console;
 use Dariuszp\CliProgressBar;
 
 namespace Webs\Mirror;
@@ -43,7 +42,7 @@ class ProgressBar implements IProgressBar
      */
     public function isEnabled():bool
     {
-        if(!isset($this->disabled)){
+        if (!isset($this->disabled)) {
             return $this->disabled;
         }
 
@@ -53,10 +52,12 @@ class ProgressBar implements IProgressBar
 
         if ($isQuiet || $noProgress || $noAnsi) {
             $this->disabled = true;
+
             return true;
         }
 
         $this->disabled = false;
+
         return false;
     }
 

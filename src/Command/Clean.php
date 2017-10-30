@@ -15,8 +15,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webs\Mirror\ShortName;
-use FilesystemIterator;
-use stdClass;
 
 /**
  * Clean mirror outdated files.
@@ -38,7 +36,7 @@ class Clean extends Base
     protected $packageRemoved = [];
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $isScrub = false;
 
@@ -173,7 +171,6 @@ class Clean extends Base
      */
     protected function flushPackage(array $list):void
     {
-        $base = getenv('PUBLIC_DIR').'/p/';
         $packages = $this->package->getDownloaded();
 
         foreach ($list as $uri) {

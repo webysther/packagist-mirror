@@ -9,7 +9,6 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Webs\Mirror\Console;
 use Webs\Mirror\Command\Base;
 
 namespace Webs\Mirror;
@@ -47,11 +46,13 @@ class Package
      * Add a http.
      *
      * @param Http $http
+     *
      * @return Base
      */
     public function setHttp(Http $http):Base
     {
         $this->http = $http;
+
         return $this;
     }
 
@@ -61,6 +62,7 @@ class Package
     public function setDownloaded(string $path):Package
     {
         $this->packagesDownloaded[] = $path;
+
         return $this;
     }
 
@@ -77,11 +79,12 @@ class Package
      */
     public function loadMainJson():stdClass
     {
-        if(isset($this->mainJson)){
+        if (isset($this->mainJson)) {
             return $this->mainJson;
         }
 
         $this->mainJson = $this->http->getJson(self::MAIN);
+
         return $this->mainJson;
     }
 
