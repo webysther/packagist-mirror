@@ -81,6 +81,7 @@ class Create extends Base
     public function execute(InputInterface $input, OutputInterface $output):int
     {
         $this->progressBar->addConsole($input, $output);
+        $this->filesystem->initialize();
 
         // Download providers, with repository, is incremental
         if ($this->downloadProviders()->stop()) {

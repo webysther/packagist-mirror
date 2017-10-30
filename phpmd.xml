@@ -5,21 +5,8 @@
         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
     <description>https://goo.gl/yNQNv4</description>
-    <rule ref="rulesets/cleancode.xml">
-        <exclude name="StaticAccess"/>
-    </rule>
 
-    <rule ref="rulesets/cleancode.xml/StaticAccess">
-      <properties>
-          <property name="exceptions">
-            <value>
-              \Carbon\Carbon,
-              \utilphp\util
-            </value>
-          </property>
-      </properties>
-    </rule>
-
+    <rule ref="rulesets/cleancode.xml"/>
     <rule ref="rulesets/codesize.xml"/>
     <rule ref="rulesets/controversial.xml"/>
     <rule ref="rulesets/design.xml"/>

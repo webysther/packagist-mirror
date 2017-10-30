@@ -92,7 +92,7 @@ class Filesystem
      *
      * @see FlyFilesystem::read
      */
-    public function read(string $path):string
+    protected function read(string $path):string
     {
         return $this->decode($this->filesystem->read($path));
     }
@@ -112,7 +112,7 @@ class Filesystem
      *
      * @see FlyFilesystem::write
      */
-    public function write(string $path, string $contents):Filesystem
+    public function write(string $path, string $contents = ''):Filesystem
     {
         $path = $this->normalize($path);
         $this->filesystem->write($path, $this->encode($contents));
@@ -147,7 +147,7 @@ class Filesystem
      * @param  string $link
      * @return Filesystem
      */
-    public function symlink(string $file, string $link):Filesystem
+    protected function symlink(string $file, string $link):Filesystem
     {
         if (!$this->has($file)) {
             throw new Exception("File $file not found");
@@ -237,7 +237,7 @@ class Filesystem
      * @param  string $folder
      * @return int
      */
-    public function count(string $folder):int
+    public function getFolderCount(string $folder):int
     {
         $path = $this->getFullPath($folder);
         $hash = $this->hash($path);
@@ -277,7 +277,7 @@ class Filesystem
      * @param string $string
      * @return string
      */
-    public function hash(string $string):string
+    public function getHash(string $string):string
     {
         return hash('sha256', $string);
     }
@@ -288,7 +288,7 @@ class Filesystem
      * @param  string $path
      * @return string
      */
-    public function hashFile(string $path):string
+    public function getHashFile(string $path):string
     {
         // dont use hash_file because content is saved with gz
         return $this->hash($this->filesystem->read($path));
@@ -301,7 +301,7 @@ class Filesystem
      * @param  string $to
      * @return boolean
      */
-    public function isEqual(string $from, string $to):bool
+    protected function isEqual(string $from, string $to):bool
     {
         return $this->hash($from) === $this->hash($to);
     }
@@ -313,7 +313,7 @@ class Filesystem
      * @param  string $to
      * @return boolean
      */
-    public function isEqualFile(string $from, string $to):bool
+    protected function isEqualFile(string $from, string $to):bool
     {
         return $this->hashFile($from) === $this->hashFile($to);
     }
