@@ -9,11 +9,15 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+namespace Webs\Mirror;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
-
-namespace Webs\Mirror;
+use stdClass;
+use Exception;
+use Generator;
+use Closure;
 
 /**
  * Middleware to http operations.
@@ -71,7 +75,7 @@ class Http
      */
     public function __construct(Mirror $mirror, int $maxConnections)
     {
-        $this->config['base_uri'] = $mirror->getMaster().'/';
+        $this->config['base_uri'] = $mirror->getMaster();
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
         $this->mirror = $mirror;
@@ -120,10 +124,10 @@ class Http
     {
         $base = $this->getBaseUri();
         if ($this->usingMirrors) {
-            $base = $this->mirrors->getNext().'/';
+            $base = $this->mirrors->getNext();
         }
 
-        return new Request('GET', $base.$uri);
+        return new Request('GET', $base.'/'.$uri);
     }
 
     /**
@@ -141,23 +145,28 @@ class Http
             $this->connections = $this->maxConnections * $mirrors;
         }
 
+        $fulfilled = function ($response, $path) use ($success, $complete) {
+            $body = (string) $response->getBody();
+            $success($body, $path);
+            $complete();
+        };
+
+        $rejected = function ($reason, $path) use ($complete) {
+            $this->poolErrors[$path] = $reason;
+            $complete();
+        };
+
         $this->poolErrors = [];
-        (new Pool(
+        $pool = new Pool(
             $this->client,
             $requests,
             [
                 'concurrency' => $this->connections,
-                'fulfilled' => function ($response, $path) {
-                    $body = (string) $response->getBody();
-                    $success($this->decode($body), $path);
-                    $complete();
-                },
-                'rejected' => function ($reason, $path) {
-                    $this->poolErrors[$path] = $reason;
-                    $complete();
-                },
+                'fulfilled' => $fulfilled,
+                'rejected' => $rejected,
             ]
-        ))->promise()->wait();
+        );
+        $pool->promise()->wait();
 
         // Reset to use only max connections for one mirror
         $this->usingMirrors = false;

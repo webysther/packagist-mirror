@@ -9,9 +9,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use PHPSnippets\DataStructures\CircularArray;
-
 namespace Webs\Mirror;
+
+use PHPSnippets\DataStructures\CircularArray;
 
 /**
  * Middleware to http operations.

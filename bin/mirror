@@ -62,8 +62,8 @@ $create->setPackage($package);
 $create->setFilesystem($filesystem);
 $create->setClean($clean);
 $create->setHttp(new Webs\Mirror\Http(
-    new new Webs\Mirror\Mirror(getenv('MAIN_MIRROR'), explode(',', getenv('DATA_MIRROR'))),
-    getenv('MAX_CONNECTIONS')
+    new Webs\Mirror\Mirror(getenv('MAIN_MIRROR'), explode(',', getenv('DATA_MIRROR'))),
+    (int) getenv('MAX_CONNECTIONS')
 ));
 
 $cli->add($create);

@@ -74,7 +74,7 @@ class Base extends Command
     /**
      * @var int
      */
-    protected $exitCode = 0;
+    protected $exitCode;
 
     /**
      * @var bool

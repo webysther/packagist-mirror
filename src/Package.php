@@ -9,9 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Webs\Mirror\Command\Base;
-
 namespace Webs\Mirror;
+
+use Webs\Mirror\Command\Base;
+use stdClass;
 
 /**
  * Middleware to package operations.
@@ -49,7 +50,7 @@ class Package
      *
      * @return Base
      */
-    public function setHttp(Http $http):Base
+    public function setHttp(Http $http):Package
     {
         $this->http = $http;
 

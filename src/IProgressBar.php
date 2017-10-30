@@ -9,10 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+namespace Webs\Mirror;
+
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-namespace Webs\Mirror;
 
 /**
  * Progress bar for console.
@@ -27,31 +27,31 @@ interface IProgressBar
      * @param InputInterface  $input  Input
      * @param OutputInterface $output Output
      */
-    public function addConsole(InputInterface $input, OutputInterface $output):void;
+    public function setConsole(InputInterface $input, OutputInterface $output):void;
 
     /**
      * Check if progress bar is enabled.
      *
      * @return bool True if enabled
      */
-    public function isEnabled():bool;
+    public function isDisabled():bool;
 
     /**
      * Start progress bar.
      *
      * @param int $total Total
      */
-    public function start(int $total):void;
+    public function start(int $total):IProgressBar;
 
     /**
      * Update progress bar to some point.
      *
      * @param int|int $current Current value to set
      */
-    public function progress(int $current = 0):void;
+    public function progress(int $current = 0):IProgressBar;
 
     /**
      * Finish progress bar.
      */
-    public function end():void;
+    public function end():IProgressBar;
 }

@@ -9,9 +9,9 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-use Dariuszp\CliProgressBar;
-
 namespace Webs\Mirror;
+
+use Dariuszp\CliProgressBar;
 
 /**
  * Progress bar for console.
@@ -40,9 +40,9 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function isEnabled():bool
+    public function isDisabled():bool
     {
-        if (!isset($this->disabled)) {
+        if (isset($this->disabled)) {
             return $this->disabled;
         }
 
@@ -64,9 +64,9 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function start(int $total):ProgressBar
+    public function start(int $total):IProgressBar
     {
-        if ($this->disabled) {
+        if ($this->isDisabled()) {
             return $this;
         }
 
@@ -79,9 +79,9 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function progress(int $current = 0):ProgressBar
+    public function progress(int $current = 0):IProgressBar
     {
-        if ($this->disabled) {
+        if ($this->isDisabled()) {
             return $this;
         }
 
@@ -99,9 +99,9 @@ class ProgressBar implements IProgressBar
     /**
      * {@inheritdoc}
      */
-    public function end():ProgressBar
+    public function end():IProgressBar
     {
-        if ($this->disabled) {
+        if ($this->isDisabled()) {
             return $this;
         }
 

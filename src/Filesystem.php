@@ -9,12 +9,19 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+namespace Webs\Mirror;
+
 use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Cached\CachedAdapter;
 use League\Flysystem\Cached\Storage\Memory;
-
-namespace Webs\Mirror;
+use League\Flysystem\{
+    FileNotFoundException,
+    FileExistsException,
+    NotSupportedException
+};
+use Exception;
+use FilesystemIterator;
 
 /**
  * Middleware to access filesystem with transparent gz encode/decode.
@@ -72,13 +79,19 @@ class Filesystem
      */
     public function normalize(string $path):string
     {
-        $metadata = $this->filesystem->getWithMetadata($path, ['extension']);
+        $fullPath = $this->getFullPath($path);
 
-        if ($metadata['extension'] != 'json') {
+        if(is_link($fullPath)){
             return $path;
         }
 
-        if ($metadata['extension'] == 'json') {
+        $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
+
+        if ($extension != 'json') {
+            return $path;
+        }
+
+        if ($extension == 'json') {
             return $path.'.gz';
         }
 
@@ -105,9 +118,10 @@ class Filesystem
     public function write(string $path, string $contents):Filesystem
     {
         $path = $this->normalize($path);
-        $this->filesystem->write($path, $this->encode($contents));
+        $this->filesystem->put($path, $this->encode($contents));
 
-        if ($this->hash($contents) != $this->hashFile($path)) {
+        if ($this->getHash($contents) != $this->getHashFile($path)) {
+            $this->filesystem->delete($path);
             throw new Exception("Write file $path hash failed");
         }
 
@@ -127,6 +141,10 @@ class Filesystem
      */
     public function touch(string $path):Filesystem
     {
+        if (file_exists($this->getFullPath($path))) {
+            return $this;
+        }
+
         $this->filesystem->write($path, '');
 
         return $this;
@@ -151,7 +169,7 @@ class Filesystem
             unlink($link);
         }
 
-        symlink($this->getFullPath($file), $link);
+        symlink(basename($file), $link);
 
         return $this;
     }
@@ -161,7 +179,12 @@ class Filesystem
      */
     public function has(string $path):bool
     {
-        return $this->filesystem->has($this->normalize($path));
+        try {
+            return $this->filesystem->has($this->normalize($path));
+        }catch(Exception $e)
+        {}
+
+        return false;
     }
 
     /**
@@ -242,7 +265,7 @@ class Filesystem
     public function getFolderCount(string $folder):int
     {
         $path = $this->getFullPath($folder);
-        $hash = $this->hash($path);
+        $hash = $this->getHash($path);
 
         if (!is_dir($path)) {
             return 0;
@@ -297,6 +320,6 @@ class Filesystem
     public function getHashFile(string $path):string
     {
         // dont use hash_file because content is saved with gz
-        return $this->hash($this->filesystem->read($path));
+        return $this->getHash($this->read($path));
     }
 }

@@ -9,10 +9,10 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
+namespace Webs\Mirror;
+
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-namespace Webs\Mirror;
 
 /**
  * Trait to gzip operations.

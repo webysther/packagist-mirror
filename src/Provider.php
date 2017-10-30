@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Webs\Mirror;
 
+use stdClass;
+use Exception;
+
 /**
  * Middleware to provider operations.
  *
@@ -19,6 +22,25 @@ namespace Webs\Mirror;
 class Provider
 {
     use Console;
+
+    /**
+     * @var Http
+     */
+    protected $http;
+
+    /**
+     * Add a http.
+     *
+     * @param Http $http
+     *
+     * @return Base
+     */
+    public function setHttp(Http $http):Provider
+    {
+        $this->http = $http;
+
+        return $this;
+    }
 
     /**
      * Add base url of packagist.org to services on packages.json of
@@ -53,12 +75,12 @@ class Provider
 
         $providerIncludes = $providers->{'provider-includes'};
 
-        $providerIncludes = [];
+        $includes = [];
         foreach ($providerIncludes as $name => $hash) {
             $uri = str_replace('%hash%', $hash->sha256, $name);
-            $providerIncludes[$uri] = $hash->sha256;
+            $includes[$uri] = $hash->sha256;
         }
 
-        return $providerIncludes;
+        return $includes;
     }
 }

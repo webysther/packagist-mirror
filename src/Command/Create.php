@@ -17,6 +17,7 @@ use Webs\Mirror\ShortName;
 use Webs\Mirror\Provider;
 use stdClass;
 use Generator;
+use Closure;
 
 /**
  * Create a mirror.
@@ -65,7 +66,9 @@ class Create extends Base
     {
         $this->progressBar->setConsole($input, $output);
         $this->package->setConsole($input, $output);
+        $this->package->setHttp($this->http);
         $this->provider->setConsole($input, $output);
+        $this->provider->setHttp($this->http);
 
         // Download providers, with repository, is incremental
         if ($this->downloadProviders()->stop()) {
@@ -195,30 +198,33 @@ class Create extends Base
         $this->providerIncludes = $this->provider->normalize($this->providers);
         $generator = $this->getProvidersGenerator();
 
-        if (empty(iterator_to_array($generator))) {
+        $this->progressBar->start(count($this->providerIncludes));
+
+        $success = function ($body, $path) {
+            $this->filesystem->write($path, $body);
+        };
+
+        $this->http->pool($generator, $success, $this->getClosureComplete());
+        $this->progressBar->end();
+        $this->showErrors();
+
+        if ($generator->getReturn()) {
             $this->output->writeln('All providers are <info>updated</>');
 
             return $this->setExitCode(0);
         }
 
-        $this->progressBar->start(count($this->providerIncludes));
-
-        $this->http->pool(
-            $generator,
-            // Success
-            function ($body, $path) {
-                $this->filesystem->write($path, $body);
-            },
-            // If complete, even failed and success
-            function () {
-                $this->progressBar->progress();
-            }
-        );
-
-        $this->progressBar->end();
-        $this->showErrors();
-
         return $this;
+    }
+
+    /**
+     * @return Closure
+     */
+    protected function getClosureComplete():Closure
+    {
+        return function () {
+            $this->progressBar->progress();
+        };
     }
 
     /**
@@ -229,14 +235,17 @@ class Create extends Base
     protected function getProvidersGenerator():Generator
     {
         $providerIncludes = array_keys($this->providerIncludes);
+        $updated = true;
         foreach ($providerIncludes as $uri) {
             if ($this->canSkip($uri)) {
-                $this->progressBar->progress();
                 continue;
             }
 
+            $updated = false;
             yield $uri => $this->http->getRequest($uri);
         }
+
+        return $updated;
     }
 
     /**
@@ -424,9 +433,7 @@ class Create extends Base
                 $this->package->setDownloaded($path);
             },
             // If complete, even failed and success
-            function () {
-                $this->progressBar->progress();
-            }
+            $this->getCompleteClosure()
         );
 
         return $this;
