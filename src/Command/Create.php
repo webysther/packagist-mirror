@@ -88,7 +88,7 @@ class Create extends Base
         $this->setExitCode($this->clean->execute($input, $output));
 
         if ($this->initialized) {
-            $this->filesystem->remove(self::INIT);
+            $this->filesystem->delete(self::INIT);
         }
 
         return $this->getExitCode();
@@ -169,7 +169,7 @@ class Create extends Base
     /**
      * Switch current packagist.json to space and .packagist to packagist.json.
      *
-     * @return bool True if work, false otherside
+     * @return Create
      */
     protected function switch():Create
     {
@@ -187,7 +187,7 @@ class Create extends Base
     /**
      * Download packages.json & provider-xxx$xxx.json.
      *
-     * @return bool True if work, false otherside
+     * @return Create
      */
     protected function downloadProviders():Create
     {
