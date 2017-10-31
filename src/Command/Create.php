@@ -120,24 +120,6 @@ class Create extends Base
     }
 
     /**
-     * Load main packages.json.
-     *
-     * @return Create
-     */
-    protected function loadPackagesJson():Create
-    {
-        $this->output->writeln(
-            'Loading providers from <info>'.$this->http->getBaseUri().'</>'
-        );
-
-        $this->providers = $this->provider->addFullPath(
-            $this->package->loadMainJson()
-        );
-
-        return $this;
-    }
-
-    /**
      * Check if packages.json was changed.
      *
      * @return bool
@@ -196,7 +178,16 @@ class Create extends Base
      */
     protected function downloadProviders():Create
     {
-        if ($this->loadPackagesJson()->isEqual()) {
+        $this->output->writeln(
+            'Loading providers from <info>'.$this->http->getBaseUri().'</>'
+        );
+
+        $this->providers = $this->provider->addFullPath(
+            $this->package->loadMainJson()
+        );
+
+
+        if ($this->isEqual()) {
             return $this;
         }
 
