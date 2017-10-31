@@ -101,8 +101,13 @@ class Filesystem
     public function read(string $path):string
     {
         $path = $this->normalize($path);
+        $file = $this->filesystem->read($path);
 
-        return $this->decode($this->filesystem->read($path));
+        if($file === false){
+            return '';
+        }
+
+        return $this->decode($file);
     }
 
     /**
