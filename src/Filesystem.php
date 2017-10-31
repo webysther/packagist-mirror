@@ -182,6 +182,7 @@ class Filesystem
         try {
             return $this->filesystem->has($this->normalize($path));
         } catch (Exception $e) {
+            // if dont exists dont do nothing
         }
 
         return false;

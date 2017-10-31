@@ -207,7 +207,7 @@ class Clean extends Base
                     $this->packageRemoved[] = $file;
                 }
 
-                $this->filesystem->remove($file);
+                $this->filesystem->delete($file);
             }
         }
     }
