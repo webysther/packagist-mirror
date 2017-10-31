@@ -48,7 +48,12 @@ class Mirror
     {
         $this->master = $master;
         $this->slaves = $slaves;
-        $this->data = array_unique(array_merge([$master], $slaves));
+
+        $this->data = $slaves;
+        if(!in_array($master, $this->data)){
+            $this->data[] = $master;
+        }
+
         $this->all = CircularArray::fromArray($this->data);
     }
 
