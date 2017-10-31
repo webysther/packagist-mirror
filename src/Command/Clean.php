@@ -130,7 +130,7 @@ class Clean extends Base
                     );
                 }
 
-                $this->filesystem->remove($file);
+                $this->filesystem->delete($file);
             }
         }
 
