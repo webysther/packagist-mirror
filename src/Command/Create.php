@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the Packagist Mirror.
@@ -176,7 +176,7 @@ class Create extends Base
      *
      * @return Create
      */
-    protected function switch():Create
+    protected function switch ():Create
     {
         // If .packages.json dont exists
         if (!$this->filesystem->has(self::DOT)) {
@@ -205,7 +205,7 @@ class Create extends Base
 
         $this->progressBar->start(count($this->providerIncludes));
 
-        $success = function ($body, $path) {
+        $success = function($body, $path) {
             $this->filesystem->write($path, $body);
         };
 
@@ -227,7 +227,7 @@ class Create extends Base
      */
     protected function getClosureComplete():Closure
     {
-        return function () {
+        return function() {
             $this->progressBar->progress();
         };
     }
@@ -433,7 +433,7 @@ class Create extends Base
         $this->http->pool(
             $generator,
             // Success
-            function ($body, $path) {
+            function($body, $path) {
                 $this->filesystem->write($path, $body);
                 $this->package->setDownloaded($path);
             },
