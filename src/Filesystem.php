@@ -257,7 +257,7 @@ class Filesystem
      *
      * @return int
      */
-    public function getFolderCount(string $folder):int
+    public function getCount(string $folder):int
     {
         $path = $this->getFullPath($folder);
         $hash = $this->getHash($path);

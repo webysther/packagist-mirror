@@ -188,7 +188,7 @@ class Clean extends Base
             }
 
             // If only have the file and link dont exist old files
-            if ($this->filesystem->count($folder) < 3) {
+            if ($this->filesystem->getCount($folder) < 3) {
                 continue;
             }
 
