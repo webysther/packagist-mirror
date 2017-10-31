@@ -103,7 +103,7 @@ class Filesystem
         $path = $this->normalize($path);
         $file = $this->filesystem->read($path);
 
-        if($file === false){
+        if ($file === false) {
             return '';
         }
 
