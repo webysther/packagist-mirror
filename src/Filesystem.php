@@ -28,7 +28,7 @@ class Filesystem
     use GZip;
 
     /**
-     * @var FlysystemFilesystem
+     * @var FlyFilesystem
      */
     protected $filesystem;
 

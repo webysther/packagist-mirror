@@ -44,6 +44,11 @@ class Create extends Base
     protected $currentProvider;
 
     /**
+     * @var array
+     */
+    protected $providerPackages;
+
+    /**
      * @var Clean
      */
     protected $clean;
@@ -433,7 +438,7 @@ class Create extends Base
                 $this->package->setDownloaded($path);
             },
             // If complete, even failed and success
-            $this->getCompleteClosure()
+            $this->getClosureComplete()
         );
 
         return $this;
@@ -460,6 +465,8 @@ class Create extends Base
         $this->poolPackages($generator);
         $this->progressBar->end();
         $this->showErrors();
+
+        return $this;
     }
 
     /**

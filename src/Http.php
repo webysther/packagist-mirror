@@ -124,7 +124,7 @@ class Http
     {
         $base = $this->getBaseUri();
         if ($this->usingMirrors) {
-            $base = $this->mirrors->getNext();
+            $base = $this->mirror->getNext();
         }
 
         return new Request('GET', $base.'/'.$uri);

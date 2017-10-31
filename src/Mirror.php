@@ -31,7 +31,7 @@ class Mirror
     protected $slaves;
 
     /**
-     * @var array
+     * @var CircularArray
      */
     protected $all;
 
@@ -93,5 +93,13 @@ class Mirror
         $this->all = CircularArray::fromArray($this->data);
 
         return $this->getAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray():array
+    {
+        return $this->getAll()->toArray();
     }
 }

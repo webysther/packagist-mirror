@@ -33,7 +33,7 @@ class Provider
      *
      * @param Http $http
      *
-     * @return Base
+     * @return Provider
      */
     public function setHttp(Http $http):Provider
     {

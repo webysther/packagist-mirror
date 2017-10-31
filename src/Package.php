@@ -48,7 +48,7 @@ class Package
      *
      * @param Http $http
      *
-     * @return Base
+     * @return Package
      */
     public function setHttp(Http $http):Package
     {
