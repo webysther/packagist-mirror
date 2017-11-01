@@ -85,9 +85,10 @@ class Create extends Base
             return $this->getExitCode();
         }
 
-        // Switch .packagist.json to packagist.json
-        if ($this->switch()->stop()) {
-            return $this->getExitCode();
+        // If .packages.json dont exists
+        if ($this->filesystem->has(self::DOT)) {
+            // Move to new location
+            $this->filesystem->move(self::DOT, self::MAIN);
         }
 
         $this->setExitCode($this->clean->execute($input, $output));
@@ -116,7 +117,7 @@ class Create extends Base
     {
         $this->generateHtml();
 
-        return $this->exitCode;
+        return isset($this->exitCode) ? $this->exitCode : 0;
     }
 
     /**
@@ -154,24 +155,6 @@ class Create extends Base
     }
 
     /**
-     * Switch current packagist.json to space and .packagist to packagist.json.
-     *
-     * @return Create
-     */
-    protected function switch ():Create
-    {
-        // If .packages.json dont exists
-        if (!$this->filesystem->has(self::DOT)) {
-            return $this;
-        }
-
-        // Move to new location
-        $this->filesystem->move(self::DOT, self::MAIN);
-
-        return $this;
-    }
-
-    /**
      * Download packages.json & provider-xxx$xxx.json.
      *
      * @return Create
@@ -204,7 +187,7 @@ class Create extends Base
         $this->progressBar->end();
         $this->showErrors();
 
-        if ($generator->getReturn()) {
+        if ($generator->getReturn() && !$this->initialized) {
             $this->output->writeln('All providers are <info>updated</>');
 
             return $this->setExitCode(0);
@@ -233,7 +216,7 @@ class Create extends Base
         $providerIncludes = array_keys($this->providerIncludes);
         $updated = true;
         foreach ($providerIncludes as $uri) {
-            if ($this->canSkip($uri)) {
+            if ($this->filesystem->has($uri)) {
                 continue;
             }
 
@@ -467,7 +450,7 @@ class Create extends Base
     {
         ob_start();
         include getcwd().'/resources/index.html.php';
-        $this->filesystem->write('index.html', ob_get_clean());
+        file_put_contents('index.html', ob_get_clean());
 
         return $this;
     }

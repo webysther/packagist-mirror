@@ -50,7 +50,7 @@ class Filesystem
      */
     public function __construct($baseDirectory)
     {
-        $this->directory = realpath($baseDirectory);
+        $this->directory = realpath($baseDirectory).DIRECTORY_SEPARATOR;
 
         // Create the adapter
         $localAdapter = new Local($this->directory);
@@ -66,28 +66,37 @@ class Filesystem
     }
 
     /**
-     * Normalize path to use .gz.
+     * Add suffix gz to json file
      *
      * @param string $path
      *
      * @return string
      */
-    public function normalize(string $path):string
+    protected function getGzName(string $path):string
     {
         $fullPath = $this->getFullPath($path);
-
-        if (is_link($fullPath)) {
-            return $path;
-        }
-
         $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
-
-        if ($extension != 'json') {
-            return $path;
-        }
 
         if ($extension == 'json') {
             return $path.'.gz';
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get link name from gz
+     *
+     * @param  string $path
+     * @return string
+     */
+    protected function getLink(string $path):string
+    {
+        $fullPath = $this->getFullPath($path);
+        $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
+
+        if ($extension == 'gz') {
+            return substr($path, 0, -3);
         }
 
         return $path;
@@ -100,7 +109,7 @@ class Filesystem
      */
     public function read(string $path):string
     {
-        $path = $this->normalize($path);
+        $path = $this->getGzName($path);
         $file = $this->filesystem->read($path);
 
         if ($file === false) {
@@ -117,17 +126,16 @@ class Filesystem
      */
     public function write(string $path, string $contents):Filesystem
     {
-        $path = $this->normalize($path);
-        $this->filesystem->put($path, $this->encode($contents));
+        $file = $this->getGzName($path);
+        $this->filesystem->put($file, $this->encode($contents));
+        $decoded = $this->decode($contents);
 
-        if ($this->getHash($contents) != $this->getHashFile($path)) {
-            $this->filesystem->delete($path);
+        if ($this->getHash($decoded) != $this->getHashFile($file)) {
+            $this->filesystem->delete($file);
             throw new Exception("Write file $path hash failed");
         }
 
-        if (strpos($path, '.json.gz') !== false) {
-            $this->symlink($path, substr($path, 0, -3));
-        }
+        $this->symlink($file);
 
         return $this;
     }
@@ -141,35 +149,49 @@ class Filesystem
      */
     public function touch(string $path):Filesystem
     {
-        if (file_exists($this->getFullPath($path))) {
+        if ($this->has($path)) {
             return $this;
         }
 
-        $this->filesystem->write($path, '');
+        touch($this->getFullPath($path));
 
         return $this;
+    }
+
+    /**
+     * @param  string  $file
+     * @return boolean
+     */
+    protected function isGzFile(string $file):bool
+    {
+        if(substr($this->getGzName($file), -3) == '.gz'){
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Create a symlink.
      *
      * @param string $file
-     * @param string $link
      *
      * @return Filesystem
      */
-    protected function symlink(string $file, string $link):Filesystem
+    protected function symlink(string $file):Filesystem
     {
-        if (!$this->has($file)) {
-            throw new Exception("File $file not found");
+        if (!$this->hasFile($file) || !$this->isGzFile($file)) {
+            return $this;
         }
 
-        $link = $this->getFullPath($link);
-        if (file_exists($link)) {
-            unlink($link);
+        $path = $this->getGzName($file);
+        $link = $this->getLink($path);
+
+        if($this->hasLink($link)){
+            return $this;
         }
 
-        symlink(basename($file), $link);
+        symlink(basename($path), $this->getFullPath($link));
 
         return $this;
     }
@@ -179,29 +201,38 @@ class Filesystem
      */
     public function has(string $path):bool
     {
-        try {
-            return $this->filesystem->has($this->normalize($path));
-        } catch (Exception $e) {
-            // if dont exists dont do nothing
-        }
-
-        return false;
+        return $this->hasFile($path) && $this->hasLink($path);
     }
 
     /**
-     * Rename less strict.
+     * @see FlyFilesystem::has
+     */
+    protected function hasFile(string $path):bool
+    {
+        return file_exists($this->getFullPath($this->getGzName($path)));
+    }
+
+    /**
+     * @see FlyFilesystem::has
+     */
+    protected function hasLink(string $path):bool
+    {
+        return is_link($this->getFullPath($this->getLink($path)));
+    }
+
+    /**
+     * Move to not dot name of file
      *
      * @param string $from
-     * @param string $target
      *
      * @return Filesystem
      */
-    public function move(string $from, string $target):Filesystem
+    public function move(string $from):Filesystem
     {
-        $targetGz = $this->normalize($target);
-        $this->filesystem->rename($this->normalize($from), $targetGz);
-        $this->symlink($targetGz, $target);
-
+        $file = $this->getGzName($from);
+        $target = substr($file, 1);
+        $this->filesystem->rename($from, $target);
+        $this->symlink($target);
         return $this;
     }
 
@@ -219,20 +250,14 @@ class Filesystem
             return $this;
         }
 
-        if (is_link($path)) {
-            unlink($path);
-
-            return $this;
+        $file = $this->getGzName($path);
+        if (file_exists($file)) {
+            unlink($file);
         }
 
-        $fileOrDirectory = $this->normalize($fileOrDirectory);
-        $path = $this->normalize($path);
-
-        $this->filesystem->delete($fileOrDirectory);
-
-        $path = substr($path, 0, -3);
-        if (is_link($path)) {
-            unlink($path);
+        $link = $this->getLink($path);
+        if (is_link($link)) {
+            unlink($file);
         }
 
         return $this;
@@ -296,7 +321,11 @@ class Filesystem
      */
     protected function getFullPath(string $path):string
     {
-        return $this->directory.DIRECTORY_SEPARATOR.$path;
+        if(strpos($path, $this->directory) !== false){
+            return $path;
+        }
+
+        return $this->directory.$path;
     }
 
     /**
