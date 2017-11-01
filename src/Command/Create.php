@@ -13,6 +13,7 @@ namespace Webs\Mirror\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\Table;
 use Webs\Mirror\ShortName;
 use Webs\Mirror\Provider;
 use stdClass;
@@ -195,16 +196,6 @@ class Create extends Base
     }
 
     /**
-     * @return Closure
-     */
-    protected function getClosureComplete():Closure
-    {
-        return function() {
-            $this->progressBar->progress();
-        };
-    }
-
-    /**
      * Download packages.json & provider-xxx$xxx.json.
      *
      * @return Generator Providers downloaded
@@ -246,36 +237,32 @@ class Create extends Base
      */
     protected function showErrors():Create
     {
-        if (!$this->isVerbose()) {
-            return $this;
-        }
-
         $errors = $this->http->getPoolErrors();
-        if (count($errors) === 0) {
+
+        if (!$this->isVerbose() || !$errors) {
             return $this;
         }
 
+        $rows = [];
         foreach ($errors as $path => $reason) {
-            $shortname = $this->shortname($path);
-            $error = $reason->getCode();
-            $host = $reason->getRequest()->getUri()->getHost();
+            list('code' => $code, 'host' => $host, 'message' => $message) = $reason;
 
-            $this->output->write(
-                "<comment>$shortname</> failed from ".
-                "<info>$host</> with HTTP error"
-            );
-
+            $error = $code;
             if (!$error) {
-                $this->output->writeln(
-                    ':'.PHP_EOL.'<error>'.$reason->getMessage().'</>'
-                );
-                continue;
+                $error = $message;
             }
 
-            $this->output->writeln(" <error>$error</>");
+            $rows[] = [
+                '<info>'.$host.'</>',
+                '<comment>'.$this->shortname($path).'</>',
+                '<error>'.$error.'</>'
+            ];
         }
 
-        $this->output->write(PHP_EOL);
+        $table = new Table($this->output);
+        $table->setHeaders(['Mirror', 'Path', 'Error']);
+        $table->setRows($rows);
+        $table->render();
 
         return $this;
     }
@@ -285,37 +272,19 @@ class Create extends Base
      */
     protected function disableDueErrors()
     {
-        $errors = $this->http->getPoolErrors();
-        if (count($errors) === 0) {
-            return $this;
-        }
-
-        $counter = [];
-
-        foreach ($errors as $reason) {
-            $uri = $reason->getRequest()->getUri();
-            $host = $uri->getScheme().'://'.$uri->getHost();
-
-            if (!isset($counter[$host])) {
-                $counter[$host] = 0;
-            }
-
-            ++$counter[$host];
-        }
-
         $mirrors = $this->http->getMirror()->toArray();
 
         foreach ($mirrors as $mirror) {
-            $total = $counter[$mirror];
-            if ($total < 1000) {
+            $total = $this->http->getTotalErrorByMirror($mirror);
+            if($total < 1000){
                 continue;
             }
 
             $this->output->write(PHP_EOL);
             $this->output->writeln(
-                '<error>Due to '.
-                $total.' errors mirror '.
-                $mirror.' will be disabled</>'
+                'Due to <error>'.$total.
+                ' errors</> mirror <comment>'.
+                $mirror.'</> will be disabled'
             );
             $this->output->write(PHP_EOL);
             $this->http->getMirror()->remove($mirror);
@@ -359,10 +328,6 @@ class Create extends Base
 
             $this->http->useMirrors();
             $generator = $this->loadProviderPackages($uri)->getPackagesGenerator();
-            if (empty(iterator_to_array($generator))) {
-                continue;
-            }
-
             $this->progressBar->start(count($this->providerPackages));
             $this->poolPackages($generator);
             $this->progressBar->end();
@@ -382,12 +347,7 @@ class Create extends Base
         $providerPackages = array_keys($this->providerPackages);
         foreach ($providerPackages as $uri) {
             if ($this->filesystem->has($uri)) {
-                $this->progressBar->progress();
                 continue;
-            }
-
-            if ($this->initialized) {
-                $uri = $this->http->getMirror()->getNext().'/'.$uri;
             }
 
             yield $uri => $this->http->getRequest($uri);
@@ -414,6 +374,16 @@ class Create extends Base
         );
 
         return $this;
+    }
+
+    /**
+     * @return Closure
+     */
+    protected function getClosureComplete():Closure
+    {
+        return function() {
+            $this->progressBar->progress();
+        };
     }
 
     protected function fallback():Create

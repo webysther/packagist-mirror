@@ -46,6 +46,11 @@ class Http
     /**
      * @var array
      */
+    protected $poolErrorsCount = [];
+
+    /**
+     * @var array
+     */
     protected $config = [
         'base_uri' => '',
         'headers' => ['Accept-Encoding' => 'gzip'],
@@ -152,7 +157,19 @@ class Http
         };
 
         $rejected = function ($reason, $path) use ($complete) {
-            $this->poolErrors[$path] = $reason;
+            $uri = $reason->getRequest()->getUri();
+            $host = $uri->getScheme().'://'.$uri->getHost();
+
+            $wordwrap = wordwrap($reason->getMessage());
+            $message = current(explode("\n", $wordwrap)).'...';
+
+            $this->poolErrors[$path] = [
+                'code' => $reason->getCode(),
+                'host' => $host,
+                'message' => $message
+            ];
+
+            $this->poolErrorsCount[$host]++;
             $complete();
         };
 
@@ -190,6 +207,19 @@ class Http
     public function getPoolErrors():array
     {
         return $this->poolErrors;
+    }
+
+    /**
+     * @param  string $mirror
+     * @return int
+     */
+    public function getTotalErrorByMirror(string $mirror):int
+    {
+        if(!isset($this->poolErrorsCount[$mirror])){
+            return 0;
+        }
+
+        return $this->poolErrorsCount[$mirror];
     }
 
     /**
