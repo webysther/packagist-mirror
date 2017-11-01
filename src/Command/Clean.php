@@ -103,10 +103,10 @@ class Clean extends Base
         $providers = $this->package->loadMainJson();
         $includes = array_keys($this->provider->normalize($providers));
 
-        $this->initialized = $this->filesystem->has(self::INIT);
+        $this->initialized = $this->filesystem->hasFile(self::INIT);
 
         foreach ($includes as $uri) {
-            $pattern = $this->filesystem->normalize($this->shortname($uri));
+            $pattern = $this->filesystem->getGzName($this->shortname($uri));
             $glob = $this->filesystem->glob($pattern);
 
             $this->output->writeln(
@@ -192,7 +192,7 @@ class Clean extends Base
                 continue;
             }
 
-            $pattern = $this->shortname($this->filesystem->normalize($uri));
+            $pattern = $this->shortname($this->filesystem->getGzName($uri));
             $glob = $this->filesystem->glob($pattern);
 
             // If only have the file dont exist old files
@@ -201,7 +201,7 @@ class Clean extends Base
             }
 
             // Remove current value
-            $glob = array_diff($glob, [$this->filesystem->normalize($uri)]);
+            $glob = array_diff($glob, [$this->filesystem->getGzName($uri)]);
             foreach ($glob as $file) {
                 if ($this->isVerbose()) {
                     $this->packageRemoved[] = $file;

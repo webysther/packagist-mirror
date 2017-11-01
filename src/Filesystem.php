@@ -72,7 +72,7 @@ class Filesystem
      *
      * @return string
      */
-    protected function getGzName(string $path):string
+    public function getGzName(string $path):string
     {
         $fullPath = $this->getFullPath($path);
         $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
@@ -207,7 +207,7 @@ class Filesystem
     /**
      * @see FlyFilesystem::has
      */
-    protected function hasFile(string $path):bool
+    public function hasFile(string $path):bool
     {
         return file_exists($this->getFullPath($this->getGzName($path)));
     }
@@ -229,10 +229,16 @@ class Filesystem
      */
     public function move(string $from):Filesystem
     {
+        if(!$this->has($from)){
+            return $this;
+        }
+
         $file = $this->getGzName($from);
         $target = substr($file, 1);
         $this->filesystem->rename($from, $target);
         $this->symlink($target);
+        // remove old symlink
+        $this->delete($from);
         return $this;
     }
 

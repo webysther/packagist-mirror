@@ -85,12 +85,10 @@ class Create extends Base
             return $this->getExitCode();
         }
 
-        // If .packages.json dont exists
-        if ($this->filesystem->has(self::DOT)) {
-            // Move to new location
-            $this->filesystem->move(self::DOT, self::MAIN);
-        }
+        // Move to new location
+        $this->filesystem->move(self::DOT);
 
+        // Clean
         $this->setExitCode($this->clean->execute($input, $output));
 
         if ($this->initialized) {
@@ -132,7 +130,7 @@ class Create extends Base
             $this->filesystem->touch(self::INIT);
         }
 
-        $this->initialized = $this->filesystem->has(self::INIT);
+        $this->initialized = $this->filesystem->hasFile(self::INIT);
 
         $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
 
