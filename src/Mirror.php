@@ -50,7 +50,7 @@ class Mirror
         $this->slaves = $slaves;
 
         $this->data = $slaves;
-        if(!in_array($master, $this->data)){
+        if (!in_array($master, $this->data)) {
             $this->data[] = $master;
         }
 

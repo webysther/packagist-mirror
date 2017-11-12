@@ -44,10 +44,10 @@ $cli = new Symfony\Component\Console\Application(
     $version->getVersion()
 );
 
+$filesystem = new Webs\Mirror\Filesystem(getenv('PUBLIC_DIR'));
 $provider = new Webs\Mirror\Provider;
 $package = new Webs\Mirror\Package;
 $progressBar = new Webs\Mirror\ProgressBar;
-$filesystem = new Webs\Mirror\Filesystem(getenv('PUBLIC_DIR'));
 
 $clean = new Webs\Mirror\Command\Clean();
 $clean->setProgressBar($progressBar);

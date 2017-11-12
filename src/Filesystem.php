@@ -66,7 +66,7 @@ class Filesystem
     }
 
     /**
-     * Add suffix gz to json file
+     * Add suffix gz to json file.
      *
      * @param string $path
      *
@@ -85,9 +85,10 @@ class Filesystem
     }
 
     /**
-     * Get link name from gz
+     * Get link name from gz.
      *
-     * @param  string $path
+     * @param string $path
+     *
      * @return string
      */
     protected function getLink(string $path):string
@@ -159,12 +160,13 @@ class Filesystem
     }
 
     /**
-     * @param  string  $file
-     * @return boolean
+     * @param string $file
+     *
+     * @return bool
      */
     protected function isGzFile(string $file):bool
     {
-        if(substr($this->getGzName($file), -3) == '.gz'){
+        if (substr($this->getGzName($file), -3) == '.gz') {
             return true;
         }
 
@@ -187,7 +189,7 @@ class Filesystem
         $path = $this->getGzName($file);
         $link = $this->getLink($path);
 
-        if($this->hasLink($link)){
+        if ($this->hasLink($link)) {
             return $this;
         }
 
@@ -221,7 +223,7 @@ class Filesystem
     }
 
     /**
-     * Move to not dot name of file
+     * Move to not dot name of file.
      *
      * @param string $from
      *
@@ -229,16 +231,19 @@ class Filesystem
      */
     public function move(string $from):Filesystem
     {
-        if(!$this->has($from)){
+        if (!$this->has($from)) {
             return $this;
         }
 
         $file = $this->getGzName($from);
+
         $target = substr($file, 1);
+        $this->delete($target);
         $this->filesystem->rename($from, $target);
         $this->symlink($target);
         // remove old symlink
         $this->delete($from);
+
         return $this;
     }
 
@@ -263,7 +268,7 @@ class Filesystem
 
         $link = $this->getLink($path);
         if (is_link($link)) {
-            unlink($file);
+            unlink($link);
         }
 
         return $this;
@@ -327,7 +332,7 @@ class Filesystem
      */
     protected function getFullPath(string $path):string
     {
-        if(strpos($path, $this->directory) !== false){
+        if (strpos($path, $this->directory) !== false) {
             return $path;
         }
 

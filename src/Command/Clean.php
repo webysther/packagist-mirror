@@ -14,7 +14,6 @@ namespace Webs\Mirror\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webs\Mirror\ShortName;
 
 /**
  * Clean mirror outdated files.
@@ -23,8 +22,6 @@ use Webs\Mirror\ShortName;
  */
 class Clean extends Base
 {
-    use ShortName;
-
     /**
      * @var array
      */
@@ -73,6 +70,7 @@ class Clean extends Base
         $this->progressBar->setConsole($input, $output);
         $this->package->setConsole($input, $output);
         $this->provider->setConsole($input, $output);
+        $this->provider->setFilesystem($this->filesystem);
 
         if ($this->input->hasOption('scrub') && $this->input->getOption('scrub')) {
             $this->isScrub = true;

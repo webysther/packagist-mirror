@@ -13,6 +13,7 @@ namespace Webs\Mirror;
 
 use Webs\Mirror\Command\Base;
 use stdClass;
+use Generator;
 
 /**
  * Middleware to package operations.
@@ -34,6 +35,11 @@ class Package
     protected $http;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * @var stdClass
      */
     protected $mainJson;
@@ -53,6 +59,20 @@ class Package
     public function setHttp(Http $http):Package
     {
         $this->http = $http;
+
+        return $this;
+    }
+
+    /**
+     * Add a fileSystem.
+     *
+     * @param Filesystem $fileSystem
+     *
+     * @return Package
+     */
+    public function setFilesystem(Filesystem $filesystem):Package
+    {
+        $this->filesystem = $filesystem;
 
         return $this;
     }
@@ -103,5 +123,36 @@ class Package
         }
 
         return $providerPackages;
+    }
+
+    /**
+     * @param string $uri
+     *
+     * @return array
+     */
+    public function getProvider(string $uri):array
+    {
+        $providers = json_decode($this->filesystem->read($uri))->providers;
+
+        return $this->normalize($providers);
+    }
+
+    /**
+     * Download only a package.
+     *
+     * @param array $providerPackages Provider Packages
+     *
+     * @return Generator Providers downloaded
+     */
+    public function getGenerator(array $providerPackages):Generator
+    {
+        $providerPackages = array_keys($providerPackages);
+        foreach ($providerPackages as $uri) {
+            if ($this->filesystem->has($uri)) {
+                continue;
+            }
+
+            yield $uri => $this->http->getRequest($uri);
+        }
     }
 }

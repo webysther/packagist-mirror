@@ -166,10 +166,10 @@ class Http
             $this->poolErrors[$path] = [
                 'code' => $reason->getCode(),
                 'host' => $host,
-                'message' => $message
+                'message' => $message,
             ];
 
-            $this->poolErrorsCount[$host]++;
+            ++$this->poolErrorsCount[$host];
             $complete();
         };
 
@@ -210,12 +210,13 @@ class Http
     }
 
     /**
-     * @param  string $mirror
+     * @param string $mirror
+     *
      * @return int
      */
     public function getTotalErrorByMirror(string $mirror):int
     {
-        if(!isset($this->poolErrorsCount[$mirror])){
+        if (!isset($this->poolErrorsCount[$mirror])) {
             return 0;
         }
 

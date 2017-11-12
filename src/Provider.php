@@ -13,6 +13,7 @@ namespace Webs\Mirror;
 
 use stdClass;
 use Exception;
+use Generator;
 
 /**
  * Middleware to provider operations.
@@ -29,6 +30,11 @@ class Provider
     protected $http;
 
     /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
      * Add a http.
      *
      * @param Http $http
@@ -38,6 +44,20 @@ class Provider
     public function setHttp(Http $http):Provider
     {
         $this->http = $http;
+
+        return $this;
+    }
+
+    /**
+     * Add a fileSystem.
+     *
+     * @param Filesystem $fileSystem
+     *
+     * @return Provider
+     */
+    public function setFilesystem(Filesystem $filesystem):Provider
+    {
+        $this->filesystem = $filesystem;
 
         return $this;
     }
@@ -82,5 +102,28 @@ class Provider
         }
 
         return $includes;
+    }
+
+    /**
+     * Download packages.json & provider-xxx$xxx.json.
+     *
+     * @param array $providerIncludes Provider Includes
+     *
+     * @return Generator Providers downloaded
+     */
+    public function getGenerator(array $providerIncludes):Generator
+    {
+        $providerIncludes = array_keys($providerIncludes);
+        $updated = true;
+        foreach ($providerIncludes as $uri) {
+            if ($this->filesystem->has($uri)) {
+                continue;
+            }
+
+            $updated = false;
+            yield $uri => $this->http->getRequest($uri);
+        }
+
+        return $updated;
     }
 }

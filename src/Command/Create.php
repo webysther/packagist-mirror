@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 /*
  * This file is part of the Packagist Mirror.
@@ -14,7 +14,6 @@ namespace Webs\Mirror\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
-use Webs\Mirror\ShortName;
 use Webs\Mirror\Provider;
 use stdClass;
 use Generator;
@@ -27,8 +26,6 @@ use Closure;
  */
 class Create extends Base
 {
-    use ShortName;
-
     /**
      * @var stdClass
      */
@@ -73,8 +70,10 @@ class Create extends Base
         $this->progressBar->setConsole($input, $output);
         $this->package->setConsole($input, $output);
         $this->package->setHttp($this->http);
+        $this->package->setFilesystem($this->filesystem);
         $this->provider->setConsole($input, $output);
         $this->provider->setHttp($this->http);
+        $this->provider->setFilesystem($this->filesystem);
 
         // Download providers, with repository, is incremental
         if ($this->downloadProviders()->stop()) {
@@ -136,7 +135,7 @@ class Create extends Base
         $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
 
         // No provider changed? Just relax...
-        if ($this->canSkip(self::MAIN)) {
+        if ($this->filesystem->has(self::MAIN) && !$this->initialized) {
             $old = $this->filesystem->getHashFile(self::MAIN);
             $new = $this->filesystem->getHash($newPackages);
 
@@ -168,17 +167,16 @@ class Create extends Base
             $this->package->loadMainJson()
         );
 
-
         if ($this->isEqual()) {
             return $this;
         }
 
         $this->providerIncludes = $this->provider->normalize($this->providers);
-        $generator = $this->getProvidersGenerator();
+        $generator = $this->provider->getGenerator($this->providerIncludes);
 
         $this->progressBar->start(count($this->providerIncludes));
 
-        $success = function($body, $path) {
+        $success = function ($body, $path) {
             $this->filesystem->write($path, $body);
         };
 
@@ -193,41 +191,6 @@ class Create extends Base
         }
 
         return $this;
-    }
-
-    /**
-     * Download packages.json & provider-xxx$xxx.json.
-     *
-     * @return Generator Providers downloaded
-     */
-    protected function getProvidersGenerator():Generator
-    {
-        $providerIncludes = array_keys($this->providerIncludes);
-        $updated = true;
-        foreach ($providerIncludes as $uri) {
-            if ($this->filesystem->has($uri)) {
-                continue;
-            }
-
-            $updated = false;
-            yield $uri => $this->http->getRequest($uri);
-        }
-
-        return $updated;
-    }
-
-    /**
-     * @param string $path
-     *
-     * @return bool
-     */
-    protected function canSkip(string $path):bool
-    {
-        if ($this->filesystem->has($path) && !$this->initialized) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -255,7 +218,7 @@ class Create extends Base
             $rows[] = [
                 '<info>'.$host.'</>',
                 '<comment>'.$this->shortname($path).'</>',
-                '<error>'.$error.'</>'
+                '<error>'.$error.'</>',
             ];
         }
 
@@ -276,7 +239,7 @@ class Create extends Base
 
         foreach ($mirrors as $mirror) {
             $total = $this->http->getTotalErrorByMirror($mirror);
-            if($total < 1000){
+            if ($total < 1000) {
                 continue;
             }
 
@@ -294,20 +257,6 @@ class Create extends Base
     }
 
     /**
-     * @param string $uri
-     *
-     * @return Create
-     */
-    protected function loadProviderPackages(string $uri):Create
-    {
-        $providers = json_decode($this->filesystem->read($uri))->providers;
-        $this->providerPackages = $this->package->normalize($providers);
-        $this->currentProvider = $uri;
-
-        return $this;
-    }
-
-    /**
      * Download packages listed on provider-*.json on public/p dir.
      *
      * @return Create
@@ -319,6 +268,7 @@ class Create extends Base
 
         $providerIncludes = array_keys($this->providerIncludes);
         foreach ($providerIncludes as $uri) {
+            $this->currentProvider = $uri;
             $shortname = $this->shortname($uri);
 
             $this->output->writeln(
@@ -327,7 +277,8 @@ class Create extends Base
             );
 
             $this->http->useMirrors();
-            $generator = $this->loadProviderPackages($uri)->getPackagesGenerator();
+            $this->providerPackages = $this->package->getProvider($uri);
+            $generator = $this->package->getGenerator($this->providerPackages);
             $this->progressBar->start(count($this->providerPackages));
             $this->poolPackages($generator);
             $this->progressBar->end();
@@ -338,25 +289,7 @@ class Create extends Base
     }
 
     /**
-     * Download only a package.
-     *
-     * @return Generator Providers downloaded
-     */
-    protected function getPackagesGenerator():Generator
-    {
-        $providerPackages = array_keys($this->providerPackages);
-        foreach ($providerPackages as $uri) {
-            if ($this->filesystem->has($uri)) {
-                continue;
-            }
-
-            yield $uri => $this->http->getRequest($uri);
-        }
-    }
-
-    /**
      * @param Generator $generator
-     * @param bool|bool $useMirrors
      *
      * @return Create
      */
@@ -365,7 +298,7 @@ class Create extends Base
         $this->http->pool(
             $generator,
             // Success
-            function($body, $path) {
+            function ($body, $path) {
                 $this->filesystem->write($path, $body);
                 $this->package->setDownloaded($path);
             },
@@ -381,11 +314,16 @@ class Create extends Base
      */
     protected function getClosureComplete():Closure
     {
-        return function() {
+        return function () {
             $this->progressBar->progress();
         };
     }
 
+    /**
+     * Fallback to main mirror when other mirrors failed.
+     *
+     * @return Create
+     */
     protected function fallback():Create
     {
         $total = count($this->http->getPoolErrors());
@@ -402,7 +340,7 @@ class Create extends Base
         );
 
         $this->providerPackages = $this->http->getPoolErrors();
-        $generator = $this->getPackagesGenerator();
+        $generator = $this->package->getGenerator($this->providerPackages);
         $this->progressBar->start($total);
         $this->poolPackages($generator);
         $this->progressBar->end();

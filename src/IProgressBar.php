@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface IProgressBar
 {
     /**
-     * Class constructor.
+     * Set console I/O.
      *
      * @param InputInterface  $input  Input
      * @param OutputInterface $output Output
