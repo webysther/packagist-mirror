@@ -27,6 +27,6 @@ trait ShortName
      */
     protected function shortname(string $name):string
     {
-        return preg_replace('/\$(\w*)/', '*', $name);
+        return str_replace('*', '$*', preg_replace('/\$(\w*)/', '*', $name));
     }
 }

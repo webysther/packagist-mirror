@@ -67,28 +67,30 @@ class Clean extends Base
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
+        // Only when direct call by create command
+        $this->initialize($input, $output);
+
+        // Bootstrap utils classes
         $this->progressBar->setConsole($input, $output);
         $this->package->setConsole($input, $output);
+        $this->package->setHttp($this->http);
+        $this->package->setFilesystem($this->filesystem);
         $this->provider->setConsole($input, $output);
+        $this->provider->setHttp($this->http);
         $this->provider->setFilesystem($this->filesystem);
 
-        if ($this->input->hasOption('scrub') && $this->input->getOption('scrub')) {
+        if ($input->hasOption('scrub') && $input->getOption('scrub')) {
             $this->isScrub = true;
         }
 
-        if ($this->flushProviders()->stop()) {
-            return $this->exitCode;
-        }
-
-        if ($this->flushPackages()->stop()) {
-            return $this->exitCode;
-        }
+        $this->flushProviders();
+        $this->flushPackages();
 
         if (!count($this->changed)) {
             $output->writeln('<info>Nothing to clean</>');
         }
 
-        return $this->exitCode;
+        return $this->getExitCode();
     }
 
     /**
@@ -98,7 +100,7 @@ class Clean extends Base
      */
     protected function flushProviders():Clean
     {
-        $providers = $this->package->loadMainJson();
+        $providers = json_decode($this->filesystem->read(self::MAIN));
         $includes = array_keys($this->provider->normalize($providers));
 
         $this->initialized = $this->filesystem->hasFile(self::INIT);
@@ -113,12 +115,13 @@ class Clean extends Base
                 '</>'
             );
 
-            // If have one file and not scrubing
-            if (count($glob) < 2 && !$this->isScrub) {
+            // If not have one file or not scrumbbing
+            if (!(count($glob) > 1 || $this->isScrub)) {
                 continue;
             }
 
             $this->changed[] = $uri;
+            $uri = $this->filesystem->getFullPath($this->filesystem->getGzName($uri));
             $glob = array_diff($glob, [$uri]);
 
             foreach ($glob as $file) {
@@ -180,8 +183,8 @@ class Clean extends Base
 
             $folder = dirname($uri);
 
-            // This folder was changed by last download?
-            if (count($packages) && !in_array($folder, $packages)) {
+            // This uri was changed by last download?
+            if (count($packages) && !in_array($uri, $packages)) {
                 continue;
             }
 
@@ -190,7 +193,8 @@ class Clean extends Base
                 continue;
             }
 
-            $pattern = $this->shortname($this->filesystem->getGzName($uri));
+            $gzName = $this->filesystem->getGzName($uri);
+            $pattern = $this->shortname($gzName);
             $glob = $this->filesystem->glob($pattern);
 
             // If only have the file dont exist old files
@@ -199,8 +203,10 @@ class Clean extends Base
             }
 
             // Remove current value
-            $glob = array_diff($glob, [$this->filesystem->getGzName($uri)]);
-            foreach ($glob as $file) {
+            $fullPath = $this->filesystem->getFullPath($gzName);
+            $diff = array_diff($glob, [$fullPath]);
+
+            foreach ($diff as $file) {
                 if ($this->isVerbose()) {
                     $this->packageRemoved[] = $file;
                 }

@@ -13,8 +13,6 @@ namespace Webs\Mirror;
 
 use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
-use League\Flysystem\Cached\CachedAdapter;
-use League\Flysystem\Cached\Storage\Memory;
 use Exception;
 use FilesystemIterator;
 
@@ -55,14 +53,8 @@ class Filesystem
         // Create the adapter
         $localAdapter = new Local($this->directory);
 
-        // Create the cache store
-        $cacheStore = new Memory();
-
-        // Decorate the adapter
-        $adapter = new CachedAdapter($localAdapter, $cacheStore);
-
         // And use that to create the file system
-        $this->filesystem = new FlyFilesystem($adapter);
+        $this->filesystem = new FlyFilesystem($localAdapter);
     }
 
     /**
@@ -117,7 +109,7 @@ class Filesystem
             return '';
         }
 
-        return $this->decode($file);
+        return (string) $this->decode($file);
     }
 
     /**
@@ -236,10 +228,16 @@ class Filesystem
         }
 
         $file = $this->getGzName($from);
-
         $target = substr($file, 1);
-        $this->delete($target);
-        $this->filesystem->rename($from, $target);
+
+        if ($this->has($target)) {
+            $this->delete($target);
+        }
+
+        retry(8, function () use ($from, $target) {
+            $this->filesystem->rename($this->getGzName($from), $target);
+        }, 250);
+
         $this->symlink($target);
         // remove old symlink
         $this->delete($from);
@@ -283,7 +281,7 @@ class Filesystem
      */
     public function glob(string $pattern):array
     {
-        $return = glob($pattern, GLOB_NOSORT);
+        $return = glob($this->getFullPath($pattern), GLOB_NOSORT);
 
         if ($return === false) {
             return [];
@@ -305,7 +303,7 @@ class Filesystem
         $hash = $this->getHash($path);
 
         if (!is_dir($path)) {
-            return 0;
+            $path = dirname($path);
         }
 
         if (array_key_exists($hash, $this->countedFolder)) {
@@ -330,7 +328,7 @@ class Filesystem
      *
      * @return string
      */
-    protected function getFullPath(string $path):string
+    public function getFullPath(string $path):string
     {
         if (strpos($path, $this->directory) !== false) {
             return $path;

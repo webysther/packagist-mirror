@@ -208,14 +208,18 @@ class Base extends Command
     }
 
     /**
+     * @return int
+     */
+    protected function getExitCode():int
+    {
+        return $this->stop() ? $this->exitCode : 0;
+    }
+
+    /**
      * @return bool
      */
     protected function stop():bool
     {
-        if (isset($this->exitCode)) {
-            return true;
-        }
-
-        return false;
+        return isset($this->exitCode);
     }
 }

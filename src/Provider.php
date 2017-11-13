@@ -35,6 +35,16 @@ class Provider
     protected $filesystem;
 
     /**
+     * @var array
+     */
+    protected $providersDownloaded = [];
+
+    /**
+     * @var bool
+     */
+    protected $initialized = false;
+
+    /**
      * Add a http.
      *
      * @param Http $http
@@ -58,6 +68,34 @@ class Provider
     public function setFilesystem(Filesystem $filesystem):Provider
     {
         $this->filesystem = $filesystem;
+
+        return $this;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setDownloaded(string $path):Provider
+    {
+        $this->providersDownloaded[] = $path;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDownloaded():array
+    {
+        return $this->providersDownloaded;
+    }
+
+    /**
+     * @param bool $value
+     */
+    public function setInitialized(bool $value):Provider
+    {
+        $this->initialized = $value;
 
         return $this;
     }
@@ -116,7 +154,7 @@ class Provider
         $providerIncludes = array_keys($providerIncludes);
         $updated = true;
         foreach ($providerIncludes as $uri) {
-            if ($this->filesystem->has($uri)) {
+            if ($this->filesystem->has($uri) && !$this->initialized) {
                 continue;
             }
 

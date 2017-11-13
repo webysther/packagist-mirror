@@ -115,7 +115,7 @@ class Create extends Base
     {
         $this->generateHtml();
 
-        return isset($this->exitCode) ? $this->exitCode : 0;
+        return parent::getExitCode();
     }
 
     /**
@@ -126,7 +126,7 @@ class Create extends Base
     protected function isEqual():bool
     {
         // if 'p/...' folder not found
-        if (!$this->filesystem->has(self::TO)) {
+        if (!is_dir($this->filesystem->getFullPath(self::TO))) {
             $this->filesystem->touch(self::INIT);
         }
 
@@ -147,6 +147,11 @@ class Create extends Base
             }
         }
 
+        if (!$this->filesystem->has(self::MAIN)) {
+            $this->initialized = true;
+        }
+
+        $this->provider->setInitialized($this->initialized);
         $this->filesystem->write(self::DOT, $newPackages);
 
         return false;
@@ -177,6 +182,7 @@ class Create extends Base
         $this->progressBar->start(count($this->providerIncludes));
 
         $success = function ($body, $path) {
+            $this->provider->setDownloaded($path);
             $this->filesystem->write($path, $body);
         };
 
@@ -184,6 +190,7 @@ class Create extends Base
         $this->progressBar->end();
         $this->showErrors();
 
+        // If initialized can have provider downloaded by half
         if ($generator->getReturn() && !$this->initialized) {
             $this->output->writeln('All providers are <info>updated</>');
 
@@ -263,20 +270,23 @@ class Create extends Base
      */
     protected function downloadPackages():Create
     {
-        $totalProviders = count($this->providerIncludes);
-        $currentProvider = 0;
+        $providerIncludes = $this->provider->getDownloaded();
+        $totalProviders = count($providerIncludes);
 
-        $providerIncludes = array_keys($this->providerIncludes);
-        foreach ($providerIncludes as $uri) {
+        foreach ($providerIncludes as $counter => $uri) {
             $this->currentProvider = $uri;
             $shortname = $this->shortname($uri);
 
+            ++$counter;
             $this->output->writeln(
-                '['.++$currentProvider.'/'.$totalProviders.']'.
+                '['.$counter.'/'.$totalProviders.']'.
                 ' Loading packages from <info>'.$shortname.'</> provider'
             );
 
-            $this->http->useMirrors();
+            if ($this->initialized) {
+                $this->http->useMirrors();
+            }
+
             $this->providerPackages = $this->package->getProvider($uri);
             $generator = $this->package->getGenerator($this->providerPackages);
             $this->progressBar->start(count($this->providerPackages));
