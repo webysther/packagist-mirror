@@ -88,12 +88,14 @@ class CreateTest extends TestCase
 
         $definition = new InputDefinition(array(
             new InputOption('scrub', null, InputOption::VALUE_NONE),
+            new InputOption('no-progress', null, InputOption::VALUE_NONE),
             new InputOption('no-ansi', null, InputOption::VALUE_NONE),
         ));
 
         $input = new ArrayInput(array());
         $input->bind($definition);
         $input->setOption('scrub', true);
+        $input->setOption('no-progress', true);
 
         $this->assertEquals(0, $clean->execute($input, $output));
     }
