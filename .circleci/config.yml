@@ -33,7 +33,10 @@ jobs:
             - ./vendor
           key: v1-dependencies-{{ checksum "composer.json" }}
 
-      - run: mkdir -p $CIRCLE_TEST_REPORTS/phpunit && \
-              vendor/bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml && \
-              vendor/bin/phpunit --coverage-clover=coverage.xml && \
-              bash <(curl -s https://codecov.io/bash)
+test:
+  override:
+    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+    - vendor/bin/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
+    - vendor/bin/phpunit --coverage-clover=coverage.xml
+  post:
+    - bash <(curl -s https://codecov.io/bash)
