@@ -67,21 +67,13 @@ class Create extends Base
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
-        $this->progressBar->setConsole($input, $output);
-        $this->package->setConsole($input, $output);
-        $this->package->setHttp($this->http);
-        $this->package->setFilesystem($this->filesystem);
-        $this->provider->setConsole($input, $output);
-        $this->provider->setHttp($this->http);
-        $this->provider->setFilesystem($this->filesystem);
+        $this->bootstrap();
 
-        // Download providers, with repository, is incremental
-        if ($this->downloadProviders()->stop()) {
-            return $this->getExitCode();
-        }
+        // Download providers
+        $this->downloadProviders();
 
         // Download packages
-        if ($this->downloadPackages()->stop()) {
+        if ($this->stop() || $this->downloadPackages()->stop()) {
             return $this->getExitCode();
         }
 
@@ -96,6 +88,20 @@ class Create extends Base
         }
 
         return $this->getExitCode();
+    }
+
+    /**
+     * @return void
+     */
+    protected function bootstrap():void
+    {
+        $this->progressBar->setConsole($this->input, $this->output);
+        $this->package->setConsole($this->input, $this->output);
+        $this->package->setHttp($this->http);
+        $this->package->setFilesystem($this->filesystem);
+        $this->provider->setConsole($this->input, $this->output);
+        $this->provider->setHttp($this->http);
+        $this->provider->setFilesystem($this->filesystem);
     }
 
     /**

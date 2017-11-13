@@ -50,15 +50,9 @@ class ProgressBar implements IProgressBar
         $noProgress = $this->input->getOption('no-progress');
         $noAnsi = $this->input->getOption('no-ansi');
 
-        if ($isQuiet || $noProgress || $noAnsi) {
-            $this->disabled = true;
+        $this->disabled = $isQuiet || $noProgress || $noAnsi;
 
-            return true;
-        }
-
-        $this->disabled = false;
-
-        return false;
+        return $this->disabled;
     }
 
     /**
