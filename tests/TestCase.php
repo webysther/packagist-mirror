@@ -2,8 +2,9 @@
 
 namespace Webs\Mirror\Tests;
 
-use PHPUnit\Framework\TestCase as BaseTestCase;
 use Dotenv\Dotenv;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -16,11 +17,13 @@ abstract class TestCase extends BaseTestCase
      */
     public function __construct($name = null, array $data = [], $dataName = '')
     {
+        ini_set('memory_limit', '-1');
+
         parent::__construct($name, $data, $dataName);
 
-        chdir(__DIR__);
-
-        $dotenv = new Dotenv(getcwd().'/fixture/');
+        $dotenv = new Dotenv(getcwd().'/tests/fixture/');
         $dotenv->load();
+
+        $this->dir = vfsStream::setup()->url();
     }
 }
