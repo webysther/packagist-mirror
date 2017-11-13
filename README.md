@@ -33,7 +33,7 @@ The following versions of PHP are supported by this version.
 ## Testing
 
 ``` bash
-$ composer qa:paratest
+$ vendor/bin/phpunit
 ```
 
 ## Contributing
