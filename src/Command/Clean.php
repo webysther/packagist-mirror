@@ -205,14 +205,24 @@ class Clean extends Base
             // Remove current value
             $fullPath = $this->filesystem->getFullPath($gzName);
             $diff = array_diff($glob, [$fullPath]);
+            $this->removeAll($diff);
+        }
+    }
 
-            foreach ($diff as $file) {
-                if ($this->isVerbose()) {
-                    $this->packageRemoved[] = $file;
-                }
-
-                $this->filesystem->delete($file);
+    /**
+     * Remove all files
+     *
+     * @param  array  $files
+     * @return void
+     */
+    protected function removeAll(array $files):void
+    {
+        foreach ($files as $file) {
+            if ($this->isVerbose()) {
+                $this->packageRemoved[] = $file;
             }
+
+            $this->filesystem->delete($file);
         }
     }
 
