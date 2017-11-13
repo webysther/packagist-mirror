@@ -177,19 +177,7 @@ class Clean extends Base
         foreach ($list as $uri) {
             $this->progressBar->progress();
 
-            if ($this->initialized) {
-                continue;
-            }
-
-            $folder = dirname($uri);
-
-            // This uri was changed by last download?
-            if (count($packages) && !in_array($uri, $packages)) {
-                continue;
-            }
-
-            // If only have the file and link dont exist old files
-            if ($this->filesystem->getCount($folder) < 3) {
+            if ($this->canSkipPackage($uri, $packages)) {
                 continue;
             }
 
@@ -207,6 +195,32 @@ class Clean extends Base
             $diff = array_diff($glob, [$fullPath]);
             $this->removeAll($diff);
         }
+    }
+
+    /**
+     * @param string $uri
+     * @param array  $packages
+     * @return bool
+     */
+    protected function canSkipPackage(string $uri, array $packages):bool
+    {
+        if ($this->initialized) {
+            return true;
+        }
+
+        $folder = dirname($uri);
+
+        // This uri was changed by last download?
+        if (count($packages) && !in_array($uri, $packages)) {
+            return true;
+        }
+
+        // If only have the file and link dont exist old files
+        if ($this->filesystem->getCount($folder) < 3) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

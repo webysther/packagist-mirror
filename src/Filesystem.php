@@ -14,7 +14,6 @@ namespace Webs\Mirror;
 use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
 use Exception;
-use FilesystemIterator;
 
 /**
  * Middleware to access filesystem with transparent gz encode/decode.
@@ -24,16 +23,12 @@ use FilesystemIterator;
 class Filesystem
 {
     use GZip;
+    use IO;
 
     /**
      * @var FlyFilesystem
      */
     protected $filesystem;
-
-    /**
-     * @var string
-     */
-    protected $directory;
 
     /**
      * Ephemeral cache for folder files count.
@@ -270,71 +265,6 @@ class Filesystem
         }
 
         return $this;
-    }
-
-    /**
-     * Glob without file sort.
-     *
-     * @param string $pattern
-     *
-     * @return array
-     */
-    public function glob(string $pattern):array
-    {
-        $return = glob($this->getFullPath($pattern), GLOB_NOSORT);
-
-        if ($return === false) {
-            return [];
-        }
-
-        return $return;
-    }
-
-    /**
-     * Count files inside folder, if is a file, return 0.
-     *
-     * @param string $folder
-     *
-     * @return int
-     */
-    public function getCount(string $folder):int
-    {
-        $path = $this->getFullPath($folder);
-        $hash = $this->getHash($path);
-
-        if (!is_dir($path)) {
-            $path = dirname($path);
-        }
-
-        if (array_key_exists($hash, $this->countedFolder)) {
-            return $this->countedFolder[$hash];
-        }
-
-        $iterator = new FilesystemIterator(
-            $path,
-            FilesystemIterator::SKIP_DOTS
-        );
-
-        $totalFiles = iterator_count($iterator);
-        $this->countedFolder[$hash] = $totalFiles;
-
-        return $totalFiles;
-    }
-
-    /**
-     * Get full path.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    public function getFullPath(string $path):string
-    {
-        if (strpos($path, $this->directory) !== false) {
-            return $path;
-        }
-
-        return $this->directory.$path;
     }
 
     /**

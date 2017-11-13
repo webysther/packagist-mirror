@@ -366,7 +366,10 @@ class Create extends Base
     {
         ob_start();
         include getcwd().'/resources/index.html.php';
-        file_put_contents('index.html', ob_get_clean());
+        file_put_contents(
+            $this->filesystem->getFullPath('index.html'),
+            ob_get_clean()
+        );
 
         return $this;
     }
