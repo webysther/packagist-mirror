@@ -13,6 +13,7 @@ namespace Webs\Mirror;
 
 use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
+use org\bovigo\vfs\vfsStream;
 use Exception;
 
 /**
@@ -43,13 +44,23 @@ class Filesystem
      */
     public function __construct($baseDirectory)
     {
-        $this->directory = realpath($baseDirectory).DIRECTORY_SEPARATOR;
+        $this->directory = $baseDirectory.'/';
 
         // Create the adapter
         $localAdapter = new Local($this->directory);
 
         // And use that to create the file system
         $this->filesystem = new FlyFilesystem($localAdapter);
+    }
+
+    /**
+     * @param FlyFilesystem $filesystem
+     */
+    public function setFilesystem(FlyFilesystem $filesystem):Filesystem
+    {
+        $this->filesystem = $filesystem;
+
+        return $this;
     }
 
     /**
@@ -174,13 +185,17 @@ class Filesystem
         }
 
         $path = $this->getGzName($file);
-        $link = $this->getLink($path);
+        $link = $this->getFullPath($this->getLink($path));
 
         if ($this->hasLink($link)) {
             return $this;
         }
 
-        symlink(basename($path), $this->getFullPath($link));
+        if (strpos($link, vfsStream::SCHEME.'://') !== false){
+            return $this;
+        }
+
+        symlink(basename($path), $link);
 
         return $this;
     }

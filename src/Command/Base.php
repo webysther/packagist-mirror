@@ -118,6 +118,25 @@ class Base extends Command
     }
 
     /**
+     * Inicialize with custom
+     *
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
+     * @return void
+     */
+    public function init(InputInterface $input, OutputInterface $output)
+    {
+        if(isset($this->input) && isset($this->output)){
+            return $this;
+        }
+
+        // Only when direct call by tests
+        $this->initialize($input, $output);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isVerbose():bool

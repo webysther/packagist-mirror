@@ -67,6 +67,7 @@ class Create extends Base
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
+        $this->initialize($input, $output);
         $this->bootstrap();
 
         // Download providers
@@ -93,7 +94,7 @@ class Create extends Base
     /**
      * @return void
      */
-    protected function bootstrap():void
+    public function bootstrap():void
     {
         $this->progressBar->setConsole($this->input, $this->output);
         $this->package->setConsole($this->input, $this->output);
@@ -175,7 +176,7 @@ class Create extends Base
         );
 
         $this->providers = $this->provider->addFullPath(
-            $this->package->loadMainJson()
+            $this->package->getMainJson()
         );
 
         if ($this->isEqual()) {

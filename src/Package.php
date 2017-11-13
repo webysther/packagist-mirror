@@ -98,7 +98,7 @@ class Package
     /**
      * @return stdClass
      */
-    public function loadMainJson():stdClass
+    public function getMainJson():stdClass
     {
         if (isset($this->mainJson)) {
             return $this->mainJson;
@@ -107,6 +107,17 @@ class Package
         $this->mainJson = $this->http->getJson(self::MAIN);
 
         return $this->mainJson;
+    }
+
+    /**
+     * @param stdClass $obj
+     * @return Package
+     */
+    public function setMainJson(stdClass $obj):Package
+    {
+        $this->mainJson = $obj;
+
+        return $this;
     }
 
     /**

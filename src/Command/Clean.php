@@ -14,6 +14,7 @@ namespace Webs\Mirror\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use stdClass;
 
 /**
  * Clean mirror outdated files.
@@ -67,17 +68,8 @@ class Clean extends Base
      */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
-        // Only when direct call by create command
         $this->initialize($input, $output);
-
-        // Bootstrap utils classes
-        $this->progressBar->setConsole($input, $output);
-        $this->package->setConsole($input, $output);
-        $this->package->setHttp($this->http);
-        $this->package->setFilesystem($this->filesystem);
-        $this->provider->setConsole($input, $output);
-        $this->provider->setHttp($this->http);
-        $this->provider->setFilesystem($this->filesystem);
+        $this->bootstrap();
 
         if ($input->hasOption('scrub') && $input->getOption('scrub')) {
             $this->isScrub = true;
@@ -94,12 +86,30 @@ class Clean extends Base
     }
 
     /**
+     * @return void
+     */
+    public function bootstrap():void
+    {
+        $this->progressBar->setConsole($this->input, $this->output);
+        $this->package->setConsole($this->input, $this->output);
+        $this->package->setHttp($this->http);
+        $this->package->setFilesystem($this->filesystem);
+        $this->provider->setConsole($this->input, $this->output);
+        $this->provider->setHttp($this->http);
+        $this->provider->setFilesystem($this->filesystem);
+    }
+
+    /**
      * Flush old cached files of providers.
      *
      * @return Clean
      */
     protected function flushProviders():Clean
     {
+        if (!$this->filesystem->hasFile(self::MAIN)){
+            return $this;
+        }
+
         $providers = json_decode($this->filesystem->read(self::MAIN));
         $includes = array_keys($this->provider->normalize($providers));
 
