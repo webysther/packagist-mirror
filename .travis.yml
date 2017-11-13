@@ -11,3 +11,7 @@ script:
   - composer global require hirak/prestissimo
   # Validate composer.json file.
   - composer validate
+  # Install
+  - composer install
+  # phunit
+  - vendor/bin/phpunit --coverage-text --no-ansi
