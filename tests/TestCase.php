@@ -18,9 +18,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::__construct($name, $data, $dataName);
 
-        chdir(__DIR__.'/..');
+        chdir(__DIR__);
 
-        $dotenv = new Dotenv(getcwd(), '.env.tests');
+        $dotenv = new Dotenv(getcwd().'/fixture/');
         $dotenv->load();
     }
 }
