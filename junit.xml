@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Test Suite" tests="2" assertions="7" errors="0" failures="0" skipped="0" time="12.490926">
+    <testsuite name="Webs\Mirror\Tests\Command\CreateTest" file="/code/tests/Command/CreateTest.php" tests="1" assertions="3" errors="0" failures="0" skipped="0" time="12.490534">
+      <testcase name="testBuild" class="Webs\Mirror\Tests\Command\CreateTest" classname="Webs.Mirror.Tests.Command.CreateTest" file="/code/tests/Command/CreateTest.php" line="35" assertions="3" time="12.490534"/>
+    </testsuite>
+    <testsuite name="Webs\Mirror\Tests\MirrorTest" file="/code/tests/MirrorTest.php" tests="1" assertions="4" errors="0" failures="0" skipped="0" time="0.000392">
+      <testcase name="testDuplicatedEntry" class="Webs\Mirror\Tests\MirrorTest" classname="Webs.Mirror.Tests.MirrorTest" file="/code/tests/MirrorTest.php" line="18" assertions="4" time="0.000392"/>
+    </testsuite>
+  </testsuite>
+</testsuites>
