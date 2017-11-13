@@ -13,5 +13,3 @@ script:
   - composer validate
   # Install
   - composer install
-  # phunit
-  - vendor/bin/phpunit --coverage-text --no-ansi
