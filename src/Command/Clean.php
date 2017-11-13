@@ -30,7 +30,7 @@ class Clean extends Base
     /**
      * @var array
      */
-    protected $packageRemoved = [];
+    protected $removed = [];
 
     /**
      * @var bool
@@ -122,17 +122,9 @@ class Clean extends Base
 
             $this->changed[] = $uri;
             $uri = $this->filesystem->getFullPath($this->filesystem->getGzName($uri));
-            $glob = array_diff($glob, [$uri]);
-
-            foreach ($glob as $file) {
-                if ($this->isVerbose()) {
-                    $this->output->writeln(
-                        'Old provider <fg=blue;>'.$file.'</> was removed!'
-                    );
-                }
-
-                $this->filesystem->delete($file);
-            }
+            $diff = array_diff($glob, [$uri]);
+            $this->removeAll($diff);
+            $this->showRemoved();
         }
 
         return $this;
@@ -159,7 +151,7 @@ class Clean extends Base
             $this->progressBar->start(count($list));
             $this->flushPackage(array_keys($list));
             $this->progressBar->end();
-            $this->showRemovedPackages();
+            $this->showRemoved();
         }
 
         return true;
@@ -233,7 +225,7 @@ class Clean extends Base
     {
         foreach ($files as $file) {
             if ($this->isVerbose()) {
-                $this->packageRemoved[] = $file;
+                $this->removed[] = $file;
             }
 
             $this->filesystem->delete($file);
@@ -243,11 +235,14 @@ class Clean extends Base
     /**
      * Show packages removed.
      */
-    protected function showRemovedPackages():void
+    protected function showRemoved():void
     {
-        foreach ($this->packageRemoved as $file) {
+        $base = getenv('PUBLIC_DIR').DIRECTORY_SEPARATOR;
+
+        foreach ($this->removed as $file) {
+            $file = str_replace($base, '', $file);
             $this->output->writeln(
-                'Old package <fg=blue;>'.$file.'</> was removed!'
+                'File <fg=blue;>'.$file.'</> was removed!'
             );
         }
     }
