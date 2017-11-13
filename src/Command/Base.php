@@ -122,7 +122,6 @@ class Base extends Command
      *
      * @param  InputInterface  $input
      * @param  OutputInterface $output
-     * @return void
      */
     public function init(InputInterface $input, OutputInterface $output)
     {
