@@ -209,7 +209,7 @@ class Create extends Base
     {
         $errors = $this->http->getPoolErrors();
 
-        if (!$this->isVerbose() || !$errors) {
+        if (!$this->isVerbose() || empty($errors)) {
             return $this;
         }
 
