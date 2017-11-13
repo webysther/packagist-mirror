@@ -4,7 +4,6 @@
 [![Minimum PHP Version](https://goo.gl/PnnkKQ)](https://php.net/)
 [![Packagist](https://goo.gl/155cHZ)](https://packagist.org/packages/webysther/packagist-mirror)
 [![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
-[![Coverage Status](https://goo.gl/heUgvv)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror/code-structure)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
 
