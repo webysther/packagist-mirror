@@ -15,174 +15,211 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webs\Mirror\Util;
-use Dariuszp\CliProgressBar;
+use Webs\Mirror\ShortName;
+use Webs\Mirror\IProgressBar;
+use Webs\Mirror\Filesystem;
+use Webs\Mirror\Http;
+use Webs\Mirror\Provider;
+use Webs\Mirror\Package;
 
 /**
  * Base command.
  *
  * @author Webysther Nunes <webysther@gmail.com>
  */
-abstract class Base extends Command
+class Base extends Command
 {
+    use ShortName;
+
     /**
-     * Console params configuration.
+     * @var bool
      */
-    protected function configure():void
+    protected $initialized = false;
+
+    /**
+     * @var InputInterface
+     */
+    protected $input;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
+
+    /**
+     * @var IProgressBar
+     */
+    protected $progressBar;
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+    /**
+     * @var Http
+     */
+    protected $http;
+
+    /**
+     * @var Provider
+     */
+    protected $provider;
+
+    /**
+     * @var Package
+     */
+    protected $package;
+
+    /**
+     * @var int
+     */
+    protected $exitCode;
+
+    /**
+     * @var bool
+     */
+    protected $verboseVerbose = false;
+
+    /**
+     * @var int
+     */
+    const VV = OutputInterface::VERBOSITY_VERBOSE;
+
+    /**
+     * Main files.
+     */
+    const MAIN = 'packages.json';
+    const DOT = '.packages.json';
+    const INIT = '.init';
+    const TO = 'p';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
     {
         $this->addOption(
-            'info',
+            'no-progress',
             null,
             InputOption::VALUE_NONE,
-            'Show information about disk usage, execution time and memory usage'
-        )
-             ->addOption(
-                 'no-progress',
-                 null,
-                 InputOption::VALUE_NONE,
-                 'Don\'t show progress bar'
-             );
+            "Don't show progress bar"
+        );
     }
 
     /**
-     * Execution.
-     *
-     * @param InputInterface  $input  Input console
-     * @param OutputInterface $output Output console
-     *
-     * @return int 0 if pass, any another is error
+     * {@inheritdoc}
      */
-    public function execute(InputInterface $input, OutputInterface $output):int
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
-
-        $info = false;
-        if ($input->getOption('info')) {
-            $info = true;
-            $util = new Util();
-        }
-
-        $this->determineMode();
-
-        if ($this->childExecute($input, $output)) {
-            return 1;
-        }
-
-        if ($info) {
-            $util->showResults($input, $output);
-        }
-
-        return 0;
+        $this->verboseVerbose = $this->output->getVerbosity() >= self::VV;
     }
 
     /**
-     * Execution.
-     *
-     * @param InputInterface  $input  Input console
-     * @param OutputInterface $output Output console
-     *
-     * @return int 0 if pass, any another is error
+     * @return bool
      */
-    abstract protected function childExecute(InputInterface $input, OutputInterface $output):int;
-
-    /**
-     * Find hash and replace by *.
-     *
-     * @param string $name Name of provider or package
-     *
-     * @return string Shortname
-     */
-    protected function shortname(string $name):string
+    public function isVerbose():bool
     {
-        return preg_replace('/\$(\w*)/', '*', $name);
+        return $this->verboseVerbose;
     }
 
     /**
-     * Determine mode operation.
+     * Add a progress bar.
+     *
+     * @param IProgressBar $progressBar
+     *
+     * @return Base
      */
-    protected function determineMode():void
+    public function setProgressBar(IProgressBar $progressBar):Base
     {
-        $this->hasQuiet = $this->output->isQuiet()
-                            || $this->input->getOption('no-progress')
-                            || $this->input->getOption('no-ansi');
+        $this->progressBar = $progressBar;
+
+        return $this;
     }
 
     /**
-     * Start progress bar.
+     * Add a fileSystem.
      *
-     * @param int $total Total
+     * @param Filesystem $fileSystem
+     *
+     * @return Base
      */
-    protected function progressBarStart(int $total):void
+    public function setFilesystem(Filesystem $filesystem):Base
     {
-        if ($this->hasQuiet) {
-            return;
-        }
+        $this->filesystem = $filesystem;
 
-        $this->bar = new CliProgressBar($total, 0);
+        return $this;
     }
 
     /**
-     * Update progress bar.
+     * Add a http.
      *
-     * @param int $current Current value
+     * @param Http $http
+     *
+     * @return Base
      */
-    protected function progressBarUpdate(int $current = 0):void
+    public function setHttp(Http $http):Base
     {
-        if ($this->hasQuiet) {
-            return;
-        }
+        $this->http = $http;
 
-        if ($current) {
-            $this->bar->progress($current);
-
-            return;
-        }
-
-        $this->bar->progress();
+        return $this;
     }
 
     /**
-     * Finish progress bar.
+     * Add a provider.
+     *
+     * @param Provider $provider
+     *
+     * @return Base
      */
-    protected function progressBarFinish():void
+    public function setProvider(Provider $provider):Base
     {
-        if ($this->hasQuiet) {
-            return;
-        }
+        $this->provider = $provider;
 
-        $this->bar->end();
+        return $this;
     }
 
     /**
-     * Check if is gzip, if not compress.
+     * Add a packages.
      *
-     * @param string $gzip
+     * @param Package $package
      *
-     * @return string
+     * @return Base
      */
-    protected function parseGzip(string $gzip):string
+    public function setPackage(Package $package):Base
     {
-        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
-            return gzencode($gzip);
-        }
+        $this->package = $package;
 
-        return $gzip;
+        return $this;
     }
 
     /**
-     * Check if is gzip, if yes uncompress.
+     * @param int $exit
      *
-     * @param string $gzip
-     *
-     * @return string
+     * @return Base
      */
-    protected function unparseGzip(string $gzip):string
+    protected function setExitCode(int $exit):Base
     {
-        if (mb_strpos($gzip, "\x1f"."\x8b"."\x08") !== 0) {
-            return $gzip;
-        }
+        $this->exitCode = $exit;
 
-        return gzdecode($gzip);
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getExitCode():int
+    {
+        return $this->stop() ? $this->exitCode : 0;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function stop():bool
+    {
+        return isset($this->exitCode);
     }
 }

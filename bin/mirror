@@ -44,7 +44,32 @@ $cli = new Symfony\Component\Console\Application(
     $version->getVersion()
 );
 
-$cli->add(new Webs\Mirror\Command\Create);
-$cli->add(new Webs\Mirror\Command\Clean);
+$filesystem = new Webs\Mirror\Filesystem(getenv('PUBLIC_DIR'));
+$provider = new Webs\Mirror\Provider;
+$package = new Webs\Mirror\Package;
+$progressBar = new Webs\Mirror\ProgressBar;
 
+$mirror = new Webs\Mirror\Mirror(
+    getenv('MAIN_MIRROR'),
+    explode(',', getenv('DATA_MIRROR'))
+);
+$http = new Webs\Mirror\Http($mirror, (int) getenv('MAX_CONNECTIONS'));
+
+$clean = new Webs\Mirror\Command\Clean();
+$clean->setProgressBar($progressBar);
+$clean->setProvider($provider);
+$clean->setPackage($package);
+$clean->setFilesystem($filesystem);
+$clean->setHttp($http);
+
+$create = new Webs\Mirror\Command\Create();
+$create->setProgressBar($progressBar);
+$create->setProvider($provider);
+$create->setPackage($package);
+$create->setFilesystem($filesystem);
+$create->setClean($clean);
+$create->setHttp($http);
+
+$cli->add($create);
+$cli->add($clean);
 $cli->run();

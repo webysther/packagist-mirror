@@ -13,12 +13,11 @@ namespace Webs\Mirror\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Pool;
+use Symfony\Component\Console\Helper\Table;
+use Webs\Mirror\Provider;
 use stdClass;
 use Generator;
-use Webs\Mirror\Circular;
+use Closure;
 
 /**
  * Create a mirror.
@@ -28,557 +27,347 @@ use Webs\Mirror\Circular;
 class Create extends Base
 {
     /**
-     * Console description.
-     *
-     * @var string
+     * @var stdClass
      */
-    protected $description = 'Create/update packagist mirror';
+    protected $providers;
 
     /**
-     * Console params configuration.
+     * @var array
      */
-    protected function configure():void
+    protected $providerIncludes;
+
+    /**
+     * @var string
+     */
+    protected $currentProvider;
+
+    /**
+     * @var array
+     */
+    protected $providerPackages;
+
+    /**
+     * @var Clean
+     */
+    protected $clean;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($name = '')
     {
-        parent::configure();
-        $this->setName('create')->setDescription($this->description);
+        parent::__construct('create');
+        $this->setDescription(
+            'Create/update packagist mirror'
+        );
     }
 
     /**
-     * Execution.
-     *
-     * @param InputInterface  $input  Input console
-     * @param OutputInterface $output Output console
-     *
-     * @return int 0 if pass, any another is error
+     * {@inheritdoc}
      */
-    public function childExecute(InputInterface $input, OutputInterface $output):int
+    public function execute(InputInterface $input, OutputInterface $output):int
     {
-        $this->client = new Client([
-            'base_uri' => getenv('MAIN_MIRROR').'/',
-            'headers' => ['Accept-Encoding' => 'gzip'],
-            'decode_content' => false,
-            'timeout' => 30,
-            'connect_timeout' => 15,
-        ]);
-
-        $this->hasInit = false;
-        $this->loadMirrors();
+        $this->progressBar->setConsole($input, $output);
+        $this->package->setConsole($input, $output);
+        $this->package->setHttp($this->http);
+        $this->package->setFilesystem($this->filesystem);
+        $this->provider->setConsole($input, $output);
+        $this->provider->setHttp($this->http);
+        $this->provider->setFilesystem($this->filesystem);
 
         // Download providers, with repository, is incremental
-        if (!$this->downloadProviders()) {
-            return 1;
+        if ($this->downloadProviders()->stop()) {
+            return $this->getExitCode();
         }
 
         // Download packages
-        if (!$this->downloadPackages()) {
-            return 1;
+        if ($this->downloadPackages()->stop()) {
+            return $this->getExitCode();
         }
 
-        // Switch .packagist.json to packagist.json
-        if (!$this->switch()) {
-            return 1;
+        // Move to new location
+        $this->filesystem->move(self::DOT);
+
+        // Clean
+        $this->setExitCode($this->clean->execute($input, $output));
+
+        if ($this->initialized) {
+            $this->filesystem->delete(self::INIT);
         }
 
-        // Flush old SHA256 files
-        $clean = new Clean();
-        if (isset($this->packages) && count($this->packages)) {
-            $clean->setChangedPackage($this->packages);
-        }
+        return $this->getExitCode();
+    }
 
-        if (!$clean->flush($input, $output)) {
-            return 1;
-        }
+    /**
+     * @param Clean $clean
+     */
+    public function setClean(Clean $clean):Create
+    {
+        $this->clean = $clean;
 
-        if ($this->hasInit) {
-            unlink(getenv('PUBLIC_DIR').'/.init');
-        }
+        return $this;
+    }
 
+    /**
+     * @return int
+     */
+    protected function getExitCode():int
+    {
         $this->generateHtml();
 
-        return 0;
+        return parent::getExitCode();
     }
 
     /**
-     * Load main packages.json.
+     * Check if packages.json was changed.
      *
-     * @return bool|stdClass False or the object of packages.json
+     * @return bool
      */
-    protected function loadMainPackagesInformation()
+    protected function isEqual():bool
     {
-        $this->output->writeln(
-            'Loading providers from <info>'.getenv('MAIN_MIRROR').'</>'
-        );
-
-        $response = $this->client->get('packages.json');
-
-        // Maybe 4xx or 5xx
-        if ($response->getStatusCode() >= 400) {
-            $this->output->writeln('Error download source of providers');
-
-            return false;
-        }
-
-        $json = (string) $response->getBody();
-        $providers = json_decode($this->unparseGzip($json));
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            $this->output->writeln('<error>Invalid JSON</>');
-
-            return false;
-        }
-
-        $providers = $this->addFullPathProviders($providers);
-
-        if (!$this->checkPackagesWasChanged($providers)) {
-            return false;
-        }
-
-        if (empty($providers->{'provider-includes'})) {
-            $this->output->writeln('<error>Not found providers information</>');
-
-            return false;
-        }
-
-        return $providers;
-    }
-
-    /**
-     * Check if packages.json was changed, this reduce load over main packagist.
-     *
-     * @return bool True if is equal, false otherside
-     */
-    protected function checkPackagesWasChanged($providers):bool
-    {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $packages = $cachedir.'packages.json.gz';
-        $dotPackages = $cachedir.'.packages.json.gz';
-        $newPackages = gzencode(json_encode($providers, JSON_PRETTY_PRINT));
-
         // if 'p/...' folder not found
-        if (!file_exists($cachedir.'p')) {
-            touch($cachedir.'.init');
-            mkdir($cachedir.'p', 0777, true);
+        if (!is_dir($this->filesystem->getFullPath(self::TO))) {
+            $this->filesystem->touch(self::INIT);
         }
 
-        if (file_exists($cachedir.'.init')) {
-            $this->hasInit = true;
-        }
+        $this->initialized = $this->filesystem->hasFile(self::INIT);
+
+        $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
 
         // No provider changed? Just relax...
-        if (file_exists($packages) && !$this->hasInit) {
-            if (md5(file_get_contents($packages)) == md5($newPackages)) {
-                $this->output->writeln('<info>Up-to-date</>');
+        if ($this->filesystem->has(self::MAIN) && !$this->initialized) {
+            $old = $this->filesystem->getHashFile(self::MAIN);
+            $new = $this->filesystem->getHash($newPackages);
 
-                return false;
+            if ($old == $new) {
+                $this->output->writeln(self::MAIN.' <info>updated</>');
+                $this->setExitCode(0);
+
+                return true;
             }
         }
 
-        if (!file_exists($cachedir)) {
-            mkdir($cachedir, 0777, true);
+        if (!$this->filesystem->has(self::MAIN)) {
+            $this->initialized = true;
         }
 
-        if (false === file_put_contents($dotPackages, $newPackages)) {
-            $this->output->writeln('<error>.packages.json not found</>');
+        $this->provider->setInitialized($this->initialized);
+        $this->filesystem->write(self::DOT, $newPackages);
 
-            return false;
-        }
-
-        $this->createLink($dotPackages);
-
-        return true;
-    }
-
-    /**
-     * Switch current packagist.json to space and .packagist to packagist.json.
-     *
-     * @return bool True if work, false otherside
-     */
-    protected function switch()
-    {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $packages = $cachedir.'packages.json.gz';
-        $dotPackages = $cachedir.'.packages.json.gz';
-
-        if (file_exists($dotPackages)) {
-            if (file_exists($packages)) {
-                $this->output->writeln(
-                    '<comment>Removing old packages.json</>'
-                );
-                unlink($packages);
-            }
-
-            $this->output->writeln(
-                'Switch <info>.packages.json</> to <info>packages.json</>'
-            );
-            copy($dotPackages, $packages);
-            $this->createLink($packages);
-        }
-
-        return true;
+        return false;
     }
 
     /**
      * Download packages.json & provider-xxx$xxx.json.
      *
-     * @return bool True if work, false otherside
+     * @return Create
      */
-    protected function downloadProviders():bool
+    protected function downloadProviders():Create
     {
-        if (!($providers = $this->loadMainPackagesInformation())) {
-            return false;
-        }
-
-        $includes = count((array) $providers->{'provider-includes'});
-        $this->progressBarStart($includes);
-
-        $generator = $this->downloadProvideIncludes(
-            $providers->{'provider-includes'}
+        $this->output->writeln(
+            'Loading providers from <info>'.$this->http->getBaseUri().'</>'
         );
 
-        if (!$generator->valid()) {
-            $this->output->writeln('All providers up-to-date...');
+        $this->providers = $this->provider->addFullPath(
+            $this->package->loadMainJson()
+        );
 
-            return true;
+        if ($this->isEqual()) {
+            return $this;
         }
 
-        $this->errors = [];
-        $this->providers = [];
-        $pool = new Pool($this->client, $generator, [
-            'concurrency' => getenv('MAX_CONNECTIONS'),
-            'fulfilled' => function ($response, $name) {
-                $json = (string) $response->getBody();
-                file_put_contents($name, $json);
-                $this->createLink($name);
-                $this->providers[$name] = json_decode($this->unparseGzip($json));
-                $this->progressBarUpdate();
-            },
-            'rejected' => function ($reason, $name) {
-                $this->errors[$name] = $reason;
-                $this->progressBarUpdate();
-            },
-        ]);
+        $this->providerIncludes = $this->provider->normalize($this->providers);
+        $generator = $this->provider->getGenerator($this->providerIncludes);
 
-        // Initiate the transfers and create a promise
-        $promise = $pool->promise();
+        $this->progressBar->start(count($this->providerIncludes));
 
-        // Force the pool of requests to complete.
-        $promise->wait();
+        $success = function ($body, $path) {
+            $this->provider->setDownloaded($path);
+            $this->filesystem->write($path, $body);
+        };
 
-        $this->progressBarUpdate();
-        $this->progressBarFinish();
-        $this->showErrors($this->errors);
+        $this->http->pool($generator, $success, $this->getClosureComplete());
+        $this->progressBar->end();
+        $this->showErrors();
 
-        return true;
+        // If initialized can have provider downloaded by half
+        if ($generator->getReturn() && !$this->initialized) {
+            $this->output->writeln('All providers are <info>updated</>');
+
+            return $this->setExitCode(0);
+        }
+
+        return $this;
     }
 
     /**
-     * Download packages.json & provider-xxx$xxx.json.
+     * Show errors.
      *
-     * @param stdClass $includes Providers links
-     *
-     * @return Generator Providers downloaded
+     * @return Create
      */
-    protected function downloadProvideIncludes(stdClass $includes):Generator
+    protected function showErrors():Create
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
+        $errors = $this->http->getPoolErrors();
 
-        foreach ($includes as $template => $hash) {
-            $fileurl = str_replace('%hash%', $hash->sha256, $template);
-            $cachename = $cachedir.$fileurl.'.gz';
-
-            // Only if exists
-            if (file_exists($cachename) && !$this->hasInit) {
-                $this->progressBarUpdate();
-                continue;
-            }
-
-            yield $cachename => new Request(
-                'GET',
-                $fileurl,
-                ['curl' => [CURLMOPT_PIPELINING => 2]]
-            );
-        }
-    }
-
-    /**
-     * Show errors formatted.
-     *
-     * @param array $errors Errors
-     */
-    protected function showErrors(array $errors):void
-    {
-        if (!count($errors) || $this->output->getVerbosity() < OutputInterface::VERBOSITY_VERBOSE) {
-            return;
+        if (!$this->isVerbose() || empty($errors)) {
+            return $this;
         }
 
-        foreach ($errors as $name => $reason) {
-            $shortname = $this->shortname($name);
-            $error = $reason->getCode();
-            $host = $reason->getRequest()->getUri()->getHost();
+        $rows = [];
+        foreach ($errors as $path => $reason) {
+            list('code' => $code, 'host' => $host, 'message' => $message) = $reason;
 
-            $this->output->write(
-                "<comment>$shortname</> failed from <info>$host</> with HTTP error"
-            );
-
+            $error = $code;
             if (!$error) {
-                $this->output->writeln(
-                    ':'.PHP_EOL.'<error>'.$reason->getMessage().'</>'
-                );
-                continue;
+                $error = $message;
             }
 
-            $this->output->writeln(" <error>$error</>");
+            $rows[] = [
+                '<info>'.$host.'</>',
+                '<comment>'.$this->shortname($path).'</>',
+                '<error>'.$error.'</>',
+            ];
         }
 
-        $this->output->writeln('');
+        $table = new Table($this->output);
+        $table->setHeaders(['Mirror', 'Path', 'Error']);
+        $table->setRows($rows);
+        $table->render();
+
+        return $this;
     }
 
     /**
      * Disable mirror when due lots of errors.
      */
-    protected function disableDueErrors(array $errors)
+    protected function disableDueErrors()
     {
-        if (!count($errors)) {
-            return;
-        }
-
-        $counter = [];
-
-        foreach ($errors as $reason) {
-            $uri = $reason->getRequest()->getUri();
-            $host = $uri->getScheme().'://'.$uri->getHost();
-
-            if (!isset($counter[$host])) {
-                $counter[$host] = 0;
-            }
-
-            ++$counter[$host];
-        }
-
-        $mirrors = $this->circular->toArray();
-        $circular = [];
+        $mirrors = $this->http->getMirror()->toArray();
 
         foreach ($mirrors as $mirror) {
-            if ($counter[$mirror] > 1000) {
-                $this->output->writeln(
-                    PHP_EOL
-                    .'<error>Due to '.$counter[$mirror].' errors mirror '.$mirror.' will be disabled</>'.
-                    PHP_EOL
-                );
+            $total = $this->http->getTotalErrorByMirror($mirror);
+            if ($total < 1000) {
                 continue;
             }
 
-            $circular[] = $mirror;
+            $this->output->write(PHP_EOL);
+            $this->output->writeln(
+                'Due to <error>'.$total.
+                ' errors</> mirror <comment>'.
+                $mirror.'</> will be disabled'
+            );
+            $this->output->write(PHP_EOL);
+            $this->http->getMirror()->remove($mirror);
         }
 
-        putenv('DATA_MIRROR='.implode(',', $circular));
-        $this->loadMirrors();
-    }
-
-    protected function fallback(array $files, stdClass $list, string $provider):void
-    {
-        $total = count($files);
-
-        if (!$total) {
-            return;
-        }
-
-        $circular = $this->circular;
-        $this->circular = Circular::fromArray([getenv('MAIN_MIRROR')]);
-
-        $shortname = $this->shortname($provider);
-
-        $this->output->writeln(
-            'Fallback packages from <info>'.$shortname.
-            '</> provider to main mirror <info>'.getenv('MAIN_MIRROR').'</>'
-        );
-
-        $generator = $this->downloadPackage($list);
-        $this->progressBarStart($total);
-        $this->errors = [];
-
-        $pool = new Pool($this->client, $generator, [
-            'concurrency' => getenv('MAX_CONNECTIONS'),
-            'fulfilled' => function ($response, $name) {
-                $gzip = (string) $response->getBody();
-                file_put_contents($name, $this->parseGzip($gzip));
-                $this->createLink($name);
-                $this->packages[] = dirname($name);
-                $this->progressBarUpdate();
-            },
-            'rejected' => function ($reason, $name) {
-                $this->errors[$name] = $reason;
-                $this->progressBarUpdate();
-            },
-        ]);
-
-        $promise = $pool->promise();
-
-        // Force the pool of requests to complete.
-        $promise->wait();
-
-        $this->progressBarUpdate();
-        $this->progressBarFinish();
-        $this->showErrors($this->errors);
-        $this->packages = array_unique($this->packages);
-        $this->circular = $circular;
-    }
-
-    /**
-     * Add base url of packagist.org to services on packages.json of
-     * mirror don't support.
-     *
-     * @param stdClass $providers List of providers from packages.json
-     */
-    protected function addFullPathProviders(stdClass $providers):stdClass
-    {
-        // Add full path for services of mirror don't provide only packagist.org
-        foreach (['notify', 'notify-batch', 'search'] as $key) {
-            // Just in case packagist.org add full path in future
-            $path = parse_url($providers->$key){'path'};
-            $providers->$key = getenv('MAIN_MIRROR').$path;
-        }
-
-        return $providers;
+        return $this;
     }
 
     /**
      * Download packages listed on provider-*.json on public/p dir.
      *
-     * @return bool True if work, false otherside
+     * @return Create
      */
-    protected function downloadPackages():bool
+    protected function downloadPackages():Create
     {
-        if (!isset($this->providers)) {
-            return true;
-        }
+        $providerIncludes = $this->provider->getDownloaded();
+        $totalProviders = count($providerIncludes);
 
-        $this->packages = [];
+        foreach ($providerIncludes as $counter => $uri) {
+            $this->currentProvider = $uri;
+            $shortname = $this->shortname($uri);
 
-        $totalProviders = count($this->providers);
-        $currentProvider = 0;
-        foreach ($this->providers as $provider => $packages) {
-            ++$currentProvider;
-            $list = $packages->providers;
-            $total = count((array) $list);
-            $shortname = $this->shortname($provider);
-
+            ++$counter;
             $this->output->writeln(
-                '['.$currentProvider.'/'.$totalProviders.']'.
+                '['.$counter.'/'.$totalProviders.']'.
                 ' Loading packages from <info>'.$shortname.'</> provider'
             );
 
-            $generator = $this->downloadPackage($list);
-            $this->progressBarStart($total);
-            $this->errors = [];
+            if ($this->initialized) {
+                $this->http->useMirrors();
+            }
 
-            $pool = new Pool($this->client, $generator, [
-                'concurrency' => getenv('MAX_CONNECTIONS') * $this->circular->count(),
-                'fulfilled' => function ($response, $name) {
-                    $gzip = (string) $response->getBody();
-                    file_put_contents($name, $this->parseGzip($gzip));
-                    $this->createLink($name);
-                    $this->packages[] = dirname($name);
-                    $this->progressBarUpdate();
-                },
-                'rejected' => function ($reason, $name) {
-                    $this->errors[$name] = $reason;
-                    $this->progressBarUpdate();
-                },
-            ]);
-
-            // Initiate the transfers and create a promise
-            $promise = $pool->promise();
-
-            // Force the pool of requests to complete.
-            $promise->wait();
-
-            $this->progressBarUpdate();
-            $this->progressBarFinish();
-            $this->showErrors($this->errors);
-            $this->disableDueErrors($this->errors);
-            $this->fallback($this->errors, $list, $provider);
-            $this->packages = array_unique($this->packages);
+            $this->providerPackages = $this->package->getProvider($uri);
+            $generator = $this->package->getGenerator($this->providerPackages);
+            $this->progressBar->start(count($this->providerPackages));
+            $this->poolPackages($generator);
+            $this->progressBar->end();
+            $this->showErrors()->disableDueErrors()->fallback();
         }
 
-        return true;
+        return $this;
     }
 
     /**
-     * Download only a package.
+     * @param Generator $generator
      *
-     * @param stdClass $list Packages links
-     *
-     * @return Generator Providers downloaded
+     * @return Create
      */
-    protected function downloadPackage(stdClass $list):Generator
+    protected function poolPackages(Generator $generator):Create
     {
-        $cachedir = getenv('PUBLIC_DIR').'/';
-        $uri = 'p/%s$%s.json';
+        $this->http->pool(
+            $generator,
+            // Success
+            function ($body, $path) {
+                $this->filesystem->write($path, $body);
+                $this->package->setDownloaded($path);
+            },
+            // If complete, even failed and success
+            $this->getClosureComplete()
+        );
 
-        foreach ($list as $name => $hash) {
-            $fileurl = sprintf($uri, $name, $hash->sha256);
-            $cachename = $cachedir.$fileurl.'.gz';
+        return $this;
+    }
 
-            // Only if exists
-            if (file_exists($cachename)) {
-                $this->progressBarUpdate();
-                continue;
-            }
+    /**
+     * @return Closure
+     */
+    protected function getClosureComplete():Closure
+    {
+        return function () {
+            $this->progressBar->progress();
+        };
+    }
 
-            // if 'p/...' folder not found
-            $subdir = dirname($cachename);
-            if (!file_exists($subdir)) {
-                mkdir($subdir, 0777, true);
-            }
+    /**
+     * Fallback to main mirror when other mirrors failed.
+     *
+     * @return Create
+     */
+    protected function fallback():Create
+    {
+        $total = count($this->http->getPoolErrors());
 
-            if ($this->hasInit) {
-                $fileurl = $this->circular->current().'/'.$fileurl;
-                $this->circular->next();
-            }
-
-            yield $cachename => new Request(
-                'GET',
-                $fileurl,
-                ['curl' => [CURLMOPT_PIPELINING => 2]]
-            );
+        if (!$total) {
+            return $this;
         }
+
+        $shortname = $this->shortname($this->currentProvider);
+
+        $this->output->writeln(
+            'Fallback packages from <info>'.$shortname.
+            '</> provider to main mirror <info>'.$this->http->getBaseUri().'</>'
+        );
+
+        $this->providerPackages = $this->http->getPoolErrors();
+        $generator = $this->package->getGenerator($this->providerPackages);
+        $this->progressBar->start($total);
+        $this->poolPackages($generator);
+        $this->progressBar->end();
+        $this->showErrors();
+
+        return $this;
     }
 
     /**
      * Generate HTML of index.html.
      */
-    protected function generateHtml():void
+    protected function generateHtml():Create
     {
         ob_start();
         include getcwd().'/resources/index.html.php';
-        file_put_contents(getenv('PUBLIC_DIR').'/index.html', ob_get_clean());
-    }
+        file_put_contents('index.html', ob_get_clean());
 
-    protected function loadMirrors()
-    {
-        $this->circular = Circular::fromArray($this->getMirrors());
-    }
-
-    protected function getMirrors():array
-    {
-        $mirrors = explode(',', getenv('DATA_MIRROR'));
-        $mirrors[] = getenv('MAIN_MIRROR');
-
-        return $mirrors;
-    }
-
-    /**
-     * Create a simbolic link.
-     *
-     * @param string $path Path to file
-     */
-    protected function createLink(string $target):void
-    {
-        // From .json.gz to .json
-        $link = substr($target, 0, -3);
-        if (!file_exists($link)) {
-            symlink(basename($target), substr($target, 0, -3));
-        }
+        return $this;
     }
 }
