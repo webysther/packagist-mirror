@@ -27,7 +27,6 @@ Follow to [docker repository](https://github.com/Webysther/packagist-mirror-dock
 
 The following versions of PHP are supported by this version.
 
-* PHP 7.0
 * PHP 7.1
 
 ## Testing
