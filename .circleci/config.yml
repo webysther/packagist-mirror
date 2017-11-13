@@ -34,4 +34,8 @@ jobs:
           key: v1-dependencies-{{ checksum "composer.json" }}
 
       # run tests!
-      - run: vendor/bin/phpunit --coverage-text
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+      - store_test_results:
+          path: coverage.xml
+
