@@ -123,8 +123,7 @@ class Clean extends Base
             $this->changed[] = $uri;
             $uri = $this->filesystem->getFullPath($this->filesystem->getGzName($uri));
             $diff = array_diff($glob, [$uri]);
-            $this->removeAll($diff);
-            $this->showRemoved();
+            $this->removeAll($diff)->showRemoved();
         }
 
         return $this;
@@ -219,23 +218,28 @@ class Clean extends Base
      * Remove all files
      *
      * @param  array  $files
-     * @return void
+     * @return Clean
      */
-    protected function removeAll(array $files):void
+    protected function removeAll(array $files):Clean
     {
         foreach ($files as $file) {
-            if ($this->isVerbose()) {
-                $this->removed[] = $file;
-            }
-
             $this->filesystem->delete($file);
         }
+
+        $this->removed = [];
+        if ($this->isVerbose()) {
+            $this->removed = $files;
+        }
+
+        return $this;
     }
 
     /**
      * Show packages removed.
+     *
+     * @return Clean
      */
-    protected function showRemoved():void
+    protected function showRemoved():Clean
     {
         $base = getenv('PUBLIC_DIR').DIRECTORY_SEPARATOR;
 
@@ -245,5 +249,9 @@ class Clean extends Base
                 'File <fg=blue;>'.$file.'</> was removed!'
             );
         }
+
+        $this->removed = [];
+
+        return $this;
     }
 }
