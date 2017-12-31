@@ -13,7 +13,6 @@ namespace Webs\Mirror;
 
 use League\Flysystem\Filesystem as FlyFilesystem;
 use League\Flysystem\Adapter\Local;
-use org\bovigo\vfs\vfsStream;
 use Exception;
 
 /**
@@ -191,7 +190,7 @@ class Filesystem
             return $this;
         }
 
-        if (strpos($link, vfsStream::SCHEME.'://') !== false){
+        if (strpos($link, 'vfs://') !== false){
             return $this;
         }
 
