@@ -5,7 +5,7 @@
 [![Packagist](https://goo.gl/155cHZ)](https://packagist.org/packages/webysther/packagist-mirror)
 [![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
-[![Software License](https://goo.gl/ieFvw1)](LICENSE.md)
+[![Software License](https://goo.gl/FU2Kw1)](LICENSE)
 
 Crawl packagist and download all metadata about packages.
 
@@ -49,4 +49,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## License
 
-MIT License. Please see [License File](LICENSE.md) for more information.
+MIT License. Please see [License File](LICENSE) for more information.
