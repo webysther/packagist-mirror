@@ -44,8 +44,9 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 - [Webysther Nunes](https://github.com/Webysther)
 - [Hiraku NAKANO](https://github.com/hirak)
+- [IndraGunawan](https://github.com/IndraGunawan)
 - [All Contributors](https://github.com/Webysther/packagist-mirror/contributors)
 
 ## License
 
-Public domain. Please see [License File](LICENSE.md) for more information.
+MIT License. Please see [License File](LICENSE.md) for more information.

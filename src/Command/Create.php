@@ -372,6 +372,15 @@ class Create extends Base
     protected function generateHtml():Create
     {
         ob_start();
+        $countryName = getenv('APP_COUNTRY_NAME');
+        $countryCode = getenv('APP_COUNTRY_CODE');
+        $maintainerMirror = getenv('MAINTAINER_MIRROR');
+        $maintainerProfile = getenv('MAINTAINER_PROFILE');
+        $maintainerRepo = getenv('MAINTAINER_REPO');
+        $maintainerLicense = getenv('MAINTAINER_LICENSE');
+        $lastSync = file_exists(__DIR__.'/packages.json') && false !== ($lastModified = filemtime(__DIR__.'/packages.json'))
+                    ? date('r', $lastModified)
+                    : null;
         include getcwd().'/resources/index.html.php';
         file_put_contents(
             $this->filesystem->getFullPath('index.html'),

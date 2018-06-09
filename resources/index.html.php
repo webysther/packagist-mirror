@@ -1,124 +1,104 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Packagist</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
+        <title>Packagist Mirror</title>
 
-<style>
-html, button, input, select, textarea, div {
-font-family:'Lucida Grande','Hiragino Kaku Gothic ProN',Meiryo,sans-serif !important;
--webkit-text-size-adjust: 100%;
-text-size-adjust: 100%;
-}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/2.3.7/mini-default.min.css" />
+        <style>
+            body { font-family: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif; }
+            .title { text-align: center}
 
-code {
-font-family: Consolas,"Liberation Mono",Courier,monospace !important;
-font-size: 16px;
-line-height: 1.3;
-word-wrap: break-word;
-}
-code.more {
-background-color: #3d3d5c;
-padding: 0.8em;
-color: white;
-}
-h1 {
-margin:0;
-    padding:0;
-}
-.banner {
-    font-size: 300%;
-    text-align: center;
-}
-@media screen and (min-width : 768px){
-    .banner{ font-size : 500%;}
-}
+            @media screen and (min-width: 768px) {
+                h1 { font-size: 500% }
+                h1 > img { width: 10%; }
+            }
+            @media screen and (max-width: 768px) {
+                h1 { font-size: 300% }
+                h1 > img { width: 61px; }
+            }
+            .bash {
+                overflow: auto;
+                border-radius: 0 .125rem .125rem 0;
+                background: #e6e6e6;
+                padding: .75rem;
+                margin: .5rem;
+                border-left: .25rem solid #1565c0;
+                font-family: monospace, monospace;
+            }
+            .bash > span { font-family: monospace, monospace; }
+            mark.default { background: rgba(220,220,220,0.75); color: #212121; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
+                    <div class="title">
+                        <h1>Packagist Mirror <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/flags/4x3/<?= $countryCode; ?>.svg" title="<?= $countryName; ?>" alt="<?= $countryName; ?>"/></h1>
+                        <?php if (null !== $lastSync): ?>
+                            <p>Last sync: <?= $lastSync; ?> (Synchronized every 1 minute)</p>
+                        <?php else: ?>
+                            <p>Synchronized every 1 minute</p>
+                        <?php endif; ?>
+                    </div>
+                    <p>
+                        This is PHP package repository Packagist.org mirror site.
+                    </p>
+                    <p>
+                        If you're using PHP Composer, commands like <mark class="default">create-project</mark>, <mark class="default">require</mark>, <mark class="default">update</mark>, <mark class="default">remove</mark> are often used.
+                        When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used.
+                        The further you are from the location of the packagist.org server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
+                    </p>
+                    <p>
+                        Please do the following command to change the PHP Composer config to use this site as default Composer repository.
+                    </p>
+                    <div class="tabs stacked">
+                        <input type="radio" name="accordion" id="enable" checked aria-hidden="true">
+                        <label for="enable" aria-hidden="true">Enable</label>
+                        <div>
+                            <p class="bash" >
+                                $ <span id="enablingStep"></span>
+                                <button class="small tertiary ctclipboard" data-clipboard-target="#enablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
+                            </p>
+                        </div>
+                        <input type="radio" name="accordion" id="disable"aria-hidden="true">
+                        <label for="disable" aria-hidden="true">Disable</label>
+                        <div>
+                            <p class="bash" >
+                                $ <span id="disablingStep"></span>
+                                <button class="small tertiary ctclipboard" data-clipboard-target="#disablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
+                            </p>
+                        </div>
+                    </div>
 
-@media screen and (min-width : 1024px) {
-    .banner{ font-size : 700%;}
-}
-h3.cmd {
-    width: 10em;
-    background-color: #B88A7A;
-    margin: 0 0 -15px 1em;
-    padding: 0.5em;
-}
+                    <h2>Disclaimer</h2>
+                    <p>This site offers its services free of charge and only as a mirror site.</p>
+                    <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org">Packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
+                </div>
+            </div>
+        </div>
+        <footer class="row">
+            <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
+                <p>
+                    <b>Packagist Mirror</b> was built from <?php echo $countryName ?> by
+                    <a href="<?php echo $maintainerProfile ?>"><? echo $maintainerMirror ?></a>.
+                </p>
+                <p>
+                    It is licensed under the <a href="<? echo $maintainerRepo ?>/blob/master/LICENSE"><? echo $maintainerLicense ?></a>.
+                    You can view the project's source code on <a href="<? echo $maintainerRepo ?>">GitHub</a>.
+                </p>
+            </div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script>
+            // set text of the command
+            document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer '+ window.location.origin;
+            document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
 
-</style>
-</head>
-<body>
-<header>
-<h1 class="banner">Packagist
-  <span>
-     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Brazil.svg/320px-Flag_of_Brazil.svg.png" alt="Brazil flag" height="75">
-  </span>
-</h1>
-</header>
-<?php date_default_timezone_set('America/Sao_Paulo'); ?>
-<p align="center">Atualizado em <?= date('d/m/y H\hi') ?> horário de Brasília</p>
-
-<br>
-<div class="pure-u-1-1" style="margin: 1em;">
-
-<p>
-É um espelho do repositório de bibliotecas PHP <a href="https://packagist.org">https://packagist.org</a>. Ao referir-se aqui em vez de packagist.org, o comando <code>composer update</code> é mais rápido caso esteja na América Latina.
-</p>
-
-<p>Por favor, digite o seguinte comando para habilitar esse espelho.</p>
-
-</div>
-
-
-<h3 class="cmd">habilitar</h3>
-<p>
-<code class="more">$ composer config -g repos.packagist composer https://packagist.com.br</code>
-</p>
-
-<h3 class="cmd">desabilitar</h3>
-<p>
-<code class="more">$ composer config -g --unset repos.packagist</code>
-</p>
-
-
-<div class="pure-u-1-1" style="margin: 1em;">
-
-<p>Para outras informações, utilize o site principal <a href="https://getcomposer.org/">composer</a>, nele é possível encontrar todas as informações relevantes de como utilizar o repositório de bibliotecas.</p>
-
-<h2>Como funciona</h2>
-
-<p>Ao executar <code>composer update</code> é realizado o download de um arquivo JSON que contém as informações do repositório e suas respectivas versões, dessa forma é possível ao composer realizar o download do código correto que foi especificado pelo seu sistema. Dependendo da complexidade do pacote um número maior de pacotes é carregado, aumento o número de vezes que é necessário perguntar ao servidor do packagist por mais arquivos JSON, quando o servidor se encontra em uma distância geográfica grande (RTT) a velocidade para cada conexão de pedido de arquivos é demorado. Com o espelho é possível reduzir esse tempo e também reduzir a carga sobre o servidor principal, aumentando a disponibilidade.</p>
-
-<p>Este site está localizado em São Paulo - Brasil, como o servidor DNS e o CDN utilizado. Ele utiliza o pacote <a href="https://github.com/hirak/packagist-crawler">hirak/packagist-crawler</a> para realizar o download e guardar uma versão mais recente de todos os arquivos JSON. </p>
-
-<p>As requisições aos arquivos do projeto em si são realizadas ao <a href="http://github.com">github</a> ou outro gerenciador de repositórios, observe que isso não ficará mais rápido. Para melhorar o desempenho de carregamento é recomendado utilizar o <a href="https://github.com/hirak/prestissimo"
->prestissimo</a> que permite realizar download paralelo.
-
-<h2>Benchmark</h2>
-
-<h3>Execução de instalação padrão do Laravel</h3>
-
-<code class="more">$ composer create-project --prefer-dist laravel/laravel blog</code>
-
-<p>packagist.org: 4 minutos e 14 segundos</p>
-<p>packagist.com.br: 3 minutos e 10 segundos</p>
-
-<code class="more">$ composer update</code>
-
-<p>packagist.org: 1 minutos e 41 segundos</p>
-<p>packagist.com.br: 1 minuto e 4 segundos</p>
-
-<h2>Considerações legais</h2>
-
-<p>Observe que esse é um site espelho apenas, mantido por <a href="https://twitter.com/webysther">@webysther</a> para permitir uma melhor disponibilidade principalmente no Brasil.<p>
-
-<p>É esperado que ele suporte um grande tráfego de dados, mas não existem garantias sobre sua disponibilidade ou sequer suporte oficial do time que mantém o packagist.org.</p>
-
-<p>Caso o espelho aparente ficar muito lento ou desatualizado recomendamos reportar para <a href="https://twitter.com/webysther">@webysther</a> e desabilitar temporariamente.</p>
-
-</div>
-
-<address style="text-align:center"><a href="https://creativecommons.org/licenses/by-sa/4.0/deed.pt_BR" target="_blank">CC-BY-SA 4.0 BR</a>, Webysther Nunes</address>
-</body>
+            new ClipboardJS('.ctclipboard');
+        </script>
+    </body>
 </html>
