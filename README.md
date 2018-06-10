@@ -21,6 +21,12 @@ Via Composer
 $ composer require webysther/packagist-mirror
 ```
 
+Schedule the command to create and update the mirror:
+
+```bash
+$ php bin/mirror create --no-progress
+```
+
 Via Docker
 
 Follow to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
