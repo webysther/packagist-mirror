@@ -106,7 +106,7 @@ class Clean extends Base
      */
     protected function flushProviders():Clean
     {
-        if (!$this->filesystem->hasFile(self::MAIN)){
+        if (!$this->filesystem->hasFile(self::MAIN)) {
             return $this;
         }
 

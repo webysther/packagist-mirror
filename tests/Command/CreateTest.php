@@ -106,7 +106,7 @@ class CreateTest extends TestCase
         $newJson->{'provider-includes'} = new stdClass();
 
         foreach ($json->{'provider-includes'} as $item => $value) {
-            if (strpos((string) $item, $name.'$') === false){
+            if (strpos((string) $item, $name.'$') === false) {
                 continue;
             }
 

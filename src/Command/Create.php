@@ -380,12 +380,17 @@ class Create extends Base
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
         $tz = getenv('TZ');
         $synced = getenv('SLEEP');
-        $exists = file_exists(getenv('PUBLIC_DIR').'/packages.json');
-        $lastModified = filemtime(getenv('PUBLIC_DIR').'/packages.json');
+        $file = $this->filesystem->getGzName('packages.json');
+        $exists = $this->filesystem->hasFile($file);
+
+        $lastModified = false;
+        if ($exists) {
+            $lastModified = $this->filesystem->getTimestamp($file);
+        }
 
         $lastSync = null;
-        if ($exists && false !== $lastModified){
-            $moment = new \Moment\Moment('now', $tz);
+        if ($exists && false !== $lastModified) {
+            $moment = new \Moment\Moment($lastModified, $tz);
             $momentJs = new \Moment\CustomFormats\MomentJs();
             $format = $momentJs->format("dddd, MMMM Do YYYY HH:mm:ss ZZ");
             $lastSync = $moment->format($format);

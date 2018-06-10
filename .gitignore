@@ -2,3 +2,4 @@ coverage
 vendor
 legacy
 /.env
+cs_fixer*

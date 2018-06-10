@@ -190,7 +190,7 @@ class Filesystem
             return $this;
         }
 
-        if (strpos($link, 'vfs://') !== false){
+        if (strpos($link, 'vfs://') !== false) {
             return $this;
         }
 
@@ -279,6 +279,18 @@ class Filesystem
         }
 
         return $this;
+    }
+
+    /**
+     * Return the timestamp of modification
+     *
+     * @param  string $path
+     *
+     * @return int
+     */
+    public function getTimestamp(string $path):int
+    {
+        return $this->filesystem->getTimestamp($path);
     }
 
     /**

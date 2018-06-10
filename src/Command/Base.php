@@ -125,7 +125,7 @@ class Base extends Command
      */
     public function init(InputInterface $input, OutputInterface $output)
     {
-        if(isset($this->input) && isset($this->output)){
+        if (isset($this->input) && isset($this->output)) {
             return $this;
         }
 
