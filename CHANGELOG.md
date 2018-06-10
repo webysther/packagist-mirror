@@ -7,15 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [1.0.2] - 2018-06-10
+### Added
+- When new mirror was created the public resources is copied to public
+
+### Changed
 - Changed last sync date format
 - Fixed country image vertical align
 - Fixed delete file only if exists
 - Open links on another tab
-- When new mirror was created the public resources is copied to public
 
 ## [1.0.1] - 2018-06-10
+### Changed
 - Synced date now is only using javascript
-- Removed package moment.js compatible
+
+### Removed
+- Package moment.js compatible
 
 ## [1.0.0] - 2018-06-10
 ### Added
