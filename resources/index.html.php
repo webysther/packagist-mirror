@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
         <title>Packagist Mirror</title>
 
+        <link rel="shortcut icon" href="/favicon.ico" />
+
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/2.3.7/mini-default.min.css" />
         <style>
@@ -39,7 +41,7 @@
                     <div class="title">
                         <h1>Packagist Mirror <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/flags/4x3/<?= $countryCode; ?>.svg" title="<?= $countryName; ?>" alt="<?= $countryName; ?>"/></h1>
                         <?php if (null !== $lastSync): ?>
-                            <p>Last sync: <?= $lastSync; ?> (Synchronized every 1 minute)</p>
+                            <p>Last sync: <span id="lastsynced"><?= $lastSync; ?></span> (Synchronized every <?= $synced ?> seconds)</p>
                         <?php else: ?>
                             <p>Synchronized every 1 minute</p>
                         <?php endif; ?>
@@ -83,8 +85,8 @@
         <footer class="row">
             <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
                 <p>
-                    <b>Packagist Mirror</b> was built from <?php echo $countryName ?> by
-                    <a href="<?php echo $maintainerProfile ?>"><? echo $maintainerMirror ?></a>.
+                    <b>Packagist Mirror</b> was built from <?= $countryName ?> by
+                    <a href="<?= $maintainerProfile ?>"><? echo $maintainerMirror ?></a>.
                 </p>
                 <p>
                     It is licensed under the <a href="<? echo $maintainerRepo ?>/blob/master/LICENSE"><? echo $maintainerLicense ?></a>.
@@ -93,12 +95,33 @@
             </div>
         </footer>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.17/moment-timezone-with-data-2012-2022.min.js"></script>
         <script>
             // set text of the command
             document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer '+ window.location.origin;
             document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
 
             new ClipboardJS('.ctclipboard');
+
+            function fetchHeader(url, wch) {
+                try {
+                    var req=new XMLHttpRequest();
+                    req.open("HEAD", url, true);
+                    req.onload = function (e) {
+                        var responseHeader = req.getResponseHeader(wch);
+                        var actual = moment.tz(responseHeader, '<?=$tz; ?>');
+                        var format = 'dddd, MMMM Do YYYY HH:mm:ss ZZ';
+                        var lastsynced = document.getElementById('lastsynced');
+                        lastsynced.innerText = actual.format(format);
+                    };
+                    req.send(null);
+                } catch(er) {}
+            }
+
+            setInterval(function(){
+                fetchHeader(location.href,'Last-Modified');
+            }, (<?=$synced ?>000/2));
         </script>
     </body>
 </html>

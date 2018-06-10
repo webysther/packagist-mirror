@@ -378,9 +378,19 @@ class Create extends Base
         $maintainerProfile = getenv('MAINTAINER_PROFILE');
         $maintainerRepo = getenv('MAINTAINER_REPO');
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
+        $tz = getenv('TZ');
+        $synced = getenv('SLEEP');
         $exists = file_exists(getenv('PUBLIC_DIR').'/packages.json');
         $lastModified = filemtime(getenv('PUBLIC_DIR').'/packages.json');
-        $lastSync = $exists && false !== $lastModified ? date('r', $lastModified) : null;
+
+        $lastSync = null;
+        if ($exists && false !== $lastModified){
+            $moment = new \Moment\Moment('now', $tz);
+            $momentJs = new \Moment\CustomFormats\MomentJs();
+            $format = $momentJs->format("dddd, MMMM Do YYYY HH:mm:ss ZZ");
+            $lastSync = $moment->format($format);
+        }
+
         include getcwd().'/resources/index.html.php';
         file_put_contents(
             $this->filesystem->getFullPath('index.html'),
