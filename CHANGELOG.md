@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed country image vertical align
 - Fixed delete file only if exists
 - Open links on another tab
+- When new mirror was created the public resources is copied to public
 
 ## [1.0.1]
 - Synced date now is only using javascript

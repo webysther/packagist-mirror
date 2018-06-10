@@ -135,6 +135,7 @@ class Create extends Base
         // if 'p/...' folder not found
         if (!is_dir($this->filesystem->getFullPath(self::TO))) {
             $this->filesystem->touch(self::INIT);
+            $this->moveToPublic();
         }
 
         $this->initialized = $this->filesystem->hasFile(self::INIT);
@@ -162,6 +163,22 @@ class Create extends Base
         $this->filesystem->write(self::DOT, $newPackages);
 
         return false;
+    }
+
+    /**
+     * Copy all public resources to public
+     *
+     * @return void
+     */
+    protected function moveToPublic():void
+    {
+        $from = getcwd().'/resources/public/';
+        foreach (new \DirectoryIterator($from) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            $file = $fileInfo->getFilename();
+            $to = $this->filesystem->getFullPath($file);
+            copy($from.$file, $to);
+        }
     }
 
     /**
