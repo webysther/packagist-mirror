@@ -84,7 +84,7 @@
 
                     <h2>Disclaimer</h2>
                     <p>This site offers its services free of charge and only as a mirror site.</p>
-                    <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org">Packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
+                    <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org" target="_blank">Packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
                 </div>
             </div>
         </div>
@@ -92,11 +92,11 @@
             <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
                 <p>
                     <b>Packagist Mirror</b> was built from <?= $countryName ?> by
-                    <a href="<?= $maintainerProfile ?>"><? echo $maintainerMirror ?></a>.
+                    <a href="<?= $maintainerProfile ?>" target="_blank"><? echo $maintainerMirror ?></a>.
                 </p>
                 <p>
-                    It is licensed under the <a href="<? echo $maintainerRepo ?>/blob/master/LICENSE"><? echo $maintainerLicense ?></a>.
-                    You can view the project's source code on <a href="<? echo $maintainerRepo ?>">GitHub</a>.
+                    It is licensed under the <a href="<? echo $maintainerRepo ?>/blob/master/LICENSE" target="_blank"><? echo $maintainerLicense ?></a>.
+                    You can view the project's source code on <a href="<? echo $maintainerRepo ?>" target="_blank">GitHub</a>.
                 </p>
             </div>
         </footer>
