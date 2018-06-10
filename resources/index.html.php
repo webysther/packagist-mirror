@@ -40,11 +40,7 @@
                 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
                     <div class="title">
                         <h1>Packagist Mirror <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/flags/4x3/<?= $countryCode; ?>.svg" title="<?= $countryName; ?>" alt="<?= $countryName; ?>"/></h1>
-                        <?php if (null !== $lastSync): ?>
-                            <p>Last sync: <span id="lastsynced"><?= $lastSync; ?></span> (Synchronized every <?= $synced ?> seconds)</p>
-                        <?php else: ?>
-                            <p>Synchronized every 1 minute</p>
-                        <?php endif; ?>
+                        <p><span id="lastsynced" ></span><br>(Synchronized every <?= $synced ?> seconds)</p>
                     </div>
                     <p>
                         This is PHP package repository Packagist.org mirror site.
@@ -113,15 +109,16 @@
                         var actual = moment.tz(responseHeader, '<?=$tz; ?>');
                         var format = 'dddd, MMMM Do YYYY HH:mm:ss ZZ';
                         var lastsynced = document.getElementById('lastsynced');
-                        lastsynced.innerText = actual.format(format);
+                        lastsynced.innerText = 'Last sync: '+actual.format(format);
                     };
                     req.send(null);
                 } catch(er) {}
             }
 
+            fetchHeader(location.href,'Last-Modified');
             setInterval(function(){
                 fetchHeader(location.href,'Last-Modified');
-            }, (<?=$synced ?>000/2));
+            }, (<?=$synced ?>000));
         </script>
     </body>
 </html>

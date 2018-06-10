@@ -282,18 +282,6 @@ class Filesystem
     }
 
     /**
-     * Return the timestamp of modification
-     *
-     * @param  string $path
-     *
-     * @return int
-     */
-    public function getTimestamp(string $path):int
-    {
-        return $this->filesystem->getTimestamp($path);
-    }
-
-    /**
      * Calculates SHA256.
      *
      * @param string $string

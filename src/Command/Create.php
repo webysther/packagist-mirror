@@ -382,26 +382,16 @@ class Create extends Base
         $synced = getenv('SLEEP');
         $file = $this->filesystem->getGzName('packages.json');
         $exists = $this->filesystem->hasFile($file);
+        $html = $this->filesystem->getFullPath('index.html');
 
         $lastModified = false;
         if ($exists) {
-            $lastModified = $this->filesystem->getTimestamp($file);
+            $lastModified = filemtime($html);
         }
 
-        $lastSync = null;
-        if ($exists && false !== $lastModified) {
-            $moment = new \Moment\Moment($lastModified, $tz);
-            $momentJs = new \Moment\CustomFormats\MomentJs();
-            $format = $momentJs->format("dddd, MMMM Do YYYY HH:mm:ss ZZ");
-            $lastSync = $moment->format($format);
-        }
-
-        include getcwd().'/resources/index.html.php';
-        file_put_contents(
-            $this->filesystem->getFullPath('index.html'),
-            ob_get_clean()
-        );
-
+        unlink($html);
+        include_once getcwd().'/resources/index.html.php';
+        file_put_contents($html, ob_get_clean());
         return $this;
     }
 }
