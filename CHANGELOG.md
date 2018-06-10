@@ -5,13 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.0.2] - 2018-06-10
 - Changed last sync date format
 - Fixed country image vertical align
 - Fixed delete file only if exists
 - Open links on another tab
 - When new mirror was created the public resources is copied to public
 
-## [1.0.1]
+## [1.0.1] - 2018-06-10
 - Synced date now is only using javascript
 - Removed package moment.js compatible
 
@@ -23,6 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial version
 
-[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.0.2...HEAD
+[1.0.2]:  https://github.com/Webysther/packagist-mirror/compare/1.0.1...1.0.2
 [1.0.1]:  https://github.com/Webysther/packagist-mirror/compare/1.0.0...1.0.1
 [1.0.0]:  https://github.com/Webysther/packagist-mirror/compare/0.0.1...1.0.0
