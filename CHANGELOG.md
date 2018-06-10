@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.1]
+- Synced date now is only using javascript
+- Removed package moment.js compatible
+
 ## [1.0.0] - 2018-06-10
 ### Added
 - Complete refactoring
@@ -14,5 +18,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial version
 
-[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.0.1...HEAD
+[1.0.1]:  https://github.com/Webysther/packagist-mirror/compare/1.0.0...1.0.1
 [1.0.0]:  https://github.com/Webysther/packagist-mirror/compare/0.0.1...1.0.0
