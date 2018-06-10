@@ -1,9 +1,3 @@
-<?php
-$lastSync = file_exists(__DIR__.'/packages.json')
-                && false !== ($lastModified = filemtime(__DIR__.'/packages.json'))
-                    ? date('r', $lastModified)
-                    : null;
-?>
 <!DOCTYPE html>
 <html>
     <head>

@@ -378,6 +378,9 @@ class Create extends Base
         $maintainerProfile = getenv('MAINTAINER_PROFILE');
         $maintainerRepo = getenv('MAINTAINER_REPO');
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
+        $exists = file_exists(getenv('PUBLIC_DIR').'/packages.json');
+        $lastModified = filemtime(getenv('PUBLIC_DIR').'/packages.json');
+        $lastSync = $exists && false !== $lastModified ? date('r', $lastModified) : null;
         include getcwd().'/resources/index.html.php';
         file_put_contents(
             $this->filesystem->getFullPath('index.html'),

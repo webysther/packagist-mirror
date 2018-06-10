@@ -34,6 +34,8 @@ if (!file_exists('.env')) {
 $dotenv = new Dotenv\Dotenv(getcwd());
 $dotenv->load();
 
+date_default_timezone_set(getenv('TZ'));
+
 // Using Sebastian version formatter
 $version = new SebastianBergmann\Version(
     getenv('APP_VERSION'), getcwd()
