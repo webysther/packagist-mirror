@@ -16,7 +16,8 @@
         "dariuszp/cli-progress-bar": "~1",
         "php-snippets/circular-array": "~1",
         "league/flysystem-cached-adapter": "~1",
-        "illuminate/support": "~5"
+        "illuminate/support": "~5",
+        "fightbulc/moment": "~1"
     },
     "require-dev": {
         "webysther/composer-plugin-qa": "~1",
