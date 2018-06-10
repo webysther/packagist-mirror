@@ -1,4 +1,2 @@
-p
-.init
-*.gz
-*.json
+*
+!.gitignore
