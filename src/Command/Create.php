@@ -387,9 +387,9 @@ class Create extends Base
         $lastModified = false;
         if ($exists) {
             $lastModified = filemtime($html);
+            unlink($html);
         }
 
-        unlink($html);
         include_once getcwd().'/resources/index.html.php';
         file_put_contents($html, ob_get_clean());
         return $this;
