@@ -169,6 +169,9 @@ class Http
                 'message' => $message,
             ];
 
+            if (!isset($this->poolErrorsCount[$host])) {
+                $this->poolErrorsCount[$host] = 0;
+            }
             ++$this->poolErrorsCount[$host];
             $complete();
         };
