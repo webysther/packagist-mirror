@@ -59,12 +59,12 @@
                 PHP 包仓库 Packagist.org 中国区镜像站点.
             </p>
             <p>
-                If you're using PHP Composer, commands like <mark class="default">create-project</mark>, <mark class="default">require</mark>, <mark class="default">update</mark>, <mark class="default">remove</mark> are often used.
-                When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used.
-                The further you are from the location of the packagist.org server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
+                如果你经常使用 <b>Composer</b> 命令，如：<mark class="default">create-project</mark>，<mark class="default">require</mark>，<mark class="default">update</mark>，<mark class="default">remove</mark>。
+                当这些命令执行时，Composer 会通过依赖下载对应包信息。 下载 JSON 文件数量取决于您使用的软件包复杂程度。<br>
+                中国互联网大环境由于众所周知的原因，连接 packagist.org 速度很慢，甚至无法连接。通过使用镜像可以加快下载速度，节省没必要的等待时间。<br>
             </p>
             <p>
-                Please do the following command to change the PHP Composer config to use this site as default Composer repository.
+                请执行以下命令将 Composer 默认仓库设置为本站
             </p>
             <div class="tabs stacked">
 
@@ -96,10 +96,20 @@
                 </div>
 
             </div>
+            <h2>声明</h2>
+            <p>该网站仅作为免费镜像站点提供服务。</p>
+            <p>该站点仅提供包信息、元数据。 所有包、元数据均镜像自 <a href="https://packagist.org" target="_blank">Packagist.org</a>。我们<mark class="default">绝不会</mark>更新、处理 JSON 文件。 如果发生错误或者你感觉不爽，随时使用以上命令禁用，尝试从源站 packagist.org 读取。</p>
 
-            <h2>Disclaimer</h2>
-            <p>This site offers its services free of charge and only as a mirror site.</p>
-            <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org" target="_blank">Packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
+            <h2>赞助</h2>
+            <p>
+                <div class="col-sm-2 col-md-2 col-lg-2">
+                    <div class="sponsor">
+                        <a href="https://www.anchnet.com/?from=https://php.cnpkg.org" target="_blank">
+                            <img src="https://www.anchnet.com/assets/libs/v1/image/logo/anchnet/logo-full-gray.svg" alt="安畅网络" width="120px">
+                        </a>
+                    </div>
+                </div>
+            </p>
         </div>
     </div>
 </div>
