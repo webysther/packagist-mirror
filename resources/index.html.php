@@ -53,7 +53,10 @@
                          class="img-valign"
                     />
                 </h1>
-                <p><span id="lastsynced" ></span><br>(每 <?= $synced ?> 秒同步一次)</p>
+                <p>
+                    <mark id="lastsynced" class="tertiary"></mark><br>
+                    (每 <?= $synced ?> 秒同步一次)
+                </p>
             </div>
             <p>
                 PHP 包仓库 Packagist.org 中国区镜像站点.
@@ -98,7 +101,7 @@
             </div>
             <h2>声明</h2>
             <p>该网站仅作为免费镜像站点提供服务。</p>
-            <p>该站点仅提供包信息、元数据。 所有包、元数据均镜像自 <a href="https://packagist.org" target="_blank">Packagist.org</a>。我们<mark class="default">绝不会</mark>更新、处理 JSON 文件。 如果发生错误或者你感觉不爽，随时使用以上命令禁用，尝试从源站 packagist.org 读取。</p>
+            <p>该站点仅提供包信息、元数据。 所有包、元数据均镜像自 <a href="https://packagist.org" target="_blank">Packagist.org</a>。我们<mark class="secondary">绝不会</mark>更新、处理 JSON 文件。 如果发生错误或者你感觉不爽，随时使用以上命令禁用，尝试从源站 packagist.org 读取。</p>
             <h2>镜像架构</h2>
             <p>
                 <img src="/architecture.png" alt="架构图">
