@@ -107,14 +107,13 @@ class Filesystem
      */
     public function read(string $path):string
     {
-        $path = $this->getGzName($path);
         $file = $this->filesystem->read($path);
 
         if ($file === false) {
             return '';
         }
 
-        return (string) $this->decode($file);
+        return (string) $file;
     }
 
     /**
@@ -124,16 +123,12 @@ class Filesystem
      */
     public function write(string $path, string $contents):Filesystem
     {
-        $file = $this->getGzName($path);
-        $this->filesystem->put($file, $this->encode($contents));
-        $decoded = $this->decode($contents);
+        $this->filesystem->put($path, $contents);
 
-        if ($this->getHash($decoded) != $this->getHashFile($file)) {
-            $this->filesystem->delete($file);
+        if ($this->getHash($contents) != $this->getHashFile($path)) {
+            $this->filesystem->delete($path);
             throw new Exception("Write file $path hash failed");
         }
-
-        $this->symlink($file);
 
         return $this;
     }
@@ -157,49 +152,6 @@ class Filesystem
     }
 
     /**
-     * @param string $file
-     *
-     * @return bool
-     */
-    protected function isGzFile(string $file):bool
-    {
-        if (substr($this->getGzName($file), -3) == '.gz') {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Create a symlink.
-     *
-     * @param string $file
-     *
-     * @return Filesystem
-     */
-    protected function symlink(string $file):Filesystem
-    {
-        if (!$this->hasFile($file) || !$this->isGzFile($file)) {
-            return $this;
-        }
-
-        $path = $this->getGzName($file);
-        $link = $this->getFullPath($this->getLink($path));
-
-        if ($this->hasLink($link)) {
-            return $this;
-        }
-
-        if (strpos($link, 'vfs://') !== false) {
-            return $this;
-        }
-
-        symlink(basename($path), $link);
-
-        return $this;
-    }
-
-    /**
      * @see FlyFilesystem::has
      */
     public function has(string $path):bool
@@ -212,7 +164,7 @@ class Filesystem
      */
     public function hasFile(string $path):bool
     {
-        return file_exists($this->getFullPath($this->getGzName($path)));
+        return file_exists($this->getFullPath($path));
     }
 
     /**
@@ -236,18 +188,16 @@ class Filesystem
             return $this;
         }
 
-        $file = $this->getGzName($from);
-        $target = substr($file, 1);
+        $target = substr($from, 1);
 
         if ($this->has($target)) {
             $this->delete($target);
         }
 
         retry(8, function () use ($from, $target) {
-            $this->filesystem->rename($this->getGzName($from), $target);
+            $this->filesystem->rename($from, $target);
         }, 250);
 
-        $this->symlink($target);
         // remove old symlink
         $this->delete($from);
 
@@ -268,14 +218,8 @@ class Filesystem
             return $this;
         }
 
-        $file = $this->getGzName($path);
-        if (file_exists($file)) {
-            unlink($file);
-        }
-
-        $link = $this->getLink($path);
-        if (is_link($link)) {
-            unlink($link);
+        if (file_exists($path)) {
+            unlink($path);
         }
 
         return $this;

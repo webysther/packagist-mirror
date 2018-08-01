@@ -54,7 +54,7 @@ class Http
     protected $config = [
         'base_uri' => '',
         'headers' => ['Accept-Encoding' => 'gzip'],
-        'decode_content' => false,
+        'decode_content' => true,
         'timeout' => 30,
         'connect_timeout' => 15,
     ];
@@ -108,7 +108,7 @@ class Http
             throw new Exception("Error download $uri", 1);
         }
 
-        $json = $this->decode((string) $response->getBody());
+        $json = (string) $response->getBody();
         $decoded = json_decode($json);
 
         if (json_last_error() !== JSON_ERROR_NONE) {

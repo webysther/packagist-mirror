@@ -397,7 +397,7 @@ class Create extends Base
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
         $tz = getenv('TZ');
         $synced = getenv('SLEEP');
-        $file = $this->filesystem->getGzName('packages.json');
+        $file = $this->filesystem->getFullPath('packages.json');
         $exists = $this->filesystem->hasFile($file);
         $html = $this->filesystem->getFullPath('index.html');
 

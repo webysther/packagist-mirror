@@ -116,7 +116,7 @@ class Clean extends Base
         $this->initialized = $this->filesystem->hasFile(self::INIT);
 
         foreach ($includes as $uri) {
-            $pattern = $this->filesystem->getGzName($this->shortname($uri));
+            $pattern = $this->shortname($uri);
             $glob = $this->filesystem->glob($pattern);
 
             $this->output->writeln(
@@ -131,7 +131,7 @@ class Clean extends Base
             }
 
             $this->changed[] = $uri;
-            $uri = $this->filesystem->getFullPath($this->filesystem->getGzName($uri));
+            $uri = $this->filesystem->getFullPath($uri);
             $diff = array_diff($glob, [$uri]);
             $this->removeAll($diff)->showRemoved();
         }
@@ -182,8 +182,7 @@ class Clean extends Base
                 continue;
             }
 
-            $gzName = $this->filesystem->getGzName($uri);
-            $pattern = $this->shortname($gzName);
+            $pattern = $this->shortname($uri);
             $glob = $this->filesystem->glob($pattern);
 
             // If only have the file dont exist old files
@@ -192,7 +191,7 @@ class Clean extends Base
             }
 
             // Remove current value
-            $fullPath = $this->filesystem->getFullPath($gzName);
+            $fullPath = $this->filesystem->getFullPath($uri);
             $diff = array_diff($glob, [$fullPath]);
             $this->removeAll($diff);
         }
