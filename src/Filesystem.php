@@ -82,25 +82,6 @@ class Filesystem
     }
 
     /**
-     * Get link name from gz.
-     *
-     * @param string $path
-     *
-     * @return string
-     */
-    protected function getLink(string $path):string
-    {
-        $fullPath = $this->getFullPath($path);
-        $extension = pathinfo($fullPath, PATHINFO_EXTENSION);
-
-        if ($extension == 'gz') {
-            return substr($path, 0, -3);
-        }
-
-        return $path;
-    }
-
-    /**
      * Decode from gz after read from disk.
      *
      * @see FlyFilesystem::read
@@ -156,7 +137,7 @@ class Filesystem
      */
     public function has(string $path):bool
     {
-        return $this->hasFile($path) && $this->hasLink($path);
+        return $this->hasFile($path);
     }
 
     /**
@@ -167,13 +148,6 @@ class Filesystem
         return file_exists($this->getFullPath($path));
     }
 
-    /**
-     * @see FlyFilesystem::has
-     */
-    protected function hasLink(string $path):bool
-    {
-        return is_link($this->getFullPath($this->getLink($path)));
-    }
 
     /**
      * Move to not dot name of file.
