@@ -15,9 +15,8 @@ if [ ! -f $LOCK_FILE ]; then
 	    -from $MIRROR_PATH/public/ \
 	    -target $MIRROR_PROXY_PATH/public/
 
-	rsync -avz --recursive --stats $MIRROR_PROXY_PATH/ cnpkg@cnpkg-wx:$MIRROR_PROXY_PATH
-
 	cp -f $MIRROR_PATH/public/index.html $MIRROR_PROXY_PATH/public/index.html
+	rsync -avz --recursive --stats $MIRROR_PROXY_PATH/ cnpkg@cnpkg-wx:$MIRROR_PROXY_PATH
 else
 	pid=`cat $LOCK_FILE`
 	echo "Running: $pid"
