@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
-    <title>Composer / Packagist 中国镜像</title>
+    <title>Composer / Packagist 中国全量镜像</title>
     <meta name=description content="Composer / Packagist 中国镜像同步源来自 packagist.org, 加速 Composer 安装、更新软件包，让国内开发者使用更加方便、快捷。">
-    <meta name=keywords content=Composer,Packagist,Composer镜像,镜像,composer.json,Laravel,PHP包管理,PHP>
+    <meta name=keywords content=Composer,Packagist,Composer全量镜像,镜像,composer.json,Laravel,PHP包管理,PHP>
 
     <link rel="shortcut icon" href="/favicon.ico" />
 
@@ -56,7 +56,7 @@
         <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
             <div class="title">
                 <h1>
-                    Composer / Packagist 中国镜像
+                    Composer / Packagist 中国全量镜像
                     <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/flags/4x3/<?= $countryCode; ?>.svg"
                          title="<?= $countryName; ?>"
                          alt="<?= $countryName; ?>"
@@ -69,7 +69,7 @@
                 </p>
             </div>
             <p>
-                PHP 包仓库 Packagist.org 中国区镜像站点.
+                PHP 包仓库 Packagist.org 中国区全量镜像站点.
             </p>
             <p>
                 如果你经常使用 <b>Composer</b> 命令，如：<mark class="default">create-project</mark>，<mark class="default">require</mark>，<mark class="default">update</mark>，<mark class="default">remove</mark>。
