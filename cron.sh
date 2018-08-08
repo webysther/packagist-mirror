@@ -16,7 +16,7 @@ if [ ! -f $LOCK_FILE ]; then
 	    -target $MIRROR_PROXY_PATH/public/
 
 	cp -f $MIRROR_PATH/public/index.html $MIRROR_PROXY_PATH/public/index.html
-	rsync -avz --recursive --stats $MIRROR_PROXY_PATH/ cnpkg@cnpkg-wx:$MIRROR_PROXY_PATH
+	rsync --exclude="public/hashed.log" -avz --recursive --stats $MIRROR_PROXY_PATH/ cnpkg@cnpkg-wx:$MIRROR_PROXY_PATH
 else
 	pid=`cat $LOCK_FILE`
 	echo "Running: $pid"
