@@ -81,7 +81,8 @@
             </p>
             <p class="alert">
                 <b>建议：</b>在更改配置源之前，推荐先执行 <b>composer clearcache</b> 清除缓存 <br>
-                若项目之前已通过其他源安装，务必删除 <b>composer.lock</b> 以及 <b>vendor</b> 目录，重新生成。
+                若项目之前已通过其他源安装，务必删除 <b>composer.lock</b> 以及 <b>vendor</b> 目录，重新生成。<br>
+                <mark id="lastsynced" class="tertiary">现已支持元数据、下载包全量代理！！</mark>
             </p>
             <div class="tabs stacked">
 
