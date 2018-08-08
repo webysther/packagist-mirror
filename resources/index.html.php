@@ -38,6 +38,16 @@
             vertical-align: middle;
             width:50px;
         }
+        .alert{
+            color: #f8f8f8;
+            padding: 0.5rem;
+            color: #8a6d3b;
+            background-color: #fcf8e3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #faebcc;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +78,10 @@
             </p>
             <p>
                 请执行以下命令将 Composer 默认仓库设置为本站
+            </p>
+            <p class="alert">
+                <b>建议：</b>在更改配置源之前，推荐先执行 <b>composer clearcache</b> 清除缓存 <br>
+                若项目之前已通过其他源安装，务必删除 <b>composer.lock</b> 以及 <b>vendor</b> 目录，重新生成。
             </p>
             <div class="tabs stacked">
 
