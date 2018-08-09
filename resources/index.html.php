@@ -125,12 +125,12 @@
             <div class="row">
                 <div class="col-sm-2 col-md-2 col-lg-2" style="max-width: 120px">
                     <a href="https://www.anchnet.com/?from=https://php.cnpkg.org" target="_blank">
-                        <img src="https://www.anchnet.com/assets/libs/v1/image/logo/anchnet/logo-full-gray.svg" alt="安畅网络" width="120px" height="60px">
+                        <img src="https://www.anchnet.com/assets/libs/v1/image/logo/anchnet/logo-full-gray.svg" alt="安畅网络" style="width: 120px; height: 60px">
                     </a>
                 </div>
                 <div class="col-sm-2 col-md-2 col-lg-2" style="max-width: 120px">
                     <a href="https://www.upyun.com/?from=https://php.cnpkg.org" target="_blank">
-                        <img src="/upyun_logo.png" alt="又拍云" width="120px" height="60px">
+                        <img src="/upyun_logo.png" alt="又拍云" style="width: 120px; height: 60px">
                     </a>
                 </div>
             </div>
