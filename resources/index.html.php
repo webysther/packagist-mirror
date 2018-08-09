@@ -122,18 +122,18 @@
                 <img src="/architecture.png" alt="架构图">
             </p>
             <h2>赞助</h2>
-            <p>
-                <div class="col-sm-2 col-md-2 col-lg-2">
-                    <div class="sponsor">
-                        <a href="https://www.anchnet.com/?from=https://php.cnpkg.org" target="_blank">
-                            <img src="https://www.anchnet.com/assets/libs/v1/image/logo/anchnet/logo-full-gray.svg" alt="安畅网络" width="120px">
-                        </a>
-                        <a href="https://www.upyun.com/?from=https://php.cnpkg.org" target="_blank">
-                            <img src="/upyun_logo.png" alt="又拍云" width="120px">
-                        </a>
-                    </div>
+            <div class="row">
+                <div class="col-sm-2 col-md-2 col-lg-2" style="max-width: 120px">
+                    <a href="https://www.anchnet.com/?from=https://php.cnpkg.org" target="_blank">
+                        <img src="https://www.anchnet.com/assets/libs/v1/image/logo/anchnet/logo-full-gray.svg" alt="安畅网络" width="120px">
+                    </a>
                 </div>
-            </p>
+                <div class="col-sm-2 col-md-2 col-lg-2" style="max-width: 120px">
+                    <a href="https://www.upyun.com/?from=https://php.cnpkg.org" target="_blank">
+                        <img src="/upyun_logo.png" alt="又拍云" width="120px">
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
