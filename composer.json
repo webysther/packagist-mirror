@@ -1,11 +1,12 @@
 {
     "name": "jinfeijie/packagist-mirror-cn",
-    "description": "Build mirror of packagist",
-    "keywords": ["packagist", "mirror"],
-    "license": "CC0-1.0",
-    "authors": [
-        { "name": "jinfeijie", "email": "me@jinfeijie.cn" }
-    ],
+    "description": "中国的packagist镜像composer包",
+    "keywords": ["packagist", "mirror","mirror-cn"],
+    "license": "MIT",
+    "authors": [{
+        "name": "jinfeijie",
+        "email": "me@jinfeijie.cn"
+    }],
     "require": {
         "php": ">=7.1",
         "guzzlehttp/guzzle": "~6",
@@ -28,10 +29,14 @@
         "hirak/prestissimo": "Composer parallel install plugin"
     },
     "autoload": {
-        "psr-4": { "Webs\\Mirror\\": "src/" }
+        "psr-4": {
+            "Webs\\Mirror\\": "src/"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Webs\\Mirror\\Tests\\": "tests/" }
+        "psr-4": {
+            "Webs\\Mirror\\Tests\\": "tests/"
+        }
     },
     "bin": [
         "bin/mirror"
