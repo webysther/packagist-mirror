@@ -73,7 +73,7 @@
                             </p>
                         </div>
 
-                        <input type="radio" name="accordion" id="OneStep" checked aria-hidden="true">
+                        <input type="radio" name="accordion" id="OneStep" aria-hidden="true">
                         <label for="OneStep" aria-hidden="true">单个项目配置Composer </label>
                         <div>
                             <p class="bash" >
