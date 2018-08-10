@@ -1,10 +1,10 @@
 {
-    "name": "webysther/packagist-mirror",
+    "name": "jinfeijie/packagist-mirror-cn",
     "description": "Build mirror of packagist",
     "keywords": ["packagist", "mirror"],
     "license": "CC0-1.0",
     "authors": [
-        { "name": "Webysther", "email": "websther@gmail.com" }
+        { "name": "jinfeijie", "email": "me@jinfeijie.cn" }
     ],
     "require": {
         "php": ">=7.1",
