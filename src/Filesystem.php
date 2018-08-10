@@ -125,6 +125,7 @@ class Filesystem
     public function write(string $path, string $contents):Filesystem
     {
         $file = $this->getGzName($path);
+        $contents = str_replace("api.github.com","php.composer.jinfeijie.cn/githubapi",$contents);
         $this->filesystem->put($file, $contents);
         $decoded = $this->decode($contents);
 
