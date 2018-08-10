@@ -5,3 +5,4 @@ legacy
 cs_fixer*
 composer.lock
 public
+.idea
