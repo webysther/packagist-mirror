@@ -3,3 +3,4 @@ vendor
 legacy
 /.env
 cs_fixer*
+composer.lock
