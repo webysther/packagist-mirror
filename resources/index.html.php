@@ -65,13 +65,23 @@
                     </p>
                     <div class="tabs stacked">
                         <input type="radio" name="accordion" id="enable" checked aria-hidden="true">
-                        <label for="enable" aria-hidden="true">Composer 全局配置</label>
+                        <label for="enable" aria-hidden="true">全局配置Composer </label>
                         <div>
                             <p class="bash" >
                                 $ <span id="enablingStep"></span>
                                 <button class="small tertiary ctclipboard" data-clipboard-target="#enablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
                             </p>
                         </div>
+
+                        <input type="radio" name="accordion" id="OneStep" checked aria-hidden="true">
+                        <label for="OneStep" aria-hidden="true">单个项目配置Composer </label>
+                        <div>
+                            <p class="bash" >
+                                $ <span id="enablingOneStep"></span>
+                                <button class="small tertiary ctclipboard" data-clipboard-target="#enablingOneStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
+                            </p>
+                        </div>
+
                         <input type="radio" name="accordion" id="disable"aria-hidden="true">
                         <label for="disable" aria-hidden="true">关闭全局配置</label>
                         <div>
@@ -105,6 +115,7 @@
         <script>
             // set text of the command
             document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer '+ window.location.origin;
+            document.getElementById('enablingOneStep').innerText = 'composer config repos.packagist composer '+ window.location.origin;
             document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
 
             new ClipboardJS('.ctclipboard');
