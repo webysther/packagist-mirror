@@ -1,3 +1,6 @@
+# 中文更新
+中文中处理json被gunzip压缩的问题
+
 # Changelog
 All notable changes to this project will be documented in this file.
 

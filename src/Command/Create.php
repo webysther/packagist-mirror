@@ -207,6 +207,7 @@ class Create extends Base
 
         $success = function ($body, $path) {
             $this->provider->setDownloaded($path);
+            $body = gzdecode($body);
             $this->filesystem->write($path, $body);
         };
 
