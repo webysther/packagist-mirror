@@ -7,7 +7,7 @@
 引用composer
 
 ``` bash
-$ composer require jimcy/packagist-mirror-cn
+$ composer require jinfeijie/packagist-mirror-cn
 ```
 
 安排命令以创建和更新镜像：
