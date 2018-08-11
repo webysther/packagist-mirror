@@ -141,7 +141,17 @@ class Create extends Base
         $this->initialized = $this->filesystem->hasFile(self::INIT);
 
         $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
+        if (strlen(getenv('DIST_URL')) > 0){
+            $packages = json_decode($newPackages, true);
 
+            $packages['mirrors'] = [
+                "dist-url" => "https://" . getenv('DIST_URL') . "/%package%/%reference%.%type%",
+                "preferred" => true
+            ];
+
+            $packages['update_at'] = date('Y-m-d H:i:s');
+            $newPackages = json_encode($packages, JSON_PRETTY_PRINT);
+        }
         // No provider changed? Just relax...
         if ($this->filesystem->has(self::MAIN) && !$this->initialized) {
             $old = $this->filesystem->getHashFile(self::MAIN);
