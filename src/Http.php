@@ -80,6 +80,9 @@ class Http
      */
     public function __construct(Mirror $mirror, int $maxConnections)
     {
+        if (getenv('DISABLE_GZIP') == 'TRUE'){
+            unset(($this->config)['headers']);
+        }
         $this->config['base_uri'] = $mirror->getMaster();
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
