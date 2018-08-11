@@ -125,7 +125,11 @@ class Filesystem
     public function write(string $path, string $contents):Filesystem
     {
         $file = $this->getGzName($path);
-        $this->filesystem->put($file, $this->encode($contents));
+        if ($this->isGzip($contents)){
+            $contents = $this->decode($contents);
+        }
+        $contents = str_replace("api.github.com","php.composer.jinfeijie.cn/githubapi",$contents);
+        $this->filesystem->put($file, $contents);
         $decoded = $this->decode($contents);
 
         if ($this->getHash($decoded) != $this->getHashFile($file)) {

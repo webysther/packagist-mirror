@@ -118,6 +118,7 @@
     document.getElementById('enablingOneStep').innerText = 'composer config repos.packagist composer '+ window.location.origin;
     document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
 
+
     new ClipboardJS('.ctclipboard');
 
     function fetchHeader(url, wch) {
