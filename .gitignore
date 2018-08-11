@@ -4,5 +4,5 @@ legacy
 /.env
 cs_fixer*
 composer.lock
-public
+/public
 .idea
