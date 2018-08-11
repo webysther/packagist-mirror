@@ -128,7 +128,7 @@ class Filesystem
         if ($this->isGzip($contents)){
             $contents = $this->decode($contents);
         }
-        $contents = str_replace("api.github.com","php.composer.jinfeijie.cn/githubapi",$contents);
+
         $this->filesystem->put($file, $contents);
         $decoded = $this->decode($contents);
 
