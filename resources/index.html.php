@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
-    <title>Composer / Packagist 中国全量镜像</title>
+    <title>Packagist Composer 中国全量镜像</title>
     <meta name=description content="Composer / Packagist 中国镜像同步源来自 packagist.org, 加速 Composer 安装、更新软件包，让国内开发者使用更加方便、快捷。">
-    <meta name=keywords content=Composer,Packagist,Composer全量镜像,镜像,composer.json,Laravel,PHP包管理,PHP>
+    <meta name=keywords content="Composer,中国镜像,Composer全量镜像,镜像,Packagist 镜像,国内镜像,composer.json,Laravel,PHP包管理,PHP">
 
     <link rel="shortcut icon" href="/favicon.ico" />
 
