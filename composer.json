@@ -2,7 +2,7 @@
     "name": "webysther/packagist-mirror",
     "description": "Build mirror of packagist",
     "keywords": ["packagist", "mirror"],
-    "license": "CC0-1.0",
+    "license": "MIT",
     "authors": [
         { "name": "Webysther", "email": "websther@gmail.com" }
     ],
