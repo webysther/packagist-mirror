@@ -20,11 +20,6 @@ SLEEP=$(( ${SYNC_INTERVAL} * 60 ))
 PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 
-
-if [ -z "${DEBUG}" ];then
-    DEBUG='--no-progress'
-fi
-
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
     WEEK_SYNC_TIME=$(seq 1 7)
 fi
@@ -57,7 +52,7 @@ function update_packages_json(){
     rm -rf public/packages.json
     gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > public/_packages.json.gz
     mv -f public/_packages.json.gz public/packages.json.gz
-    ln -s public/packages.json.gz public/packages.json
+    ln -s public/packages.json.gz packages.json
 }
 
 function init_var(){
@@ -76,7 +71,7 @@ proxy_pid=$!
 
 composersync(){
     info "start sync ....."
-    exec php bin/mirror create ${DEBUG}  &
+    exec php bin/mirror create $@  &
     sync_pid=$!
     wait $sync_pid
     update_packages_json
