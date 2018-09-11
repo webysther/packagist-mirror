@@ -19,7 +19,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
 
 ADD composer.json requirements.txt ./
 
-RUN composer install && pip3 install -r requirements.txt
+RUN composer config -g repo.packagist composer https://packagist.laravel-china.org && \
+    composer install && \
+    pip3 install -r requirements.txt
 
 COPY . .
 

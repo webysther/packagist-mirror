@@ -10,7 +10,7 @@ if [ "$#" -ne 0 ];then
     fi
 fi
 
-SYNC_INTERVAL=${SYNC_INTERVAL:='360'}
+SYNC_INTERVAL=${SYNC_INTERVAL:='5'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_URL=${SERVER_URL:-'http://localhost'}
@@ -93,7 +93,7 @@ do
         sleep_pid=$!
         wait ${sleep_pid}
     else
-        sleep 60 &
+        sleep 50 &
         sleep_pid=$!
         wait ${sleep_pid}
     fi
