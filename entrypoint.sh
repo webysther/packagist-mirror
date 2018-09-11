@@ -39,28 +39,38 @@ function handle_TERM()
 {
         kill -s SIGTERM $(ps aux | grep -v grep| grep  'nginx: master' | awk '{print $2}')
         kill -s SIGTERM $(ps aux | grep -v grep| grep  'php-fpm: master' | awk '{print $2}')
+        kill -s SIGTERM "${proxy_pid}"
         kill -s SIGTERM "${sleep_pid}"
-        kill -s SIGTERM "$syncpid"
-        wait "$syncpid"
+        kill -s SIGTERM "$sync_pid"
+        wait "$sync_pid"
         exit $?
 }
 
+
+
+
+function init_var(){
+    sed -i "s#location /proxy#location /${URL_PREFIX}#" nginx-site.conf
+    cp -r nginx-site.conf /etc/nginx/conf.d/
+
+    sed -i "s#SERVER_NAME#${SERVER_NAME}#g"                 index.html
+    cp -f index.html public/index.html
+}
+init_var
 trap 'handle_TERM' SIGTERM
 
 
 nginx -t && nginx
+python3 ./proxy.py &
+proxy_pid=$!
 
 composersync(){
     info "start sync ....."
     exec php bin/mirror create ${DEBUG}  &
-    syncpid=$!
-    wait $syncpid
+    sync_pid=$!
+    wait $sync_pid
     info "sync end"
 }
-
-
-sed -i "s#SERVER_NAME#${SERVER_NAME}#g"                 index.html
-cp -f index.html public/index.html
 
 
 while true;

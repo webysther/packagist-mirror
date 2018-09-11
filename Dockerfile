@@ -3,7 +3,7 @@ FROM php:7.2
 
 RUN apt-get update && \
     rm /etc/apt/preferences.d/no-debian-php && \
-    apt-get  install -y nginx git procps zip unzip vim && \
+    apt-get  install -y nginx git procps zip unzip vim python3.5 python3-pip && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
@@ -17,9 +17,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" &&
     php -r "unlink('composer-setup.php');" && \
     chmod a+x /usr/bin
 
-ADD composer.json ./
+ADD composer.json requirements.txt ./
 
-RUN composer install
+RUN composer install && pip3 install -r requirements.txt
 
 COPY . .
 
@@ -29,7 +29,7 @@ RUN useradd -u 10000 -G root repo && \
 	ln -sf /dev/stderr /var/log/nginx/error.log && \
     cp -f nginx.conf /etc/nginx/nginx.conf && \
     cp nginx-site.conf /etc/nginx/conf.d/ && \
-	chmod 2775 -R ${DATA} . /var/nginx /var/log /var/run && \
+	chmod 2775 -R ${DATA} . /var/nginx /var/log /var/run /etc/nginx/conf.d/ && \
     chown repo:root -R /var/lib/nginx/  /var/nginx . ${DATA} /etc/nginx/conf.d/ && \
     chmod -R 775  /etc/nginx/conf.d/ *.sh /var/lib/nginx/ /var/nginx
 
