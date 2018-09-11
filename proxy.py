@@ -12,7 +12,7 @@ import threading
 class Share(object):
     def __init__(self):
         self.PROXY_URL_PREFIX = os.getenv('PROXY_URL_PREFIX', 'zipcache')
-        self.DOWNLOAD_PREFIX = 'public/' + os.getenv('DOWNLOAD_PREFIX', self.URL_PREFIX)
+        self.DOWNLOAD_PREFIX = 'public/' + os.getenv('DOWNLOAD_PREFIX', self.PROXY_URL_PREFIX)
         self.UPSTREAM_URL = os.getenv('UPSTREAM_URL', 'https://dl.laravel-china.org')
         self.header = {"User-Agent": os.getenv("USER_AGENT", "Composer/1.6.5 (Darwin; 17.7.0; PHP 7.1.16)")}
 
