@@ -1,59 +1,37 @@
-# Packagist Mirror
+# packagist local mirror
 
-[![Build Status](https://goo.gl/PfY1J8)](https://travis-ci.org/Webysther/packagist-mirror)
-[![Minimum PHP Version](https://goo.gl/nXUVen)](https://php.net/)
-[![Packagist](https://goo.gl/155cHZ)](https://packagist.org/packages/webysther/packagist-mirror)
-[![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
-[![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
-[![Software License](https://goo.gl/FU2Kw1)](LICENSE)
+## 快速开始
 
-This is PHP package repository [packagist.org](packagist.org) mirror site.
+```sh
+# rpm data folder
+data_path="${HOME}/data/packagist-mirror"
 
-If you're using PHP Composer, commands like *create-project*, *require*, *update*, *remove* are often used. When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used. The further you are from the location of the [packagist.org](packagist.org) server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
+# you server ip or domain
+SERVER_NAME=http://packagist.example.com
 
-This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
-
-## Install
-
-Via Composer
-
-``` bash
-$ composer require webysther/packagist-mirror
+docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080 -d klzsysy/packagist-mirror
+# view repo index and client repo file
+open ${SERVER_NAME}:8080
 ```
 
-Schedule the command to create and update the mirror:
+## 变更
 
-```bash
-$ php bin/mirror create --no-progress
-```
+在原基础上:
 
-Via Docker
+- 封装nginx作http服务，默认端口8080
+- 更换国内源
+- 添加定时运行
+- 修改挂载路径
+- 修改权限，以便在无root环境运行
+- 兼容openshift无特权运行
+- 生成index页面
 
-Follow to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
+快速一键部署本地 packagist mirror (*^▽^*)
 
-## Requirements
+## 新增变量
 
-The following versions of PHP are supported by this version.
+- `WEEK_SYNC_TIME` 每周同步的时间 `1-7` 1是周一， 例如 `1 2 3` 为周一到周三，默认每天`all`
+- `SYNC_INTERVAL_DAY` 每天同步的时间, 单位为分钟， 默认`360`，每6小时同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
+- `HTTP_PORT` 默认8080
+- `SERVER_NAME` 用于生成客户端index页面的信息，是部署服务器IP或指向该服务器的域名
 
-* PHP >=7.1
-
-## Testing
-
-``` bash
-$ vendor/bin/phpunit
-```
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
-## Credits
-
-- [Webysther Nunes](https://github.com/Webysther)
-- [Hiraku NAKANO](https://github.com/hirak)
-- [IndraGunawan](https://github.com/IndraGunawan)
-- [All Contributors](https://github.com/Webysther/packagist-mirror/contributors)
-
-## License
-
-MIT License. Please see [License File](LICENSE) for more information.
