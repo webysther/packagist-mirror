@@ -27,5 +27,5 @@ open ${SERVER_NAME}:8080
 ## 新增变量
 
 - `WEEK_SYNC_TIME` 每周同步的时间 `1-7` 1是周一， 例如 `1 2 3` 为周一到周三，默认每天`all`
-- `SYNC_INTERVAL_DAY` 每天同步的时间, 单位为分钟， 默认`360`，每6小时同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
+- `SYNC_INTERVAL` 同步的间隔, 单位为分钟， 默认`360`，每6小时同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
 - `HTTP_PORT` 默认8080

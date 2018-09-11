@@ -10,7 +10,7 @@ if [ "$#" -ne 0 ];then
     fi
 fi
 
-SYNC_INTERVAL_DAY=${SYNC_INTERVAL_DAY:='360'}
+SYNC_INTERVAL=${SYNC_INTERVAL:='360'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_NAME=${SERVER_NAME:-'http://localhost'}
@@ -55,7 +55,8 @@ composersync(){
 }
 
 
-sed -i "s#SERVER_NAME#${SERVER_NAME}#g" index.html
+sed -i "s#SERVER_NAME#${SERVER_NAME}#g"                 index.html
+sed -i "s#SLEEP.*#SLEEP=$(( ${SYNC_INTERVAL} * 60 ))#g" .env
 cp -f index.html public/index.html
 
 
@@ -63,7 +64,7 @@ while true;
 do
     if echo "${WEEK_SYNC_TIME}" | grep -q "$(date '+%u')" ;then
         composersync $@
-        sleep $(( ${SYNC_INTERVAL_DAY} * 60 )) &
+        sleep $(( ${SYNC_INTERVAL} * 60 )) &
         sleep_pid=$!
         wait ${sleep_pid}
     else
