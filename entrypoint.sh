@@ -14,6 +14,10 @@ SYNC_INTERVAL=${SYNC_INTERVAL:='360'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_NAME=${SERVER_NAME:-'http://localhost'}
+SLEEP=$(( ${SYNC_INTERVAL} * 60 ))
+APP_COUNTRY_NAME=${APP_COUNTRY_NAME:-'China'}
+APP_COUNTRY_CODE=${APP_COUNTRY_CODE:-'86'}
+
 
 if [ -z "${DEBUG}" ];then
     DEBUG='--no-progress'
@@ -56,7 +60,6 @@ composersync(){
 
 
 sed -i "s#SERVER_NAME#${SERVER_NAME}#g"                 index.html
-sed -i "s#SLEEP.*#SLEEP=$(( ${SYNC_INTERVAL} * 60 ))#g" .env
 cp -f index.html public/index.html
 
 

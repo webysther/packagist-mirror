@@ -21,7 +21,7 @@ ADD composer.json ./
 
 RUN composer install
 
-COPY . ./.env ./
+COPY . .
 
 RUN useradd -u 10000 -G root repo && \
     mkdir -p ${DATA}  /var/nginx && \
