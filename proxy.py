@@ -11,12 +11,10 @@ import threading
 
 class Share(object):
     def __init__(self):
-
-        self.URL_PREFIX = os.getenv('URL_PREFIX', 'proxy')
-        self.DOWNLOAD_PREFIX = os.getenv('DOWNLOAD_PREFIX', self.URL_PREFIX)
+        self.PROXY_URL_PREFIX = os.getenv('PROXY_URL_PREFIX', 'zipcache')
+        self.DOWNLOAD_PREFIX = 'public/' + os.getenv('DOWNLOAD_PREFIX', self.URL_PREFIX)
         self.UPSTREAM_URL = os.getenv('UPSTREAM_URL', 'https://dl.laravel-china.org')
-        self.USER_AGENT = os.getenv("USER_AGENT", "Composer/1.6.5 (Darwin; 17.7.0; PHP 7.1.16)")
-        self.header = {"User-Agent": self.USER_AGENT}
+        self.header = {"User-Agent": os.getenv("USER_AGENT", "Composer/1.6.5 (Darwin; 17.7.0; PHP 7.1.16)")}
 
 
 class Logging(object):
@@ -64,7 +62,7 @@ def download(origin, folder, file):
         return "Cache Succeeded", 201
 
 
-@app.route('/%s/<path:url>' % S.URL_PREFIX)
+@app.route('/%s/<path:url>' % S.PROXY_URL_PREFIX)
 def proxy(url):
     # headers = dict(request.headers)
     origin_download_url = S.UPSTREAM_URL + '/' + url

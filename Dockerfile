@@ -1,9 +1,10 @@
 FROM php:7.2
 
-
-RUN apt-get update && \
+COPY sources.list /etc/apt/source.list
+RUN rm -rf /etc/apt/sources.list.d && \
+    apt-get update && \
     rm /etc/apt/preferences.d/no-debian-php && \
-    apt-get  install -y nginx git procps zip unzip vim python3.5 python3-pip && \
+    apt-get  install -y nginx git procps zip unzip vim python3.5 python3-pip jq && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
