@@ -40,7 +40,6 @@
                 <div class="col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
                     <div class="title">
                         <h1>Packagist Mirror</h1>
-                        <button onclick="window.location.href='SERVER_NAME/p'">view index</button>
                     </div>
                     <p>
                         This is PHP package repository Packagist.org mirror site.
@@ -81,7 +80,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
         <script>
             // set text of the command
-            document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer SERVER_NAME';
+            document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer'+ window.location.origin;;
             document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
 
             new ClipboardJS('.ctclipboard');

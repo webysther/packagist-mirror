@@ -3,7 +3,7 @@ FROM php:7.2
 
 RUN apt-get update && \
     rm /etc/apt/preferences.d/no-debian-php && \
-    apt-get  install -y nginx git procps zip unzip && \
+    apt-get  install -y nginx git procps zip unzip vim && \
     apt-get clean && \
     rm -rf /var/cache/apt
 
