@@ -9,7 +9,7 @@ data_path="${HOME}/data/packagist-mirror"
 # you server ip or domain
 SERVER_NAME=http://packagist.example.com
 
-docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080 -d klzsysy/packagist-mirror
+docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080 -e SERVER_NAME=${SERVER_NAME} -d klzsysy/packagist-mirror
 # view repo index and client repo file
 open ${SERVER_NAME}:8080
 ```

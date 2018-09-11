@@ -15,6 +15,9 @@ SYNC_INTERVAL_DAY=${SYNC_INTERVAL_DAY:='360'}
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_NAME=${SERVER_NAME:-'http://localhost'}
 
+if [ -z "${DEBUG}" ];then
+    DEBUG='--no-progress'
+fi
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
     WEEK_SYNC_TIME=$(seq 1 7)
@@ -45,7 +48,7 @@ nginx -t && nginx
 
 composersync(){
     info "start sync ....."
-    exec php bin/mirror create &
+    exec php bin/mirror create ${DEBUG}  &
     syncpid=$!
     wait $syncpid
     info "sync end"
