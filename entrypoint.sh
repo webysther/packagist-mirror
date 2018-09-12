@@ -21,7 +21,7 @@ EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
 OPTION=${OPTION:-'--no-progress'}
 MAIN_MIRROR=${MAIN_MIRROR:-'https://packagist.laravel-china.org'}
-
+CLEAR_ZIP_CACHE=${CLEAR_ZIP_CACHE:-'90'}
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
     WEEK_SYNC_TIME=$(seq 1 7)
@@ -68,6 +68,16 @@ function composersync(){
     update_packages_json
     info "sync end"
 
+}
+
+function clear_zip_cache(){
+    find repo/${PROXY_URL_PREFIX} -type f -ctime +${CLEAR_ZIP_CACHE} | xargs rm -rf 
+
+    while true
+    do
+        find repo/${PROXY_URL_PREFIX} -type d -empty | xargs rm -rf
+        find repo/${PROXY_URL_PREFIX} -type d -empty | grep '' || break
+    done
 }
 
 function init_var(){
