@@ -3,19 +3,26 @@
 ## 快速开始
 
 ```sh
-# rpm data folder
+# mirror data folder
 data_path="${HOME}/data/packagist-mirror"
 
-# url or ip 
-SERVER_URL='http://packagist.example.com'
+# you server url or ip， build packages.json mirrors url
+SERVER_URL='https://packagist.example.com'
 
-# user url port, default 80
-# EXTERNAL_PORT='8080' # if not use 80
+# nginx(or other) proxy the mirror server, enabel ssl and expose port 80
+# if not ssl and proxy ↓
+# example:
+#   EXTERNAL_PORT=8080
+#   SERVER_URL='http://packagist.example.com:8080'
 
-docker run -v ${data_path}:/repo/public --name packagist-mirror -p 80:8080  -e SERVER_URL=${SERVER_URL} -e EXTERNAL_PORT=${EXTERNAL_PORT} -d klzsysy/packagist-mirror
+docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080  -e SERVER_URL=${SERVER_URL} -e EXTERNAL_PORT=${EXTERNAL_PORT} -d klzsysy/packagist-mirror
 
 open ${SERVER_URL}
 ```
+
+如果是k8s或者openshift，可导入kubernetes目录中的配置
+
+如果是
 
 ## 特点
 

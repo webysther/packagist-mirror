@@ -1,0 +1,53 @@
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: packagist-mirror
+  labels:
+    k8s-app: packagist-mirror
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: packagist-mirror
+  template:
+    metadata:
+      name: packagist-mirror
+      creationTimestamp: 
+      labels:
+        k8s-app: packagist-mirror
+    spec:
+      containers:
+        - env:
+            - name: SERVER_URL
+              value: 'https://packagist.example.com'
+          name: packagist-mirror
+          image: klzsysy/packagist-mirror
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /repo/public
+              name: volume-data
+      volumes:
+        - name: volume-data
+          emptyDir: {}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: packagist-mirror
+  labels:
+    k8s-app: packagist-mirror
+spec:
+  ports:
+  - name: tcp-8080
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+  selector:
+    k8s-app: packagist-mirror
+  type: ClusterIP
+

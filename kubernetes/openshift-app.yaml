@@ -1,0 +1,49 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  labels:
+    app: packagist-mirror
+  name: packagist-mirror
+spec:
+  replicas: 1
+  selector:
+    app: packagist-mirror
+    deploymentconfig: packagist-mirror
+  template:
+      labels:
+        app: packagist-mirror
+        deploymentconfig: packagist-mirror
+    spec:
+      containers:
+        - env:
+            - name: SERVER_URL
+              value: 'https://packagist.example.com'
+          image: klzsysy/packagist-mirror:latest
+          imagePullPolicy: Always
+          name: packagist-mirror
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /repo/public
+              name: volume-data
+      volumes:
+        - name: volume-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: packagist-mirror
+  name: packagist-mirror
+spec:
+  ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: packagist-mirror
+    deploymentconfig: packagist-mirror
+  type: ClusterIP
