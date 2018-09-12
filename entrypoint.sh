@@ -67,7 +67,7 @@ function init_var(){
     cp -r nginx-site.conf /etc/nginx/conf.d/
     cp -f index.html public/index.html
     sed -i "s#sleep=.*#SLEEP=${SLEEP}#" .env.example
-    sed -i "s#MAIN_MIRROR#${MAIN_MIRROR}#" .env.example
+    sed -i "s#MAIN_MIRROR=.*#MAIN_MIRROR=${MAIN_MIRROR}#" .env.example
 }
 
 init_var
