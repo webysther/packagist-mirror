@@ -80,6 +80,17 @@ function clear_zip_cache(){
     done
 }
 
+function clear_process(){
+    clear_zip_cache &
+    clear_pid=$!
+    sleep 300
+    if kill -9 ${clear_pid} &>/dev/null;then
+        info "clear 程序运行不正常，可能有bug, 开启debug"
+        set -x
+    else
+        true
+    fi
+}
 function init_var(){
     sed -i "s#location /proxy#location /${PROXY_URL_PREFIX}#" nginx-site.conf
     cp -r nginx-site.conf /etc/nginx/conf.d/
@@ -115,17 +126,7 @@ do
         sleep $(( ${SYNC_INTERVAL} * 60 )) &
         sleep_pid=$!
         wait ${sleep_pid}
-
-        clear_zip_cache &
-        clear_pid=$!
-        sleep 300
-        if kill -9 ${clear_pid} &>/dev/null;then
-            info "clear 程序运行不正常，可能有bug, 开启debug"
-            set -x
-        else
-            true
-        fi
-
+        clear_process &
     else
         sleep 50 &
         sleep_pid=$!
