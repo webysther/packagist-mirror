@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # by klzsysy
 
-set -e
+set -ex
 
 if [ "$#" -ne 0 ];then
     if which $1 > /dev/null ;then
@@ -49,10 +49,10 @@ function update_packages_json(){
         _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
     fi
     _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
-    rm -rf public/packages.json
     gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > public/_packages.json.gz
     mv -f public/_packages.json.gz public/packages.json.gz
-    ln -s public/packages.json.gz packages.json
+
+    cd public && ln -sf packages.json.gz packages.json && cd -
 }
 
 function init_var(){
