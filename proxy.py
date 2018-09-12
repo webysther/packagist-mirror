@@ -7,6 +7,7 @@ import logging
 import os
 import shutil
 import threading
+import re
 
 
 class Share(object):
@@ -74,6 +75,19 @@ def proxy(url):
         response = make_response(send_file(local_file_path))
         response.headers["Content-Disposition"] = "attachment; filename={};".format(local_file_name)
         return response
+
+    # python3 -m timeit -s "import re; re.search('\.(zip|tar\.gz|gz)$', 'zipcache/symfony/event-dispatcher/bfb30c2ad377615a463ebbc875eba64a99f6aa3e.zip')"
+    # 100000000 loops, best of 3: 0.0102 usec per loop
+
+    # python3 -m timeit -s "import re; re.match('.*\.(zip|tar\.gz|gz)$', 'zipcache/symfony/event-dispatcher/bfb30c2ad377615a463ebbc875eba64a99f6aa3e.zip')"
+    # 100000000 loops, best of 3: 0.0102 usec per loop
+
+    # python3 -m timeit "'zip' in 'zipcache/symfony/event-dispatcher/bfb30c2ad377615a463ebbc875eba64a99f6aa3e.zip'"
+    # 10000000 loops, best of 3: 0.0471 usec per loop
+
+    # fast verify url
+    if not re.match('.*\.(zip|tar\.gz|gz)$', url):
+        return "invalid url", 403
 
     dl = threading.Thread(target=download, args=(origin_download_url, local_file_dir, local_file_path))
     dl.start()
