@@ -42,7 +42,6 @@ function info(){
 function handle_TERM()
 {
         kill -s SIGTERM $(ps aux | grep -v grep| grep  'nginx: master' | awk '{print $2}')
-        kill -s SIGTERM $(ps aux | grep -v grep| grep  'php-fpm: master' | awk '{print $2}')
         kill -s SIGTERM "${proxy_pid}"
         kill -s SIGTERM "${sleep_pid}"
         kill -s SIGTERM "${sync_pid}"
@@ -79,7 +78,7 @@ proxy_pid=$!
 
 composersync(){
     info "start sync ....."
-    exec php bin/mirror create ${OPTION}  &
+    php bin/mirror create ${OPTION} &
     sync_pid=$!
     wait ${sync_pid}
     update_packages_json
@@ -87,6 +86,7 @@ composersync(){
 
 }
 
+set +e
 
 while true;
 do
@@ -101,4 +101,3 @@ do
         wait ${sleep_pid}
     fi
 done
-x
