@@ -20,6 +20,7 @@ PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
 OPTION=${OPTION:-'--no-progress'}
+UPSTREAM_URL=${UPSTREAM_URL:-'https://repo.packagist.org'}
 
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
@@ -66,6 +67,7 @@ function init_var(){
     cp -r nginx-site.conf /etc/nginx/conf.d/
     cp -f index.html public/index.html
     sed -i "s#sleep=.*#SLEEP=${SLEEP}#" .env.example
+    sed -i "s#MAIN_MIRROR#${UPSTREAM_URL}#" .env.example
 }
 
 init_var
