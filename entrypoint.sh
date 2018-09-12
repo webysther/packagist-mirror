@@ -56,10 +56,8 @@ function update_packages_json(){
         _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
     fi
     _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
-    gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > public/_packages.json.gz
-    mv -f public/_packages.json.gz public/packages.json.gz
+    gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > /opt/share/packages.json
 
-    cd public >/dev/null && ln -sf packages.json.gz packages.json && cd - >/dev/null
 }
 
 function init_var(){
@@ -68,6 +66,15 @@ function init_var(){
     cp -f index.html public/index.html
     sed -i "s#sleep=.*#SLEEP=${SLEEP}#" .env.example
     sed -i "s#MAIN_MIRROR=.*#MAIN_MIRROR=${MAIN_MIRROR}#" .env.example
+
+    cd /opt/share
+    ln -sf /repo/public/*.png .
+    ln -sf /repo/public/*.ico .
+    ln -sf /repo/public/*.txt .
+    ln -sf /repo/public/*.html .
+    ln -sf /repo/public/${PROXY_URL_PREFIX} .
+    ln -sf /repo/public/p .
+    cd -
 }
 
 init_var
