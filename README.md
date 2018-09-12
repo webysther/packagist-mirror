@@ -22,7 +22,6 @@ open ${SERVER_URL}
 
 如果是k8s或者openshift，可导入kubernetes目录中的配置
 
-如果是
 
 ## 特点
 
