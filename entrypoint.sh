@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # by klzsysy
 
-set -ex
+set -e
 
 if [ "$#" -ne 0 ];then
     if which $1 > /dev/null ;then
@@ -29,6 +29,11 @@ fi
 
 if [ -n "${HTTP_PORT}" ];then
     sed -i "s/8080/${HTTP_PORT}/" /etc/nginx/conf.d/nginx-site.conf
+fi
+
+if [ "${OPTION}" == "debug" ];then
+    OPTION=""
+    set -x
 fi
 
 function info(){

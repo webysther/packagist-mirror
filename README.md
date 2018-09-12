@@ -6,9 +6,15 @@
 # rpm data folder
 data_path="${HOME}/data/packagist-mirror"
 
-docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080  -d klzsysy/packagist-mirror
-# view repo index and client repo file
-open ${SERVER_NAME}:8080
+# url or ip 
+SERVER_URL='http://packagist.example.com'
+
+# user url port, default 80
+# EXTERNAL_PORT='8080' # if not use 80
+
+docker run -v ${data_path}:/repo/public --name packagist-mirror -p 80:8080  -e SERVER_URL=${SERVER_URL} -e EXTERNAL_PORT=${EXTERNAL_PORT} -d klzsysy/packagist-mirror
+
+open ${SERVER_URL}
 ```
 
 ## 特点
