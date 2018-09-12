@@ -37,4 +37,3 @@ open ${SERVER_URL}
 - `SYNC_INTERVAL` 同步的间隔, 单位为分钟， 默认`5`，每5分钟同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
 - `SERVER_URL` 服务器的有效URL, 生成缓存zip文件时使用，默认`http://localhost`
 - `EXTERNAL_PORT` 外部服务端口，即最终用户访问服务器的端口，默认80， 不是容器端口，容器默认端口8080
-
