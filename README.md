@@ -9,6 +9,7 @@ data_path="${HOME}/data/packagist-mirror"
 # you server url or ip， build packages.json mirrors url
 SERVER_URL='https://packagist.example.com'
 
+EXTERNAL_PORT=80
 # nginx(or other) proxy the mirror server, enabel ssl and expose port 80
 # if not ssl and proxy ↓
 # example:
@@ -20,7 +21,7 @@ docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080  -e
 open ${SERVER_URL}
 ```
 
-如果是k8s或者openshift，可导入kubernetes目录中的配置
+如果是k8s或者openshift，参考kubernetes目录
 
 
 ## 特点
@@ -32,7 +33,7 @@ open ${SERVER_URL}
 - 添加定时运行
 - 修改挂载路径
 - 修改权限，以便在无root环境运行
-- 兼容openshift无特权运行
+- 兼容openshift默认scc权限运行
 - **缓存包的zip文件，而不是只有一个index**，通过代理下载用户请求的url，并在用户第二次请求同一个文件时得到缓存
 
 快速一键部署本地 packagist mirror (*^▽^*)
