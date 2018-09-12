@@ -10,7 +10,7 @@ if [ "$#" -ne 0 ];then
     fi
 fi
 
-SYNC_INTERVAL=${SYNC_INTERVAL:='5'}
+SYNC_INTERVAL=${SYNC_INTERVAL:='30'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_URL=${SERVER_URL:-'http://localhost'}
@@ -19,6 +19,9 @@ SLEEP=$(( ${SYNC_INTERVAL} * 60 ))
 # APP_COUNTRY_CODE=${APP_COUNTRY_CODE:-'cn'}
 PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
+HTTP_PORT=${HTTP_PORT:-'8080'}
+OPTION=${OPTION:-'--no-progress'}
+
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
     WEEK_SYNC_TIME=$(seq 1 7)
@@ -38,8 +41,8 @@ function handle_TERM()
         kill -s SIGTERM $(ps aux | grep -v grep| grep  'php-fpm: master' | awk '{print $2}')
         kill -s SIGTERM "${proxy_pid}"
         kill -s SIGTERM "${sleep_pid}"
-        kill -s SIGTERM "$sync_pid"
-        wait "$sync_pid"
+        kill -s SIGTERM "${sync_pid}"
+        wait "${sync_pid}"
         exit $?
 }
 
@@ -71,12 +74,12 @@ proxy_pid=$!
 
 composersync(){
     info "start sync ....."
-    exec php bin/mirror create $@  &
+    exec php bin/mirror create ${OPTION}  &
     sync_pid=$!
-    wait $sync_pid
+    wait ${sync_pid}
     update_packages_json
     info "sync end"
-    
+
 }
 
 
