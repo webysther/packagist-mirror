@@ -10,7 +10,7 @@ if [ "$#" -ne 0 ];then
     fi
 fi
 
-SYNC_INTERVAL=${SYNC_INTERVAL:='10'}
+SYNC_INTERVAL=${SYNC_INTERVAL:='30'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_URL=${SERVER_URL:-'http://localhost'}
@@ -20,7 +20,7 @@ PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
 OPTION=${OPTION:-'--no-progress'}
-MAIN_MIRROR=${MAIN_MIRROR:-'https://repo.packagist.org'}
+MAIN_MIRROR=${MAIN_MIRROR:-'https://packagist.laravel-china.org'}
 
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
@@ -60,6 +60,16 @@ function update_packages_json(){
 
 }
 
+function composersync(){
+    info "start sync ....."
+    php bin/mirror create ${OPTION} -vvv &
+    sync_pid=$!
+    wait ${sync_pid}
+    update_packages_json
+    info "sync end"
+
+}
+
 function init_var(){
     sed -i "s#location /proxy#location /${PROXY_URL_PREFIX}#" nginx-site.conf
     cp -r nginx-site.conf /etc/nginx/conf.d/
@@ -75,7 +85,7 @@ function init_var(){
     ln -sf /repo/public/${PROXY_URL_PREFIX} .
     ln -sf /repo/public/p .
     ln -sf packages.json.gz packages.json
-    cd -
+    cd - > /dev/null
 }
 
 init_var
@@ -85,16 +95,6 @@ trap 'handle_TERM' SIGTERM
 nginx -t && nginx
 python3 ./proxy.py &
 proxy_pid=$!
-
-composersync(){
-    info "start sync ....."
-    php bin/mirror create ${OPTION} &
-    sync_pid=$!
-    wait ${sync_pid}
-    update_packages_json
-    info "sync end"
-
-}
 
 set +e
 
