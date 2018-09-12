@@ -15,8 +15,7 @@ SYNC_INTERVAL=${SYNC_INTERVAL:='30'}
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_URL=${SERVER_URL:-'http://localhost'}
 SLEEP=$(( ${SYNC_INTERVAL} * 60 ))
-# APP_COUNTRY_NAME=${APP_COUNTRY_NAME:-'China'}
-# APP_COUNTRY_CODE=${APP_COUNTRY_CODE:-'cn'}
+
 PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
@@ -60,13 +59,14 @@ function update_packages_json(){
     gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > public/_packages.json.gz
     mv -f public/_packages.json.gz public/packages.json.gz
 
-    cd public && ln -sf packages.json.gz packages.json && cd -
+    cd public >/dev/null && ln -sf packages.json.gz packages.json && cd - >/dev/null
 }
 
 function init_var(){
     sed -i "s#location /proxy#location /${PROXY_URL_PREFIX}#" nginx-site.conf
     cp -r nginx-site.conf /etc/nginx/conf.d/
     cp -f index.html public/index.html
+    sed -i "s#sleep=.*#SLEEP=${SLEEP}#" .env.example
 }
 
 init_var

@@ -44,7 +44,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "http://composer-repo.dev.forc.work/"
+            "url": "http://composer-repo.dev.forc.work"
         }
     }
 }
