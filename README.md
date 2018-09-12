@@ -34,6 +34,7 @@ open ${SERVER_URL}
 ## 额外变量
 
 - `WEEK_SYNC_TIME` 每周同步的时间 `1-7` 1是周一， 例如 `1 2 3` 为周一到周三，默认每天`all`
-- `SYNC_INTERVAL` 同步的间隔, 单位为分钟， 默认`5`，每5分钟同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
+- `SYNC_INTERVAL` 同步的间隔, 单位为分钟， 默认`10`，每10分钟同步一次（需要优先满足`WEEK_SYNC_TIME`条件）
 - `SERVER_URL` 服务器的有效URL, 生成缓存zip文件时使用，默认`http://localhost`
 - `EXTERNAL_PORT` 外部服务端口，即最终用户访问服务器的端口，默认80， 不是容器端口，容器默认端口8080
+- `MAIN_MIRROR` ,上游地址，默认官方

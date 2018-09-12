@@ -10,7 +10,7 @@ if [ "$#" -ne 0 ];then
     fi
 fi
 
-SYNC_INTERVAL=${SYNC_INTERVAL:='5'}
+SYNC_INTERVAL=${SYNC_INTERVAL:='10'}
 
 WEEK_SYNC_TIME=${WEEK_SYNC_TIME:='all'}
 SERVER_URL=${SERVER_URL:-'http://localhost'}
@@ -20,7 +20,7 @@ PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
 OPTION=${OPTION:-'--no-progress'}
-UPSTREAM_URL=${UPSTREAM_URL:-'https://repo.packagist.org'}
+MAIN_MIRROR=${MAIN_MIRROR:-'https://repo.packagist.org'}
 
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
@@ -67,7 +67,7 @@ function init_var(){
     cp -r nginx-site.conf /etc/nginx/conf.d/
     cp -f index.html public/index.html
     sed -i "s#sleep=.*#SLEEP=${SLEEP}#" .env.example
-    sed -i "s#MAIN_MIRROR#${UPSTREAM_URL}#" .env.example
+    sed -i "s#MAIN_MIRROR#${MAIN_MIRROR}#" .env.example
 }
 
 init_var
