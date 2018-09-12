@@ -56,7 +56,7 @@ function update_packages_json(){
         _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
     fi
     _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
-    gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > /opt/share/packages.json
+    gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > /opt/share/packages.json.gz
 
 }
 
@@ -74,6 +74,7 @@ function init_var(){
     ln -sf /repo/public/*.html .
     ln -sf /repo/public/${PROXY_URL_PREFIX} .
     ln -sf /repo/public/p .
+    ln -sf packages.json.gz packages.json
     cd -
 }
 
