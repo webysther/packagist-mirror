@@ -73,7 +73,7 @@ function composersync(){
 function clear_zip_cache(){
     find repo/${PROXY_URL_PREFIX} -type f -ctime +${CLEAR_ZIP_CACHE} | xargs rm -rf 
 
-    while true
+    while true;
     do
         find repo/${PROXY_URL_PREFIX} -type d -empty | xargs rm -rf
         find repo/${PROXY_URL_PREFIX} -type d -empty | grep '' || break
@@ -115,6 +115,17 @@ do
         sleep $(( ${SYNC_INTERVAL} * 60 )) &
         sleep_pid=$!
         wait ${sleep_pid}
+
+        clear_zip_cache &
+        clear_pid=$!
+        sleep 300
+        if kill -9 ${clear_pid} &>/dev/null;then
+            info "clear 程序运行不正常，可能有bug, 开启debug"
+            set -x
+        else
+            true
+        fi
+
     else
         sleep 50 &
         sleep_pid=$!
