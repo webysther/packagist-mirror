@@ -71,16 +71,17 @@ function composersync(){
 }
 
 function clear_zip_cache(){
-    find repo/${PROXY_URL_PREFIX} -type f -ctime +${CLEAR_ZIP_CACHE} | xargs rm -rf 
+    find public/${PROXY_URL_PREFIX} -type f -ctime +${CLEAR_ZIP_CACHE} | xargs rm -rf 
 
     while true;
     do
-        find repo/${PROXY_URL_PREFIX} -type d -empty | xargs rm -rf
-        find repo/${PROXY_URL_PREFIX} -type d -empty | grep '' || break
+        find public/${PROXY_URL_PREFIX} -type d -empty | xargs rm -rf
+        find public/${PROXY_URL_PREFIX} -type d -empty | grep '' || break
     done
 }
 
 function clear_process(){
+    info "start try clear lod zip cache"
     clear_zip_cache &
     clear_pid=$!
     sleep 300
@@ -90,6 +91,7 @@ function clear_process(){
     else
         true
     fi
+    info "end clear lod zip cache"
 }
 function init_var(){
     sed -i "s#location /proxy#location /${PROXY_URL_PREFIX}#" nginx-site.conf
