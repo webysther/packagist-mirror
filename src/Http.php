@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Webs\Mirror;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Request;
 use stdClass;
@@ -80,7 +82,15 @@ class Http
      */
     public function __construct(Mirror $mirror, int $maxConnections)
     {
+        $stack = HandlerStack::create();
+        $stack->push(Middleware::retry(
+            function($retries) { return $retries < 3; },
+            function($retries) { return pow(2, $retries - 1); }
+        ));
+        $this->config['handler'] = $stack;
+
         $this->config['base_uri'] = $mirror->getMaster();
+
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
         $this->mirror = $mirror;
