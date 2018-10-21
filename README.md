@@ -8,13 +8,19 @@
 引用composer
 
 ``` bash
-$ composer create-project jinfeijie/packagist-mirror-cn
+$ composer create-project jinfeijie/packagist-mirror-cn --remove-vcs
 ```
 
 安装依赖
 
 ```bash
 $ composer install --no-progress --no-ansi --no-dev --optimize-autoloader
+```
+
+配置环境
+
+```bash
+cp .env.example .env
 ```
 
 使用命令来创建和更新镜像
