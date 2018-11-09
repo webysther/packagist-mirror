@@ -94,19 +94,18 @@ func main() {
 			for job := range jobs {
 				if v, ok := isHashed(job.name, job.p.SHA256); ok {
 					job.p.SHA256 = v
-					return
+					goto END
 				}
-				old, new, err := rehash(job.name, job.p)
-				if err != nil {
+				if old, new, err := rehash(job.name, job.p); err != nil {
 					logErr("%s", err.Error())
 				} else {
 					hashedLock.Lock()
 					hashed[job.name+old] = new
 					hashedLock.Unlock()
-
 					job.p.SHA256 = new // update new hash
 					fmt.Printf("[OK] %s (%s)\n", job.name, new)
 				}
+			END:
 				job.wg.Done()
 			}
 		}()
