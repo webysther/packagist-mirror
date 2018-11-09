@@ -82,29 +82,41 @@ func main() {
 
 	providersFileHashMap := map[string]string{}
 
-	for ps, p1 := range packages {
-		var wg sync.WaitGroup
-		wg.Add(len(p1))
-		for name, p2 := range p1 {
-			go func(name string, p *PackagePath) {
-				defer wg.Done()
-				if v, ok := isHashed(name, p.SHA256); ok {
-					p.SHA256 = v
+	type item struct {
+		name string
+		p    *PackagePath
+		wg   *sync.WaitGroup
+	}
+
+	jobs := make(chan item, 100)
+	for i := 0; i < 10; i++ {
+		go func() {
+			for job := range jobs {
+				if v, ok := isHashed(job.name, job.p.SHA256); ok {
+					job.p.SHA256 = v
 					return
 				}
-
-				old, new, err := rehash(name, p)
+				old, new, err := rehash(job.name, job.p)
 				if err != nil {
 					logErr("%s", err.Error())
 				} else {
 					hashedLock.Lock()
-					hashed[name+old] = new
+					hashed[job.name+old] = new
 					hashedLock.Unlock()
 
-					p.SHA256 = new // update new hash
-					fmt.Printf("[OK] %s (%s)\n", name, new)
+					job.p.SHA256 = new // update new hash
+					fmt.Printf("[OK] %s (%s)\n", job.name, new)
 				}
-			}(name, p2)
+				job.wg.Done()
+			}
+		}()
+	}
+
+	for ps, p1 := range packages {
+		var wg sync.WaitGroup
+		wg.Add(len(p1))
+		for name, p2 := range p1 {
+			jobs <- item{name, p2, &wg}
 		}
 		wg.Wait()
 
