@@ -31,7 +31,7 @@ RUN useradd -u 10000 -G root repo && \
 	ln -sf /dev/stderr /var/log/nginx/error.log && \
     cp -f nginx.conf /etc/nginx/nginx.conf && \
     cp nginx-site.conf /etc/nginx/conf.d/ && \
-	chmod 2775 -R ${DATA} . /var/nginx /var/log /var/run /etc/nginx/conf.d/ /opt/share && \
+	chmod 4775 -R ${DATA} . /var/nginx /var/log /var/run /etc/nginx/conf.d/ /opt/share && \
     chown repo:root -R /var/lib/nginx/  /var/nginx . ${DATA} /etc/nginx/conf.d/ && \
     chmod -R 775  /etc/nginx/conf.d/ *.sh /var/lib/nginx/ /var/nginx
 

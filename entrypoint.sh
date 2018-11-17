@@ -31,7 +31,7 @@ if [ -n "${HTTP_PORT}" ];then
     sed -i "s/8080/${HTTP_PORT}/" /etc/nginx/conf.d/nginx-site.conf
 fi
 
-if [ "${OPTION}" == "debug" ];then
+if [ "${DEBUG}" = "true" ];then
     OPTION=""
     set -x
 fi
@@ -52,7 +52,7 @@ function handle_TERM()
 
 function update_packages_json(){
     _SERVER_URL=$(echo "${SERVER_URL}" | sed 's#/#\\/#g')
-    if [ "${EXTERNAL_PORT}" != "80" ];then
+    if [ "${EXTERNAL_PORT}" != "80" -o "${EXTERNAL_PORT}" != "443" ];then
         _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
     fi
     _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"

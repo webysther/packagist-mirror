@@ -6,22 +6,23 @@
 # example:
  
 # mirror data folder
-data_path="${HOME}/data/packagist-mirror"
+data_path="${HOME}/packagist-mirror"
 
 # you server url or ip， build packages.json mirrors url
 SERVER_URL='https://packagist.example.com'
 
 # user request server url port
-# nginx(or other) proxy the mirror server, enabel ssl and expose port 80
-EXTERNAL_PORT=80
+# nginx(or other) proxy the mirror server, enabel ssl and expose port 443
+# if user request port not 80 or 443, EXTERNAL_PORT=<port>
+EXTERNAL_PORT=443
 
 # if not ssl and proxy ↓
 #   EXTERNAL_PORT=8080
-#   SERVER_URL='http://packagist.example.com:8080'
+#   SERVER_URL='http://packagist.example.com'
 
 docker run -v ${data_path}:/repo/public --name packagist-mirror -p 8080:8080  -e SERVER_URL=${SERVER_URL} -e EXTERNAL_PORT=${EXTERNAL_PORT} -d klzsysy/packagist-mirror
 
-open ${SERVER_URL}
+open ${SERVER_URL}:${EXTERNAL_PORT}
 ```
 
 如果是k8s或者openshift，参考kubernetes目录
