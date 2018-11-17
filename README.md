@@ -5,8 +5,8 @@
 ```sh
 # example:
  
-# mirror data folder
-data_path="${HOME}/packagist-mirror"
+#  Persistence data folder, if needed
+data_path="${HOME}/packagist-mirror" && mkdir -p $data_path && chown 10000 $data_path
 
 # you server url or ip， build packages.json mirrors url
 SERVER_URL='https://packagist.example.com'
@@ -52,3 +52,7 @@ open ${SERVER_URL}:${EXTERNAL_PORT}
 - `MAIN_MIRROR` ,json索引上游地址，默认国内`packagist.laravel-china.org`（官方源在国内访问失败率很高）
 - `UPSTREAM_URL`, 缓存zip文件的上游服务器，默认`https://dl.laravel-china.org`
 - `CLEAR_ZIP_CACHE`, 缓存zip清理时间，默认90天，即90天前的文件
+
+## 注意
+
+- 容器运行id `10000`， 在需要持久化时需要注意挂载目录的权限
