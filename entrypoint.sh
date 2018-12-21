@@ -52,7 +52,7 @@ function handle_TERM()
 
 function update_packages_json(){
     _SERVER_URL=$(echo "${SERVER_URL}" | sed 's#/#\\/#g')
-    if [ "${EXTERNAL_PORT}" != "80" -o "${EXTERNAL_PORT}" != "443" ];then
+    if [ "${EXTERNAL_PORT}" != "80" -a "${EXTERNAL_PORT}" != "443" ];then
         _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
     fi
     _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
