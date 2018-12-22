@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 # __author__ klzsysy
 
-from flask import Flask, send_file, make_response, redirect
+from flask import Flask, send_file, make_response, redirect, Response
 import requests
 import logging
 import os
 import shutil
 import threading
 import re
-
+import gzip
 
 class Share(object):
     def __init__(self):
         self.PROXY_URL_PREFIX = os.getenv('PROXY_URL_PREFIX', 'zipcache')
         self.DOWNLOAD_PREFIX = 'public/' + os.getenv('DOWNLOAD_PREFIX', self.PROXY_URL_PREFIX)
+        self.JSON_UPSTREAM_URL = os.getenv('MAIN_MIRROR', "https://packagist.laravel-china.org")
         self.UPSTREAM_URL = os.getenv('UPSTREAM_URL', 'https://dl.laravel-china.org')
         self.header = {"User-Agent": os.getenv("USER_AGENT", "Composer/1.6.5 (Darwin; 17.7.0; PHP 7.1.16)")}
 
@@ -34,15 +35,18 @@ class Logging(object):
 
 
 S = Share()
-Log = Logging()
+Log = Logging(os.getenv('LOGGING_LEVEL', 10))
 logger = Log.get_logger()
 app = Flask(__name__)
 
 
-def download(origin, folder, file):
+def download(origin, folder, file, enable_gzip=False):
     try:
+        logger.info("start download %s" % origin)
+        logger.debug("origin:%s folder:%s file:%s enable_gzip:%s" %(origin, folder, file, enable_gzip))
         r = requests.get(origin, stream=True, headers=S.header)
         if r.status_code == 200:
+            r.raw.decode_content = True
             if not os.path.isdir(folder):
                 try:
                     os.makedirs(folder)
@@ -50,9 +54,17 @@ def download(origin, folder, file):
                 except BaseException as err:
                     logger.error('create %s failure!!\n%s' % (folder, str(err)))
                     return "", 500
-            with open(file, 'wb') as f:
-                r.raw.decode_content = True
-                shutil.copyfileobj(r.raw, f)
+            if enable_gzip:
+                with gzip.open(file + '.gz', 'wb') as f:
+                    logger.debug("gzip file %s" % file)
+                    shutil.copyfileobj(r.raw, f)
+                    os.chdir(folder)
+                    filename = os.path.split(file)[-1]
+                    os.symlink(filename + '.gz', filename)
+                    logger.info("created symlink file {filename} --> {filename}.gz".format(filename=filename))
+            else:
+                with open(file, 'wb') as f:
+                    shutil.copyfileobj(r.raw, f)
         else:
             return "", r.status_code
 
@@ -94,6 +106,20 @@ def proxy(url):
 
     return redirect(origin_download_url, code=302)
 
+@app.route('/p/<path:url>')
+def proxy_json(url):
+    local_json_path = os.path.join("/repo/public/p", url)
+    if os.path.isfile(local_json_path):
+        with gzip.open(local_json_path, 'rb') as f:
+            return Response(f.read(), mimetype='application/json')
+    else:
+        upstream_json_url = S.JSON_UPSTREAM_URL + '/p/' + url.rstrip('.gz')
+        logger.warning("lost cache file %s, redirect to upstream %s" % (local_json_path, upstream_json_url))
+
+        dl = threading.Thread(target=download, args=(upstream_json_url, os.path.dirname(local_json_path), local_json_path, True))
+        dl.start()
+
+        return redirect(upstream_json_url, code=302)
 
 def main():
     logger.debug('debug start')

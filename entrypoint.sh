@@ -63,7 +63,8 @@ function update_packages_json(){
 
 function composersync(){
     info "start sync ....."
-    php bin/mirror create ${OPTION} -vvv &
+    # php bin/mirror create ${OPTION} -vvv &
+    sleep 1000
     sync_pid=$!
     wait ${sync_pid}
     update_packages_json
