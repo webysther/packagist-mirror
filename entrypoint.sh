@@ -42,7 +42,7 @@ function info(){
 
 function handle_TERM()
 {
-        kill -s SIGTERM $(ps aux | grep -v grep| grep  'nginx: master' | awk '{print $2}')
+        killall nginx
         kill -s SIGTERM "${proxy_pid}"
         kill -s SIGTERM "${sleep_pid}"
         kill -s SIGTERM "${sync_pid}"
@@ -51,13 +51,14 @@ function handle_TERM()
 }
 
 function update_packages_json(){
-    _SERVER_URL=$(echo "${SERVER_URL}" | sed 's#/#\\/#g')
-    if [ "${EXTERNAL_PORT}" != "80" -a "${EXTERNAL_PORT}" != "443" ];then
-        _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
+    if [ -f public/packages.json.gz ];then
+        _SERVER_URL=$(echo "${SERVER_URL}" | sed 's#/#\\/#g')
+        if [ "${EXTERNAL_PORT}" != "80" -a "${EXTERNAL_PORT}" != "443" ];then
+            _SERVER_URL="${_SERVER_URL}:${EXTERNAL_PORT}"
+        fi
+        _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
+        gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > /opt/share/packages.json.gz
     fi
-    _value="[{\"dist-url\":\"${_SERVER_URL}\/${PROXY_URL_PREFIX}\/%package%\/%reference%.%type%\",\"preferred\":true}]"
-    gzip -cd public/packages.json.gz | jq ". += {\"mirrors\": ${_value}}" | gzip > /opt/share/packages.json.gz
-
 }
 
 function composersync(){
@@ -67,7 +68,6 @@ function composersync(){
     wait ${sync_pid}
     update_packages_json
     info "sync end"
-
 }
 
 function clear_zip_cache(){
@@ -109,6 +109,7 @@ function init_var(){
     ln -sf /repo/public/p .
     ln -sf packages.json.gz packages.json
     cd - > /dev/null
+    update_packages_json
 }
 
 init_var
