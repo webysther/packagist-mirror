@@ -18,7 +18,8 @@ This project aims to create a local mirror with ease, allowing greater availabil
 Via Composer
 
 ``` bash
-$ composer require webysther/packagist-mirror
+$ git clone https://github.com/Webysther/packagist-mirror.git
+$ cd packagist-mirror && composer install
 ```
 
 Schedule the command to create and update the mirror:
