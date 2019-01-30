@@ -4,7 +4,7 @@
     "keywords": ["packagist", "mirror"],
     "license": "MIT",
     "authors": [
-        { "name": "Webysther", "email": "websther@gmail.com" }
+        { "name": "Webysther", "email": "webysther@gmail.com" }
     ],
     "require": {
         "php": ">=7.1",
