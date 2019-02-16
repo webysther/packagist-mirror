@@ -6,6 +6,7 @@
 [![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Software License](https://goo.gl/FU2Kw1)](LICENSE)
+[![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
 
 This is PHP package repository [packagist.org](packagist.org) mirror site.
 
