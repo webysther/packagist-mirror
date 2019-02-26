@@ -8,17 +8,20 @@
     "packages": [
         {
             "name": "dariuszp/cli-progress-bar",
-            "version": "1.0.2",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dariuszp/cli-progress-bar.git",
-                "reference": "54020a8fc60bf19579bfe0317f17a2848d48991d"
+                "reference": "1be746082242092ce9e7c735be45f9d9a77be1aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dariuszp/cli-progress-bar/zipball/54020a8fc60bf19579bfe0317f17a2848d48991d",
-                "reference": "54020a8fc60bf19579bfe0317f17a2848d48991d",
+                "url": "https://api.github.com/repos/dariuszp/cli-progress-bar/zipball/1be746082242092ce9e7c735be45f9d9a77be1aa",
+                "reference": "1be746082242092ce9e7c735be45f9d9a77be1aa",
                 "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.4"
             },
             "type": "library",
             "autoload": {
@@ -34,10 +37,15 @@
                 {
                     "name": "Dariusz Półtorak",
                     "email": "poltorak.dariusz@gmail.com"
+                },
+                {
+                    "name": "Mason Phillips",
+                    "email": "math.matrix@icloud.com",
+                    "role": "Contributor"
                 }
             ],
             "description": "Cli progress bar",
-            "time": "2015-11-02T14:38:59+00:00"
+            "time": "2018-11-24T20:35:59+00:00"
         },
         {
             "name": "doctrine/inflector",
