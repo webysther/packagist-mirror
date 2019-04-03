@@ -533,16 +533,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.14.2",
+            "version": "2.16.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232"
+                "reference": "720a9c36927396efeeb48a972e9d129d44b6dc28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/720a9c36927396efeeb48a972e9d129d44b6dc28",
+                "reference": "720a9c36927396efeeb48a972e9d129d44b6dc28",
                 "shasum": ""
             },
             "require": {
@@ -589,7 +589,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-02-28T09:07:12+00:00"
+            "time": "2019-03-29T12:23:12+00:00"
         },
         {
             "name": "php-snippets/circular-array",
