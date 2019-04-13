@@ -397,6 +397,7 @@ class Create extends Base
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
         $tz = getenv('TZ');
         $synced = getenv('SLEEP');
+        $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID');
         $file = $this->filesystem->getGzName('packages.json');
         $exists = $this->filesystem->hasFile($file);
         $html = $this->filesystem->getFullPath('index.html');
