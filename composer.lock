@@ -297,16 +297,16 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v5.8.9",
+            "version": "v5.8.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "7224ed316427ae5f67c4888679bbf7f6e7773660"
+                "reference": "053c578b5a95fc50fa62266ff720ef74790e938e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/7224ed316427ae5f67c4888679bbf7f6e7773660",
-                "reference": "7224ed316427ae5f67c4888679bbf7f6e7773660",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/053c578b5a95fc50fa62266ff720ef74790e938e",
+                "reference": "053c578b5a95fc50fa62266ff720ef74790e938e",
                 "shasum": ""
             },
             "require": {
@@ -337,20 +337,20 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2019-03-06T19:39:19+00:00"
+            "time": "2019-04-16T12:47:20+00:00"
         },
         {
             "name": "illuminate/support",
-            "version": "v5.8.9",
+            "version": "v5.8.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "e275519c58246cc4011c798f9b0a0f83aae2aab7"
+                "reference": "5541fa4ee4b5ab4635056fae0eecad7d328b86b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/e275519c58246cc4011c798f9b0a0f83aae2aab7",
-                "reference": "e275519c58246cc4011c798f9b0a0f83aae2aab7",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/5541fa4ee4b5ab4635056fae0eecad7d328b86b4",
+                "reference": "5541fa4ee4b5ab4635056fae0eecad7d328b86b4",
                 "shasum": ""
             },
             "require": {
@@ -398,7 +398,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2019-04-01T19:02:05+00:00"
+            "time": "2019-04-14T05:44:06+00:00"
         },
         {
             "name": "league/flysystem",
