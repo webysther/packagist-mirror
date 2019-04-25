@@ -21,6 +21,7 @@ Via Composer
 ``` bash
 $ git clone https://github.com/Webysther/packagist-mirror.git
 $ cd packagist-mirror && composer install
+$ cp .env.example .env # and modify .env file
 ```
 
 Schedule the command to create and update the mirror:
