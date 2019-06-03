@@ -402,16 +402,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.50",
+            "version": "1.0.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "dab4e7624efa543a943be978008f439c333f2249"
+                "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/dab4e7624efa543a943be978008f439c333f2249",
-                "reference": "dab4e7624efa543a943be978008f439c333f2249",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/c5a5097156387970e6f0ccfcdf03f752856f3391",
+                "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391",
                 "shasum": ""
             },
             "require": {
@@ -482,7 +482,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2019-02-01T08:50:36+00:00"
+            "time": "2019-05-20T20:21:14+00:00"
         },
         {
             "name": "league/flysystem-cached-adapter",
@@ -1955,23 +1955,23 @@
         },
         {
             "name": "league/flysystem-memory",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem-memory.git",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2"
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
-                "reference": "1cabecd08a8caec92a96a953c0d93b5ce83b07a2",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/d0e87477c32e29f999b4de05e64c1adcddb51757",
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757",
                 "shasum": ""
             },
             "require": {
                 "league/flysystem": "~1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.1"
+                "phpunit/phpunit": "^5.7.10"
             },
             "type": "library",
             "extra": {
@@ -2002,7 +2002,7 @@
                 "adapter",
                 "memory"
             ],
-            "time": "2016-06-04T03:57:11+00:00"
+            "time": "2019-05-30T21:34:13+00:00"
         },
         {
             "name": "mikey179/vfsStream",
