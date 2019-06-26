@@ -55,7 +55,7 @@ class Http
      */
     protected $config = [
         'base_uri' => '',
-        'headers' => ['Accept-Encoding' => 'gzip'],
+        'headers' => ['Accept-Encoding' => 'gzip', 'User-Agent' => 'Composer/1.6.5 (Darwin; 17.7.0; PHP 7.1.16)'],
         'decode_content' => false,
         'timeout' => 30,
         'connect_timeout' => 15,
