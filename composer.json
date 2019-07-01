@@ -14,10 +14,8 @@
         "vlucas/phpdotenv": "~2",
         "symfony/console": "~3",
         "sebastian/version": "~2",
-        "nesbot/carbon": "~2",
         "php-snippets/circular-array": "~1",
-        "league/flysystem-cached-adapter": "~1",
-        "illuminate/support": "~5"
+        "league/flysystem-cached-adapter": "~1"
     },
     "require-dev": {
         "webysther/composer-plugin-qa": "~1",
