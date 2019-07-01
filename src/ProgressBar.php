@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Webs\Mirror;
 
-use Dariuszp\CliProgressBar;
+use Symfony\Component\Console\Helper\ProgressBar as ConsoleProgressBar;
 
 /**
  * Progress bar for console.
@@ -28,7 +28,7 @@ class ProgressBar implements IProgressBar
     protected $disabled;
 
     /**
-     * @var CliProgressBar
+     * @var ConsoleProgressBar
      */
     protected $progressBar;
 
@@ -65,7 +65,7 @@ class ProgressBar implements IProgressBar
         }
 
         $this->total = $total;
-        $this->progressBar = new CliProgressBar($total, 0);
+        $this->progressBar = new ConsoleProgressBar($this->output, $total);
 
         return $this;
     }
@@ -80,12 +80,12 @@ class ProgressBar implements IProgressBar
         }
 
         if ($current) {
-            $this->progressBar->progress($current);
+            $this->progressBar->setProgress($current);
 
             return $this;
         }
 
-        $this->progressBar->progress();
+        $this->progressBar->advance();
 
         return $this;
     }
@@ -99,8 +99,7 @@ class ProgressBar implements IProgressBar
             return $this;
         }
 
-        $this->progressBar->progress($this->total);
-        $this->progressBar->end();
+        $this->progressBar->finish();
 
         return $this;
     }

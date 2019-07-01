@@ -15,7 +15,6 @@
         "symfony/console": "~3",
         "sebastian/version": "~2",
         "nesbot/carbon": "~2",
-        "dariuszp/cli-progress-bar": "~1",
         "php-snippets/circular-array": "~1",
         "league/flysystem-cached-adapter": "~1",
         "illuminate/support": "~5"
