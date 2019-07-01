@@ -23,7 +23,7 @@
         "webysther/composer-plugin-qa": "~1",
         "webysther/composer-meta-qa": "~1",
         "league/flysystem-memory": "~1",
-        "mikey179/vfsStream": "~1"
+        "mikey179/vfsstream": "~1"
     },
     "suggest": {
         "hirak/prestissimo": "Composer parallel install plugin"
