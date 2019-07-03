@@ -14,16 +14,14 @@
         "vlucas/phpdotenv": "~2",
         "symfony/console": "~3",
         "sebastian/version": "~2",
-        "nesbot/carbon": "~2",
         "php-snippets/circular-array": "~1",
-        "league/flysystem-cached-adapter": "~1",
-        "illuminate/support": "~5"
+        "league/flysystem-cached-adapter": "~1"
     },
     "require-dev": {
         "webysther/composer-plugin-qa": "~1",
         "webysther/composer-meta-qa": "~1",
         "league/flysystem-memory": "~1",
-        "mikey179/vfsStream": "~1"
+        "mikey179/vfsstream": "~1"
     },
     "suggest": {
         "hirak/prestissimo": "Composer parallel install plugin"
