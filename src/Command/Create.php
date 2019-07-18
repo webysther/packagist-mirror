@@ -196,6 +196,8 @@ class Create extends Base
             $this->package->getMainJson()
         );
 
+        $this->setMirrors();
+
         if ($this->isEqual()) {
             return $this;
         }
@@ -222,6 +224,73 @@ class Create extends Base
         }
 
         return $this;
+    }
+
+    /**
+     * Append property 'mirrors' for provider
+     * Use for download dists via mirrors
+     */
+    protected function setMirrors()
+    {
+        if ($mirrors = $this->getMirrors()) {
+            $this->providers->mirrors = $mirrors;
+        }
+    }
+
+    /**
+     * Get mirrors via environment variables
+     * include DIST_MIRRORS and SOURCE_MIRRORS
+     *
+     * @return array
+     */
+    protected function getMirrors()
+    {
+        $mirrors = [];
+        $distMirrors = explode(',', getenv('DIST_MIRRORS'));
+        foreach ($distMirrors as $distUrl) {
+            if (empty($distUrl)) {
+                continue;
+            }
+            $mirrors[] = [
+                'dist-url'  => $this->normalizeMirrorUrl($distUrl),
+                'preferred' => $this->isPreferred($distUrl),
+            ];
+        }
+
+        $sourceMirrors = explode(',', getenv('SOURCE_MIRRORS'));
+        foreach ($sourceMirrors as $sourceUrl) {
+            if (empty($sourceUrl)) {
+                continue;
+            }
+            $mirrors[] = [
+                'source-url' => $this->normalizeMirrorUrl($sourceUrl),
+                'preferred'  => $this->isPreferred($sourceUrl),
+            ];
+        }
+
+        return $mirrors;
+    }
+
+    /**
+     * Normalize mirror url for dist-url or source-url
+     *
+     * @param $url
+     * @return bool|string
+     */
+    protected function normalizeMirrorUrl($url)
+    {
+        return $this->isPreferred($url) ? substr($url, 0, -10) : $url;
+    }
+
+    /**
+     * Check url is preferred
+     *
+     * @param $url
+     * @return bool
+     */
+    protected function isPreferred($url)
+    {
+        return substr($url, -10) == '-preferred';
     }
 
     /**
