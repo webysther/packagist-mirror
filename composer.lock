@@ -263,7 +263,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v6.4.1",
+            "version": "v6.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -307,16 +307,16 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v6.4.1",
+            "version": "v6.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "bb5936ebae4a644fb6c2a605b536caaeaf918688"
+                "reference": "236fa24d2e510c4800429cde89ed72e535051a5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/bb5936ebae4a644fb6c2a605b536caaeaf918688",
-                "reference": "bb5936ebae4a644fb6c2a605b536caaeaf918688",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/236fa24d2e510c4800429cde89ed72e535051a5d",
+                "reference": "236fa24d2e510c4800429cde89ed72e535051a5d",
                 "shasum": ""
             },
             "require": {
@@ -364,7 +364,7 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "https://laravel.com",
-            "time": "2019-10-27T15:36:15+00:00"
+            "time": "2019-11-04T13:46:29+00:00"
         },
         {
             "name": "league/flysystem",
