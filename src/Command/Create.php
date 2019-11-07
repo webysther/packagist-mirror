@@ -212,6 +212,7 @@ class Create extends Base
 
         $this->http->pool($generator, $success, $this->getClosureComplete());
         $this->progressBar->end();
+        $this->output->write(PHP_EOL);
         $this->showErrors();
 
         // If initialized can have provider downloaded by half
@@ -316,6 +317,7 @@ class Create extends Base
             $this->progressBar->start(count($this->providerPackages));
             $this->poolPackages($generator);
             $this->progressBar->end();
+            $this->output->write(PHP_EOL);
             $this->showErrors()->disableDueErrors()->fallback();
         }
 
@@ -378,6 +380,7 @@ class Create extends Base
         $this->progressBar->start($total);
         $this->poolPackages($generator);
         $this->progressBar->end();
+        $this->output->write(PHP_EOL);
         $this->showErrors();
 
         return $this;
