@@ -402,7 +402,7 @@ class Create extends Base
         $synced = getenv('SLEEP');
         $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID');
         $file = $this->filesystem->getGzName('packages.json');
-        $exists = $this->filesystem->hasFile($file);
+        $exists = $this->filesystem->hasFile('index.html');
         $html = $this->filesystem->getFullPath('index.html');
 
         $lastModified = false;

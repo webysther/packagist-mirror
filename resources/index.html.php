@@ -135,7 +135,7 @@
                     req.onload = function (e) {
                         var responseHeader = req.getResponseHeader(wch);
                         var actual = moment.tz(responseHeader, '<?=$tz; ?>');
-                        var format = 'YYYY/MM/D HH:mm:ss ZZ';
+                        var format = 'YYYY-MM-DD HH:mm:ss ZZ';
                         var lastsynced = document.getElementById('lastsynced');
                         lastsynced.innerText = 'Last sync: '+actual.format(format);
                     };
