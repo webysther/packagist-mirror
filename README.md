@@ -65,7 +65,7 @@ After install nginx edit `/etc/crontab`:
 -e MAINTAINER_MIRROR='Webysther' \
 -e MAINTAINER_PROFILE='https://github.com/Webysther' \
 -e MAINTAINER_REPO='https://github.com/Webysther/packagist-mirror' \
--e URL='packagist.com.br'
+-e URL='packagist.com.br' \
 webysther/packagist-mirror
 ```
 to more options about image go to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
