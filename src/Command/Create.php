@@ -401,6 +401,7 @@ class Create extends Base
         $tz = getenv('TZ');
         $synced = getenv('SLEEP');
         $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID');
+        $googleAnalyticsMainId = getenv('GOOGLE_ANALYTICS_MAIN_ID');
         $file = $this->filesystem->getGzName('packages.json');
         $exists = $this->filesystem->hasFile('index.html');
         $html = $this->filesystem->getFullPath('index.html');
