@@ -1,7 +1,7 @@
 # Packagist Mirror
 
 [![Build Status](https://goo.gl/PfY1J8)](https://travis-ci.org/Webysther/packagist-mirror)
-[![Minimum PHP Version](https://goo.gl/nXUVen)](https://php.net/)
+[![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square&maxAge=3600)](https://php.net/)
 [![Packagist](https://goo.gl/155cHZ)](https://packagist.org/packages/webysther/packagist-mirror)
 [![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
