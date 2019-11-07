@@ -32,7 +32,13 @@ With docker and nginx:
 
 The mirror creation save all data as .gz to save disk space, you need to enable reverse gz decode when a client ask for the decompressed version, normally used only for legacy composer clients.
 
-Change you nginx configuration of *gzip_static* and *gunzip* as is:
+Change you [nginx configuration](https://www.nginx.com/resources/wiki/start/topics/examples/full/) of [*gzip_static*](http://nginx.org/en/docs/http/ngx_http_gunzip_module.html) and [*gunzip*](http://nginx.org/en/docs/http/ngx_http_gzip_static_module.html) as is:
+
+Create a website on a default nginx instalattion:
+```bash
+sudo vim /etc/nginx/sites-available/packagist.com.br.conf
+```
+
 ```bash
 server {
     index.html;
@@ -48,7 +54,6 @@ server {
 ```
 
 Tip: use a machine with 2GB at least of memory, with that all metadata keep to the memory helping the nginx and disk to not be consumed at all.
-
 
 After install nginx edit `/etc/crontab`:
 
