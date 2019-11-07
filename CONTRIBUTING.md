@@ -4,6 +4,43 @@ Contributions are **welcome** and will be fully **credited**.
 
 We accept contributions via Pull Requests on [Github](https://github.com/Webysther/packagist-mirror).
 
+Put inside your `~/.*rc` (`~/.bashrc`/`~/.zshrc`/`~/.config/fish/config.fish`):
+```bash
+alias drun='docker run --user=`id -u $USER`:`id -g` --workdir=/code --rm -v $(pwd):/code -v $HOME:/home/YOUR-USERNAME'
+alias packagist-mirror-env='drun -it --net=host -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro webysther/composer-debian bash'
+```
+
+Update your env vars:
+```bash
+source ~/.*rc
+```
+
+Clone project:
+```bash
+git clone https://github.com/Webysther/packagist-mirror.git
+cd packagist-mirror
+```
+
+Run env:
+```bash
+packagist-mirror-env
+```
+
+Config and Modify the .env:
+```bash
+composer install
+cp .env.example .env
+```
+
+Edit .env:
+```bash
+PUBLIC_DIR=/home/YOUR-USERNAME/packagist-mirror-public
+```
+
+Run local:
+```bash
+php bin/mirror create -vvv
+```
 
 ## Pull Requests
 

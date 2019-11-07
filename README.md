@@ -14,25 +14,87 @@ If you're using PHP Composer, commands like *create-project*, *require*, *update
 
 This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
 
-## Install
+## Packagist metadata mirrors around the world
 
-Via Composer
+Data mirror used to download repositories data created using this [recommended repository](https://packagist.org/mirrors) by others:
+
+- Africa, South Africa packagist.co.za
+- Asia, China mirrors.aliyun.com/composer
+- Asia, China pkg.phpcomposer.com (not from this source code and not fully compatible - too much broken packages when used as a mirror)
+- Asia, Indonesia packagist.phpindonesia.id
+- Asia, India packagist.in (404)
+- Asia, Japan packagist.jp (what this code is based of)
+- South America, Brazil packagist.com.br (our mirror)
+
+## Create your own mirror
+
+With docker and nginx:
+
+The mirror creation save all data as .gz to save disk space, you need to enable reverse gz decode when a client ask for the decompressed version, normally used only for legacy composer clients.
+
+Change you nginx configuration of *gzip_static* and *gunzip* as is:
+```bash
+server {
+    index.html;
+
+    server_name packagist.com.br www.packagist.com.br;
+
+    location / {
+        try_files $uri $uri/ =404;
+        gzip_static on;
+        gunzip on;
+    }
+}
+```
+
+Tip: use a machine with 2GB at least of memory, with that all metadata keep to the memory helping the nginx and disk to not be consumed at all.
+
+
+After install nginx edit `/etc/crontab`:
+
+```bash
+* * * * * root docker run --name mirror --rm -v /var/www:/public \
+-e MAINTAINER_REPO='packagist.com.br' \
+-e APP_COUNTRY_NAME='Brazil' \
+-e APP_COUNTRY_NAME='br' \
+-e MAINTAINER_MIRROR='Webysther' \
+-e MAINTAINER_PROFILE='https://github.com/Webysther' \
+-e MAINTAINER_REPO='https://github.com/Webysther/packagist-mirror' \
+-e URL='packagist.com.br'
+webysther/packagist-mirror
+```
+to more options about image go to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
+
+Put inside your `~/.*rc` (`~/.bashrc`/`~/.zshrc`/`~/.config/fish/config.fish`):
+```bash
+alias logs='watch -n 0.5 docker logs --tail 10 -t mirror'
+```
+
+Update your env vars and see monitoring packagist mirror creation:
+```bash
+source ~/.*rc
+logs
+```
+
+## Install 
+
+Using with [docker repository](https://github.com/Webysther/packagist-mirror-docker) or composer local:
 
 ``` bash
 $ git clone https://github.com/Webysther/packagist-mirror.git
 $ cd packagist-mirror && composer install
-$ cp .env.example .env # and modify .env file
+$ cp .env.example .env
 ```
 
 Schedule the command to create and update the mirror:
 
 ```bash
-$ php bin/mirror create --no-progress
+$ php bin/mirror create -vvv
 ```
 
-Via Docker
+## Development & Contributing
 
-Follow to [docker repository](https://github.com/Webysther/packagist-mirror-docker).
+Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
 ## Requirements
 
@@ -45,10 +107,6 @@ The following versions of PHP are supported by this version.
 ``` bash
 $ vendor/bin/phpunit
 ```
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
 ## Credits
 
