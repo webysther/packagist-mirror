@@ -16,15 +16,15 @@ This project aims to create a local mirror with ease, allowing greater availabil
 
 ## Packagist metadata mirrors around the world
 
-Data mirror used to download repositories data created using this [recommended repository](https://packagist.org/mirrors) by others:
+Data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
-- Africa, South Africa packagist.co.za
-- Asia, China mirrors.aliyun.com/composer
-- Asia, China pkg.phpcomposer.com (not from this source code and not fully compatible - too much broken packages when used as a mirror)
-- Asia, Indonesia packagist.phpindonesia.id
-- Asia, India packagist.in (404)
-- Asia, Japan packagist.jp (what this code is based of)
-- South America, Brazil packagist.com.br (our mirror)
+- Africa, South Africa [packagist.co.za](https://packagist.co.za)
+- Asia, China [mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)
+- Asia, China [pkg.phpcomposer.com](https://packagist.phpcomposer.com)
+- Asia, Indonesia [packagist.phpindonesia.id](https://packagist.phpindonesia.id)
+- Asia, [India packagist.in](https://packagist.in) 
+- Asia, Japan [packagist.jp](https://packagist.jp) (legacy based of)
+- South America, Brazil [packagist.com.br](https://packagist.com.br) (our mirror)
 
 ![World Map](/resources/public/world_map.svg)
 
@@ -36,7 +36,7 @@ The colors represent the topology drawn below.
 
 With docker and nginx:
 
-The mirror creation save all data as .gz to save disk space, you need to enable reverse gz decode when a client ask for the decompressed version, normally used only for legacy composer clients.
+The mirror creation save all data as .gz to save disk space and CPU, you need to enable reverse gz decode when a client ask for the decompressed version, normally used only for legacy composer clients.
 
 Change you [nginx configuration](https://www.nginx.com/resources/wiki/start/topics/examples/full/) of [*gzip_static*](http://nginx.org/en/docs/http/ngx_http_gunzip_module.html) and [*gunzip*](http://nginx.org/en/docs/http/ngx_http_gzip_static_module.html) as is:
 

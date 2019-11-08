@@ -251,12 +251,11 @@ class Create extends Base
      */
     protected function showErrors():Create
     {
-        $errors = $this->http->getPoolErrors();
-
-        if (!$this->isVerbose() || empty($errors)) {
+        if (!$this->isDebug()) {
             return $this;
         }
 
+        $errors = $this->http->getPoolErrors();
         $rows = [];
         foreach ($errors as $path => $reason) {
             list('code' => $code, 'host' => $host, 'message' => $message) = $reason;
@@ -271,6 +270,10 @@ class Create extends Base
                 '<comment>'.$this->shortname($path).'</>',
                 '<error>'.$error.'</>',
             ];
+        }
+
+        if(!count($rows)){
+            return $this;
         }
 
         $table = new Table($this->output);
@@ -290,9 +293,13 @@ class Create extends Base
 
         foreach ($mirrors as $mirror) {
             $total = $this->http->getTotalErrorByMirror($mirror);
-            if ($total < 1000) {
-                $softError = '<error>'.$total.' errors</> mirror <comment>'.$mirror;
-                $this->output->writeln($softError);
+            if ($total < 100) {
+                if ($this->isDebug() && $total > 0) {
+                    $softError = '<error>'.$total.' errors</> mirror <comment>';
+                    $softError = $softError.$mirror.'</>';
+                    $this->output->writeln($softError);
+                }
+                
                 continue;
             }
 
