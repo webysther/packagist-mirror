@@ -20,6 +20,8 @@ This project aims to create a local mirror with ease, allowing greater availabil
 
 ## Packagist metadata mirrors around the world
 
+🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇯🇵 🇮🇳 🇿🇦
+
 Data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
 - Africa, South Africa [packagist.co.za](https://packagist.co.za)
