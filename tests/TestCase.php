@@ -21,7 +21,7 @@ abstract class TestCase extends BaseTestCase
 
         parent::__construct($name, $data, $dataName);
 
-        $dotenv = new Dotenv(__DIR__.'/fixture/');
+        $dotenv = Dotenv::create(__DIR__.'/fixture/');
         $dotenv->load();
 
         $this->dir = vfsStream::setup()->url();

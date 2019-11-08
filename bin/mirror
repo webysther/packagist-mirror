@@ -31,7 +31,7 @@ if (!file_exists('.env')) {
 }
 
 // Load env
-$dotenv = new Dotenv\Dotenv(getcwd());
+$dotenv = Dotenv\Dotenv::create(getcwd());
 $dotenv->load();
 
 date_default_timezone_set(getenv('TZ'));
