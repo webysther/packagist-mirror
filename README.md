@@ -20,13 +20,15 @@ This project aims to create a local mirror with ease, allowing greater availabil
 
 ## Packagist metadata mirrors around the world
 
+🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇯🇵 🇮🇳 🇿🇦
+
 Data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
 - Africa, South Africa [packagist.co.za](https://packagist.co.za)
 - Asia, China [mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)
 - Asia, China [pkg.phpcomposer.com](https://packagist.phpcomposer.com)
 - Asia, Indonesia [packagist.phpindonesia.id](https://packagist.phpindonesia.id)
-- Asia, [India packagist.in](https://packagist.in) 
+- Asia, India [packagist.in](https://packagist.in) 
 - Asia, Japan [packagist.jp](https://packagist.jp) (legacy based of)
 - South America, Brazil [packagist.com.br](https://packagist.com.br) (our mirror)
 
