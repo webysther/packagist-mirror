@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Webs\Mirror\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Helper\Table;
 use Webs\Mirror\Provider;
@@ -65,6 +66,20 @@ class Create extends Base
     /**
      * {@inheritdoc}
      */
+    protected function configure()
+    {
+        parent::configure();
+        $this->addOption(
+            'no-clean',
+            null,
+            InputOption::VALUE_NONE,
+            "Don't search for deleted packages from metadata: php bin/mirror clean --help"
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function execute(InputInterface $input, OutputInterface $output):int
     {
         $this->initialize($input, $output);
@@ -82,7 +97,9 @@ class Create extends Base
         $this->filesystem->move(self::DOT);
 
         // Clean
-        $this->setExitCode($this->clean->execute($input, $output));
+        if(!$this->input->getOption('no-clean')){
+            $this->setExitCode($this->clean->execute($input, $output));
+        }
 
         if ($this->initialized) {
             $this->filesystem->delete(self::INIT);
@@ -138,6 +155,8 @@ class Create extends Base
             $this->moveToPublic();
         }
 
+        //usefull on dev frontend (move the frontend files every time):
+        //$this->moveToPublic();
         $this->initialized = $this->filesystem->hasFile(self::INIT);
 
         $newPackages = json_encode($this->providers, JSON_PRETTY_PRINT);
@@ -272,6 +291,8 @@ class Create extends Base
         foreach ($mirrors as $mirror) {
             $total = $this->http->getTotalErrorByMirror($mirror);
             if ($total < 1000) {
+                $softError = '<error>'.$total.' errors</> mirror <comment>'.$mirror;
+                $this->output->writeln($softError);
                 continue;
             }
 

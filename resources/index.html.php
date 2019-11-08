@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" />
         <title>Packagist Mirror</title>
 
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="./favicon.ico" />
 
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mini.css/2.3.7/mini-default.min.css" />
@@ -74,7 +74,9 @@
                                     class="img-valign"
                                     />
                         </h1>
-                        <p><span id="lastsynced" ></span><br>(Synchronized every <?= $synced ?> seconds)</p>
+                        <p><span id="lastsynced" ></span>
+                            <br><?php if(!empty($synced)) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
+                        </p>
                     </div>
                     <p>
                         This is PHP package repository Packagist.org mirror site.
@@ -106,9 +108,22 @@
                         </div>
                     </div>
 
+                    <h2>World Map of all mirrors</h2>
+                        <p>
+                            All mirrors, the colors represent <a href="network.svg" target="_blank">the topology drawn here</a>.
+                        </p>
+                        <a href="world_map.svg" target="_blank">
+                            <center>
+                                <img 
+                                src="world_map.svg" 
+                                alt="World Map with all mirrors"
+                                width="80%" />
+                            </center>
+                        </a>
+
                     <h2>Disclaimer</h2>
                     <p>This site offers its services free of charge and only as a mirror site.</p>
-                    <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org" target="_blank">Packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
+                    <p>This site only provides package information / metadata with no distribution file of the packages. All packages metadata files are mirrored from <a href="https://packagist.org/mirrors" target="_blank">packagist.org</a>. We do not modify and/or process the JSON files. If there is something wrong, please disable the setting the Disable command above and try to refer to the original packagist.org.</p>
                 </div>
             </div>
         </div>
@@ -149,10 +164,12 @@
                 } catch(er) {}
             }
 
-            fetchHeader(location.href,'Last-Modified');
-            setInterval(function(){
+            if(location.hostname !== ''){
                 fetchHeader(location.href,'Last-Modified');
-            }, (<?=$synced ?>000));
+                setInterval(function(){
+                    fetchHeader(location.href,'Last-Modified');
+                }, (<?=$synced ?>000));
+            }
         </script>
     </body>
 </html>

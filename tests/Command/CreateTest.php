@@ -71,6 +71,7 @@ class CreateTest extends TestCase
         $definition = new InputDefinition(array(
             new InputOption('no-progress', null, InputOption::VALUE_NONE),
             new InputOption('no-ansi', null, InputOption::VALUE_NONE),
+            new InputOption('no-clean', null, InputOption::VALUE_NONE),
         ));
 
         $input = new ArrayInput(array());
