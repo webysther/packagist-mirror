@@ -8,7 +8,7 @@ php:
 
 jobs:
   allow_failures:
-  - php: 8.0
+  - php: nightly
 
 script:
   # Update composer to latest version.
