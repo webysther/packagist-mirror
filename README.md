@@ -23,7 +23,7 @@ This project aims to create a local mirror with ease, allowing greater availabil
 When creating your local copy the child mirror (you) adds a list of other mirrors to use when creating your own mirror, if any mirror fails to deliver the metadata file the client automatically fetches the original file from the main mirror, could be packagist.org or even another. 
 After the mirror is created, the next runs will only look for the main mirror delta optimally and efficiently.
 
-![Mirror creation](/resources/public/mirror-creation.png)
+![Mirror creation](/resources/public/mirror-creation.gif)
 
 ## 🌎 Packagist metadata mirrors around the world
 
