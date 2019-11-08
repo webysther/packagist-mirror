@@ -1,4 +1,4 @@
-# Packagist Mirror
+# 📦 Packagist Mirror
 
 [![Build Status](https://goo.gl/PfY1J8)](https://travis-ci.org/Webysther/packagist-mirror)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square&maxAge=3600)](https://php.net/)
@@ -18,7 +18,7 @@ This project aims to create a local mirror with ease, allowing greater availabil
 
 ![Mirror creation](/resources/public/mirror-creation.png)
 
-## Packagist metadata mirrors around the world
+## 🌎 Packagist metadata mirrors around the world
 
 🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇯🇵 🇮🇳 🇿🇦
 
@@ -36,7 +36,7 @@ Data mirrors used to download repositories metadata built using this [recommende
 
 The colors represent the topology drawn below.
 
-## Create your own mirror
+## 🚀 Create your own mirror
 
 ![Topology](/resources/public/network.svg)
 
@@ -65,7 +65,7 @@ server {
 }
 ```
 
-Tip: use a machine with 2GB at least of memory, with that all metadata keep to the memory helping the nginx and disk to not be consumed at all.
+💡Tip: use a machine with 2GB at least of memory, with that all metadata keep to the memory helping the nginx and disk to not be consumed at all.
 
 After install nginx edit `/etc/crontab`:
 
@@ -93,7 +93,7 @@ source ~/.*rc
 logs
 ```
 
-## Install 
+## 👷 Install 
 
 Using with [docker repository](https://github.com/Webysther/packagist-mirror-docker) or composer local:
 
@@ -109,7 +109,7 @@ Schedule the command to create and update the mirror:
 $ php bin/mirror create -vvv
 ```
 
-## Development & Contributing
+## 🐧 Development & Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
