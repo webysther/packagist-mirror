@@ -14,9 +14,11 @@ This is PHP package repository [packagist.org](packagist.org) mirror site.
 
 If you're using [PHP Composer](https://getcomposer.org/), commands like *create-project*, *require*, *update*, *remove* are often used. When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used. The further you are from the location of the [packagist.org](packagist.org) server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
 
+❤️❤️ This project is [recommended by packagist.org](https://packagist.org/mirrors) ❤️❤️
+
 ## ⚙️ How it works?
 
-This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world. This project is [recommended by packagist](https://packagist.org/mirrors).
+This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
 
 When creating your local copy the child mirror (you) adds a list of other mirrors to use when creating your own mirror, if any mirror fails to deliver the metadata file the client automatically fetches the original file from the main mirror, could be packagist.org or even another. 
 After the mirror is created, the next runs will only look for the main mirror delta optimally and efficiently.
