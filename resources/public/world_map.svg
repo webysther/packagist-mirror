@@ -130,7 +130,7 @@
  * .eu - for members of European Union
  * .eaeu - for members of Eurasian Economic Union
  */
-.eu, .ca, .sg {
+.eu, .ca {
   fill: #DAE8FC;
 }
 
@@ -167,16 +167,6 @@
  {
     fill: #D5E8D4;
  }
-/*
- * Color a few small-country circles (along with the countries):
- *
- * .ms, .ky
- * {
- *    opacity:1;
- *    fill:#ff0000;
- * }
- *
- */
 
 
   </style>
