@@ -3,7 +3,7 @@
 [![Build Status](https://goo.gl/PfY1J8)](https://travis-ci.org/Webysther/packagist-mirror)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%207.2-8892BF.svg?style=flat-square&maxAge=3600)](https://php.net/)
 [![Packagist](https://img.shields.io/packagist/v/webysther/packagist-mirror.svg?style=flat-square)](https://packagist.org/packages/webysther/packagist-mirror)
-[![Codecov](https://goo.gl/T249vj)](https://github.com/Webysther/packagist-mirror)
+[![Codecov](https://img.shields.io/codecov/c/github/Webysther/packagist-mirror.svg?style=flat-square)](https://github.com/Webysther/packagist-mirror)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Software License](https://goo.gl/FU2Kw1)](LICENSE)
 [![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
