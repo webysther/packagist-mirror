@@ -26,7 +26,7 @@ Data mirror used to download repositories data created using this [recommended r
 - Asia, Japan packagist.jp (what this code is based of)
 - South America, Brazil packagist.com.br (our mirror)
 
-![World Map](https://raw.githubusercontent.com/Webysther/packagist-mirror/master/resources/public/world_map.svg)
+![World Map](/resources/public/world_map.svg)
 
 ## Create your own mirror
 
