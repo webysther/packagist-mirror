@@ -14,6 +14,8 @@ If you're using PHP Composer, commands like *create-project*, *require*, *update
 
 This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
 
+![Mirror creation](/resources/public/mirror-creation.png)
+
 ## Packagist metadata mirrors around the world
 
 Data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
