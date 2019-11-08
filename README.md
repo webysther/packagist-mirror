@@ -28,7 +28,11 @@ Data mirror used to download repositories data created using this [recommended r
 
 ![World Map](/resources/public/world_map.svg)
 
+The colors represent the topology drawn below.
+
 ## Create your own mirror
+
+![Topology](/resources/public/network.svg)
 
 With docker and nginx:
 
