@@ -10,6 +10,8 @@
 
 This is PHP package repository [packagist.org](packagist.org) mirror site.
 
+![Mirror creation](/resources/public/logo.svg)
+
 If you're using PHP Composer, commands like *create-project*, *require*, *update*, *remove* are often used. When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used. The further you are from the location of the [packagist.org](packagist.org) server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
 
 This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
