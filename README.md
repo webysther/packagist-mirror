@@ -113,25 +113,25 @@ $ php bin/mirror create -vvv
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
-## Requirements
+## 📋 Requirements
 
 The following versions of PHP are supported by this version.
 
 * PHP >=7.2
 
-## Testing
+## 🧪 Testing
 
 ``` bash
 $ vendor/bin/phpunit
 ```
 
-## Credits
+## 🥂 Credits
 
 - [Webysther Nunes](https://github.com/Webysther)
 - [Hiraku NAKANO](https://github.com/hirak)
 - [IndraGunawan](https://github.com/IndraGunawan)
 - [All Contributors](https://github.com/Webysther/packagist-mirror/contributors)
 
-## License
+## ☮️ License
 
 MIT License. Please see [License File](LICENSE) for more information.
