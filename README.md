@@ -20,8 +20,7 @@ If you're using [PHP Composer](https://getcomposer.org/), commands like *create-
 
 This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
 
-When creating your local copy the child mirror (you) adds a list of other mirrors to use when creating your own mirror, if any mirror fails to deliver the metadata file the client automatically fetches the original file from the main mirror, could be packagist.org or even another. 
-After the mirror is created, the next runs will only look for the main mirror delta optimally and efficiently.
+When creating your local copy the child mirror (you) adds a list of other mirrors to use when creating your own mirror, if any mirror fails to deliver the metadata file the client automatically fetches the original file from the main mirror, could be packagist.org or even another. If you lose your connection to the server or any other problem that prevents you from continuing is okay, it can return from where it stopped running. After the mirror is created, the next runs will only look for the main mirror delta optimally and efficiently.
 
 ![Mirror creation](/resources/public/mirror-creation.gif)
 
