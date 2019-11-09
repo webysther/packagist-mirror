@@ -76,8 +76,8 @@
                         </h1>
                         <p><span id="lastsynced" ></span>
                             <br>
-                            <?php if(!empty($synced) && $synced > 0) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
-                            <?php if(!empty($synced) && $synced == 0) {?>(Synchronized continuously)<?php }?>
+                            <?php if($synced > 0) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
+                            <?php if($synced == 0) {?>(Synchronized continuously)<?php }?>
                         </p>
                     </div>
                     <p>
