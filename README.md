@@ -8,13 +8,13 @@
 [![Software License](https://goo.gl/FU2Kw1)](LICENSE)
 [![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
 
-This is PHP package repository [packagist.org](packagist.org) mirror site.
+This is repository make possible to you create a metadata mirror and keep in sync with [packagist.org](packagist.org).
 
 ![Mirror creation](/resources/public/logo.svg)
 
-If you're using [PHP Composer](https://getcomposer.org/), commands like *create-project*, *require*, *update*, *remove* are often used. When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used. The further you are from the location of the [packagist.org](packagist.org) server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
-
 ❤️ [Recommended by packagist.org](https://packagist.org/mirrors) ❤️
+
+If you're using [PHP Composer](https://getcomposer.org/), commands like *create-project*, *require*, *update*, *remove* are often used. When those commands are executed, Composer will download information from the packages that are needed also from dependent packages. The number of json files downloaded depends on the complexity of the packages which are going to be used. The further you are from the location of the [packagist.org](packagist.org) server, the more time is needed to download json files. By using mirror, it will help save the time for downloading because the server location is closer.
 
 ## ⚙️ How it works?
 
