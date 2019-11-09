@@ -38,13 +38,13 @@ Data mirrors used to download repositories metadata built using this [recommende
 - Asia, Japan [packagist.jp](https://packagist.jp) (legacy based of)
 - South America, Brazil [packagist.com.br](https://packagist.com.br) (our mirror)
 
-![World Map](/resources/public/world_map.svg)
+[![World Map](/resources/public/world_map.svg)](https://packagist.com.br/world_map.svg)
 
 The colors represent the topology drawn below.
 
 ## 🚀 Create your own mirror
 
-![Topology](/resources/public/network.svg)
+[![Topology](/resources/public/network.svg)](https://packagist.com.br/network.svg)
 
 With docker and nginx:
 
