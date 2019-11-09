@@ -24,7 +24,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 ![Mirror creation](/resources/public/mirror-creation.gif)
 
-## 🌎 Packagist metadata mirrors around the world
+## 🌎 Packagist public metadata mirrors around the world
 
 🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇯🇵 🇮🇳 🇿🇦
 
