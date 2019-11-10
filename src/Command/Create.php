@@ -306,21 +306,27 @@ class Create extends Base
         $mirrors = $this->http->getMirror()->toArray();
 
         foreach ($mirrors as $mirror) {
-            $total = $this->http->getTotalErrorByMirror($mirror);
+            if(empty($mirror)){
+                continue;
+            }
+            
+            $uri = parse_url($mirror);
+            $base = $uri['scheme'].'://'.$uri['host'];
+            $total = $this->http->getTotalErrorByMirror($base);
 
-            if(!isset($this->latestErrorsShowed[$mirror])){
-                $this->latestErrorsShowed[$mirror] = 0;
+            if(!isset($this->latestErrorsShowed[$base])){
+                $this->latestErrorsShowed[$base] = 0;
             }
 
             if ($total < 100) {
                 if ($this->isDebug() && $total > 1) {
-                    if($this->latestErrorsShowed[$mirror] == $total){
+                    if($this->latestErrorsShowed[$base] == $total){
                         continue;
                     }
 
-                    $this->latestErrorsShowed[$mirror] = $total;
+                    $this->latestErrorsShowed[$base] = $total;
                     $softError = '<error>'.$total.' errors</> mirror <comment>';
-                    $softError = $softError.$mirror.'</>';
+                    $softError = $softError.$base.'</>';
                     $this->output->writeln($softError);
                 }
                 
