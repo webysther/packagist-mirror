@@ -68,13 +68,16 @@
                     <div class="title">
                         <h1>
                             Packagist Mirror
-                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/flags/4x3/<?= $countryCode; ?>.svg"
+                            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/flags/4x3/<?= $countryCode; ?>.svg"
                                     title="<?= $countryName; ?>"
                                     alt="<?= $countryName; ?>"
                                     class="img-valign"
                                     />
                         </h1>
-                        <p><span id="lastsynced" ></span>
+                        <p>
+                            <?= $tz; ?>
+                            <br>
+                            <span id="lastsynced" ></span>
                             <br>
                             <?php if($synced > 0) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
                             <?php if($synced == 0) {?>(Synchronized continuously)<?php }?>
@@ -97,7 +100,7 @@
                         <div>
                             <p class="bash" >
                                 $ <span id="enablingStep"></span>
-                                <button class="small tertiary ctclipboard" data-clipboard-target="#enablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
+                                <button class="small tertiary ctclipboard" data-clipboard-target="#enablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
                             </p>
                         </div>
                         <input type="radio" name="accordion" id="disable"aria-hidden="true">
@@ -105,7 +108,7 @@
                         <div>
                             <p class="bash" >
                                 $ <span id="disablingStep"></span>
-                                <button class="small tertiary ctclipboard" data-clipboard-target="#disablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
+                                <button class="small tertiary ctclipboard" data-clipboard-target="#disablingStep"><img class="clippy" width="13" src="https://cdnjs.cloudflare.com/ajax/libs/octicons/8.5.0/svg/clippy.svg" alt="Copy to clipboard"> Copy</button>
                             </p>
                         </div>
                     </div>
@@ -141,9 +144,9 @@
                 </p>
             </div>
         </footer>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.17/moment-timezone-with-data-2012-2022.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.26/moment-timezone-with-data-2012-2022.min.js"></script>
         <script>
             // set text of the command
             document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer '+ window.location.origin;
@@ -170,7 +173,7 @@
                 fetchHeader(location.href,'Last-Modified');
                 setInterval(function(){
                     fetchHeader(location.href,'Last-Modified');
-                }, (<?=$synced ?>000));
+                }, (<?=$synced ?>000+1000));
             }
         </script>
     </body>
