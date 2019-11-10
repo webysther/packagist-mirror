@@ -6,12 +6,12 @@ We accept contributions via Pull Requests on [Github](https://github.com/Webysth
 
 Put inside your `~/.*rc` (`~/.bashrc`/`~/.zshrc`/`~/.config/fish/config.fish`):
 ```bash
-alias drun='docker run --user=`id -u $USER`:`id -g` --workdir=/code --rm -v $(pwd):/code -v $HOME:/home/YOUR-USERNAME'
-alias packagist-mirror-env='drun -it --net=host -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro webysther/composer-debian bash'
-# go to path you put inside .env var PUBLIC_DIR and up a webserver
-alias static_webserver='docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 80:80 -d nginx'
-# is possible simulate a 'cluster'
-alias static_webserver_cluster='docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 85:80 -d nginx;docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 86:80 -d nginx'
+alias drun='docker run --user=`id -u $USER`:`id -g` --workdir=/code --rm -v $PWD:/code -v $HOME:/home/YOUR-USERNAME'
+# using inside .env PUBLIC_DIR=/public you can using on memory (~1GB)
+alias dev='drun -it --net=host --tmpfs /public -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro webysther/composer-debian bash'
+# test index.html
+# when running (php bin/mirror create --no-clean --no-progress) with .env PUBLIC_DIR=/home/YOUR-USERNAME/public inside alias dev
+alias web='drun -v $PWD/nginx.conf:/etc/nginx/nginx.conf:ro -v /home/YOUR-USERNAME/public:/usr/share/nginx/html:ro -p 80:80 -d nginx:alpine'
 ```
 
 Update your env vars:
