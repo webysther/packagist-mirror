@@ -66,7 +66,7 @@ php bin/mirror create -vvv
 ## Running Tests
 
 ``` bash
-$ composer qa:paratest
+$ vendor/bin/phpunit
 ```
 
 
