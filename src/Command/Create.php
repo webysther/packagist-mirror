@@ -53,6 +53,11 @@ class Create extends Base
     protected $clean;
 
     /**
+     * @var array
+     */
+    protected $latestErrorsShowed = [];
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($name = '')
@@ -207,9 +212,16 @@ class Create extends Base
      */
     protected function downloadProviders():Create
     {
+        $uri = $this->http->getBaseUri();
+
         $this->output->writeln(
-            'Loading providers from <info>'.$this->http->getBaseUri().'</>'
+            'Loading providers from <info>'.$uri.'</>'
         );
+
+        if (!filter_var($uri, FILTER_VALIDATE_URL)) {
+            $this->output->writeln('<error>The main mirror url is invalid!</>');
+            return $this->setExitCode(1);
+        }
 
         $this->providers = $this->provider->addFullPath(
             $this->package->getMainJson()
@@ -231,7 +243,9 @@ class Create extends Base
 
         $this->http->pool($generator, $success, $this->getClosureComplete());
         $this->progressBar->end();
-        $this->output->write(PHP_EOL);
+        if(!$this->progressBar->isDisabled()){
+            $this->output->write(PHP_EOL);
+        }
         $this->showErrors();
 
         // If initialized can have provider downloaded by half
@@ -293,8 +307,18 @@ class Create extends Base
 
         foreach ($mirrors as $mirror) {
             $total = $this->http->getTotalErrorByMirror($mirror);
+
+            if(!isset($this->latestErrorsShowed[$mirror])){
+                $this->latestErrorsShowed[$mirror] = 0;
+            }
+
             if ($total < 100) {
-                if ($this->isDebug() && $total > 0) {
+                if ($this->isDebug() && $total > 1) {
+                    if($this->latestErrorsShowed[$mirror] == $total){
+                        continue;
+                    }
+
+                    $this->latestErrorsShowed[$mirror] = $total;
                     $softError = '<error>'.$total.' errors</> mirror <comment>';
                     $softError = $softError.$mirror.'</>';
                     $this->output->writeln($softError);
@@ -345,7 +369,9 @@ class Create extends Base
             $this->progressBar->start(count($this->providerPackages));
             $this->poolPackages($generator);
             $this->progressBar->end();
-            $this->output->write(PHP_EOL);
+            if(!$this->progressBar->isDisabled()){
+                $this->output->write(PHP_EOL);
+            }
             $this->showErrors()->disableDueErrors()->fallback();
         }
 
@@ -408,7 +434,9 @@ class Create extends Base
         $this->progressBar->start($total);
         $this->poolPackages($generator);
         $this->progressBar->end();
-        $this->output->write(PHP_EOL);
+        if(!$this->progressBar->isDisabled()){
+            $this->output->write(PHP_EOL);
+        }
         $this->showErrors();
 
         return $this;
