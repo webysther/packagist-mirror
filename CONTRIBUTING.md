@@ -8,6 +8,10 @@ Put inside your `~/.*rc` (`~/.bashrc`/`~/.zshrc`/`~/.config/fish/config.fish`):
 ```bash
 alias drun='docker run --user=`id -u $USER`:`id -g` --workdir=/code --rm -v $(pwd):/code -v $HOME:/home/YOUR-USERNAME'
 alias packagist-mirror-env='drun -it --net=host -v /etc/passwd:/etc/passwd:ro -v /etc/group:/etc/group:ro webysther/composer-debian bash'
+# go to path you put inside .env var PUBLIC_DIR and up a webserver
+alias static_webserver='docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 80:80 -d nginx'
+# is possible simulate a 'cluster'
+alias static_webserver_cluster='docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 85:80 -d nginx;docker run --name nginx -v $PWD:/usr/share/nginx/html:ro -p 86:80 -d nginx'
 ```
 
 Update your env vars:
