@@ -5,9 +5,9 @@
 [![Packagist](https://img.shields.io/packagist/v/webysther/packagist-mirror.svg?style=flat-square)](https://packagist.org/packages/webysther/packagist-mirror)
 [![Codecov](https://img.shields.io/codecov/c/github/Webysther/packagist-mirror.svg?style=flat-square)](https://github.com/Webysther/packagist-mirror)
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror.svg?type=shield&style=flat-square)](https://app.fossa.io/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror?ref=badge_shield)
 [![Software License](https://goo.gl/FU2Kw1)](LICENSE)
-[![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror?ref=badge_shield)
+[![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg?style=flat-square)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
 
 This is repository make possible to you create a metadata mirror and keep in sync with [packagist.org](packagist.org).
 
