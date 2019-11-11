@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.1] - 2019-11-11
+### Added
+- More mirrors: https://packagist.kr, https://packagist.mirrors.sjtug.sjtu.edu.cn, https://mirrors.cloud.tencent.com/composer, https://mirrors.huaweicloud.com/repository/php
+- Roadmap on Readme.md
+- Other correlated projects on Readme.md
+
+### Changed
+- List of mirrors with tabular view and more information
+- Topology better design
+- WorldMap with new mirrors
+- Better support for `-v`, `-vv` and `-vvv`
+- Better cli messages when creating a new mirror
+- Support mirror with path
+- Better support for URL on env vars
+- Fixed bug with `metadata-url` using folder p2. Today this property is ignored and superseed by `providers-url`
+
 ## [1.1.0] - 2019-11-10
 ### Added
 - SLEEP to .env.example
@@ -65,7 +81,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial version
 
-[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.0.3...HEAD
+[Unreleased]: https://github.com/Webysther/packagist-mirror/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/Webysther/packagist-mirror/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/Webysther/packagist-mirror/compare/1.0.3...1.1.0
 [1.0.3]:  https://github.com/Webysther/packagist-mirror/compare/1.0.2...1.0.3
 [1.0.2]:  https://github.com/Webysther/packagist-mirror/compare/1.0.1...1.0.2
 [1.0.1]:  https://github.com/Webysther/packagist-mirror/compare/1.0.0...1.0.1
