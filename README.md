@@ -7,6 +7,7 @@
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Software License](https://goo.gl/FU2Kw1)](LICENSE)
 [![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror?ref=badge_shield)
 
 This is repository make possible to you create a metadata mirror and keep in sync with [packagist.org](packagist.org).
 
@@ -169,3 +170,6 @@ $ vendor/bin/phpunit
 ## ☮️ License
 
 MIT License. Please see [License File](LICENSE) for more information.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FWebysther%2Fpackagist-mirror?ref=badge_large)
