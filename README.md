@@ -41,7 +41,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |Asia, South Korea |[packagist.kr](https://packagist.kr) |[packagistkr/packagist-mirror](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
 |South America, Brazil |[packagist.com.br](https://packagist.com.br) |[Webysther/packagist-mirror](https://github.com/Webysther/packagist-mirror)|Continuously|
 
-Not fully working as a mirror of packagist.org (Checked 2019-11):
+Not working as a mirror of packagist.org (Checked 2019-11):
 
 | Location        | Mirror      | Github | Reason|Sync |
 | ------|-----|-----|-----|-----|
