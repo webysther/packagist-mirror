@@ -156,13 +156,13 @@ class Http
             $this->connections = $this->maxConnections * $mirrors;
         }
 
-        $fulfilled = function ($response, $path) use ($success, $complete) {
+        $fulfilled = function($response, $path) use ($success, $complete) {
             $body = (string) $response->getBody();
             $success($body, $path);
             $complete();
         };
 
-        $rejected = function ($reason, $path) use ($complete) {
+        $rejected = function($reason, $path) use ($complete) {
             $uri = $reason->getRequest()->getUri();
             $host = $uri->getScheme().'://'.$uri->getHost();
             $uri = (string) $uri;
