@@ -107,7 +107,7 @@ class Create extends Base
         $this->filesystem->move(self::DOT);
 
         // Clean
-        if(!$this->input->getOption('no-clean')){
+        if (!$this->input->getOption('no-clean')) {
             $this->setExitCode($this->clean->execute($input, $output));
         }
 
@@ -203,7 +203,9 @@ class Create extends Base
     {
         $from = getcwd().'/resources/public/';
         foreach (new \DirectoryIterator($from) as $fileInfo) {
-            if($fileInfo->isDot()) continue;
+            if($fileInfo->isDot()) {
+                continue;
+            }
             $file = $fileInfo->getFilename();
             $to = $this->filesystem->getFullPath($file);
             copy($from.$file, $to);
@@ -241,14 +243,14 @@ class Create extends Base
 
         $this->progressBar->start(count($this->providerIncludes));
 
-        $success = function ($body, $path) {
+        $success = function($body, $path) {
             $this->provider->setDownloaded($path);
             $this->filesystem->write($path, $body);
         };
 
         $this->http->pool($generator, $success, $this->getClosureComplete());
         $this->progressBar->end();
-        if(!$this->progressBar->isDisabled()){
+        if (!$this->progressBar->isDisabled()) {
             $this->output->write(PHP_EOL);
         }
         $this->showErrors();
@@ -291,7 +293,7 @@ class Create extends Base
             ];
         }
 
-        if(!count($rows)){
+        if (!count($rows)) {
             return $this;
         }
 
@@ -311,7 +313,7 @@ class Create extends Base
         $mirrors = $this->http->getMirror()->toArray();
 
         foreach ($mirrors as $mirror) {
-            if(empty($mirror)){
+            if (empty($mirror)) {
                 continue;
             }
             
@@ -384,7 +386,7 @@ class Create extends Base
             $this->progressBar->start(count($this->providerPackages));
             $this->poolPackages($generator);
             $this->progressBar->end();
-            if(!$this->progressBar->isDisabled()){
+            if (!$this->progressBar->isDisabled()) {
                 $this->output->write(PHP_EOL);
             }
             $this->showErrors()->disableDueErrors()->fallback();
@@ -403,7 +405,7 @@ class Create extends Base
         $this->http->pool(
             $generator,
             // Success
-            function ($body, $path) {
+            function($body, $path) {
                 $this->filesystem->write($path, $body);
                 $this->package->setDownloaded($path);
             },
@@ -419,7 +421,7 @@ class Create extends Base
      */
     protected function getClosureComplete():Closure
     {
-        return function () {
+        return function() {
             $this->progressBar->progress();
         };
     }
@@ -449,7 +451,7 @@ class Create extends Base
         $this->progressBar->start($total);
         $this->poolPackages($generator);
         $this->progressBar->end();
-        if(!$this->progressBar->isDisabled()){
+        if (!$this->progressBar->isDisabled()) {
             $this->output->write(PHP_EOL);
         }
         $this->showErrors();

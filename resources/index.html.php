@@ -38,9 +38,9 @@
             }
         </style>
 
-        <?php if(!empty($googleAnalyticsMainId) || !empty($googleAnalyticsId)) {?>
+        <?php if (!empty($googleAnalyticsMainId) || !empty($googleAnalyticsId)) {?>
         <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<?=$googleAnalyticsMainId?:$googleAnalyticsId?>"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=<?=$googleAnalyticsMainId ?: $googleAnalyticsId?>"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
 
@@ -50,11 +50,11 @@
 
             gtag('js', new Date());
 
-            <?php if(!empty($googleAnalyticsMainId)) {?>
+            <?php if (!empty($googleAnalyticsMainId)) {?>
             gtag('config', '<?=$googleAnalyticsMainId?>');
             <?php }?>
 
-            <?php if(!empty($googleAnalyticsId)) {?>
+            <?php if (!empty($googleAnalyticsId)) {?>
             gtag('config', '<?=$googleAnalyticsId?>');
             <?php }?>
         </script>
@@ -79,8 +79,8 @@
                             <br>
                             <span id="lastsynced" ></span>
                             <br>
-                            <?php if($synced > 0) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
-                            <?php if($synced == 0) {?>(Synchronized continuously)<?php }?>
+                            <?php if ($synced > 0) {?>(Synchronized every <?= $synced ?> seconds)<?php }?>
+                            <?php if ($synced == 0) {?>(Synchronized continuously)<?php }?>
                         </p>
                     </div>
                     <p>

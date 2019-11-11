@@ -243,7 +243,7 @@ class Filesystem
             $this->delete($target);
         }
 
-        retry(8, function () use ($from, $target) {
+        retry(8, function() use ($from, $target) {
             $this->filesystem->rename($this->getGzName($from), $target);
         }, 250);
 
