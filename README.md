@@ -56,13 +56,6 @@ If you know any new mirror based or not on this one, please create a issue or a 
 
 The colors represent the topology drawn below, only show servers in better condition at country level.
 
-## 🛣️ Roadmap
-
-- Translate readme.md and index of mirror.
-- More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
-- Support gz disabled for limited configuration access to Apache/Nginx.
-- Support full mirror mode (for countries/companies with limited access to internet).
-
 ## 🚀 Create your own mirror
 
 [![Topology](/resources/public/network.svg)](https://packagist.com.br/network.svg)
@@ -139,6 +132,13 @@ $ php bin/mirror create -vvv
 ## 🐧 Development & Contributing
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
+
+## 🛣️ Roadmap
+
+- Translate readme.md and index of mirror.
+- More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
+- Support gz disabled for limited configuration access to Apache/Nginx.
+- Support full mirror mode (for countries/companies with limited access to internet).
 
 ## 📋 Requirements
 
