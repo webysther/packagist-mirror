@@ -18,7 +18,7 @@ If you're using [PHP Composer](https://getcomposer.org/), commands like *create-
 
 ## ⚙️ How it works?
 
-This project aims to create a local mirror with ease, allowing greater availability for companies that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world.
+This project aims to create a local mirror with ease, allowing greater availability for companies/countries that want to use the composer but do not want to depend on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and allow a better distribution of requests around the world, help us creating a public mirror!
 
 When creating your local copy the child mirror (you) adds a list of other mirrors to use when creating your own mirror, if any mirror fails to deliver the metadata file the client automatically fetches the original file from the main mirror, could be packagist.org or even another. If you lose your connection to the server or any other problem that prevents you from continuing is okay, it can return from where it stopped running. After the mirror is created, the next runs will only look for the main mirror delta optimally and efficiently.
 
@@ -26,21 +26,42 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 ## 🌎 Packagist public metadata mirrors around the world
 
-🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇯🇵 🇮🇳 🇿🇦
+🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇰🇷 🇯🇵 🇮🇳 🇿🇦
 
-Data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
+🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
-- Africa, South Africa [packagist.co.za](https://packagist.co.za)
-- Asia, China [mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)
-- Asia, China [pkg.phpcomposer.com](https://packagist.phpcomposer.com)
-- Asia, Indonesia [packagist.phpindonesia.id](https://packagist.phpindonesia.id)
-- Asia, India [packagist.in](https://packagist.in) 
-- Asia, Japan [packagist.jp](https://packagist.jp) (legacy based of)
-- South America, Brazil [packagist.com.br](https://packagist.com.br) (our mirror)
+| Location        | Mirror      | Github | Sync |
+| ------|-----|-----|-----|
+|Africa, South Africa |[packagist.co.za](https://packagist.co.za)||Every 300 seconds|
+|Asia, China |[mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)||Every 300 seconds|
+|Asia, China |[Shanghai Jiao Tong University](https://packagist.mirrors.sjtug.sjtu.edu.cn) |[sjtug/packagist-mirror](https://github.com/sjtug/packagist-mirror)|Every hour|
+|Asia, China |[php.cnpkg.org](https://php.cnpkg.org)||Every 60 seconds|
+|Asia, China |[Tecent](https://mirrors.cloud.tencent.com/composer)||?|
+|Asia, Japan |[packagist.jp](https://packagist.jp) |[hirak/packagist-crawler](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
+|Asia, South Korea |[packagist.kr](https://packagist.kr) |[packagistkr/packagist-mirror](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
+|South America, Brazil |[packagist.com.br](https://packagist.com.br) |[Webysther/packagist-mirror](https://github.com/Webysther/packagist-mirror)|Continuously|
+
+Not fully working as a mirror of packagist.org (Checked 2019-11):
+
+| Location        | Mirror      | Github | Reason|Sync |
+| ------|-----|-----|-----|-----|
+|Asia, China |[Huawei Cloud](https://mirrors.huaweicloud.com/repository/php)||> 100 packages outdated||
+|Asia, China |[pkg.phpcomposer.com](https://packagist.phpcomposer.com)||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json)||
+|Asia, India |[packagist.in](https://packagist.in) |[varunsridharan](https://github.com/varunsridharan)|404||
+|Asia, Indonesia |[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[IndraGunawan/packagist-mirror](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds|
+
+If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
 [![World Map](/resources/public/world_map.svg)](https://packagist.com.br/world_map.svg)
 
-The colors represent the topology drawn below.
+The colors represent the topology drawn below, only show servers in better condition at country level.
+
+## 🛣️ Roadmap
+
+- Translate readme.md and index of mirror.
+- More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
+- Support gz disabled for limited configuration access to Apache/Nginx.
+- Support full mirror mode (for countries/companies with limited access to internet).
 
 ## 🚀 Create your own mirror
 
@@ -137,6 +158,13 @@ $ vendor/bin/phpunit
 - [Hiraku NAKANO](https://github.com/hirak)
 - [IndraGunawan](https://github.com/IndraGunawan)
 - [All Contributors](https://github.com/Webysther/packagist-mirror/contributors)
+
+## 💙 Other correlated projects
+
+- [Zencodex](https://github.com/zencodex/composer-mirror) - create a mirror
+- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) - create a mirror (outdated)
+- [Hirak](https://github.com/hirak/packagist-crawler) - create a mirror (outdated)
+- [Slince](https://github.com/slince/composer-registry-manager): Easily switch to the composer repository you want
 
 ## ☮️ License
 
