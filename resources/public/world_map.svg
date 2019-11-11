@@ -130,7 +130,7 @@
  * .eu - for members of European Union
  * .eaeu - for members of Eurasian Economic Union
  */
-.eu, .ca {
+.eu, .ca, .id {
   fill: #DAE8FC;
 }
 
@@ -163,7 +163,7 @@
     fill: #97D077;
  }
 
- .za, .id
+ .za, .kr
  {
     fill: #D5E8D4;
  }
