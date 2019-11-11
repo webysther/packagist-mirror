@@ -101,20 +101,14 @@ class Provider
     }
 
     /**
-     * Add base url of packagist.org to services on packages.json of
-     * mirror don't support.
+     * Change provider packages.json values.
      *
      * @param stdClass $providers List of providers from packages.json
      */
-    public function addFullPath(stdClass $providers):stdClass
+    public function getPackagesJson(stdClass $providers):stdClass
     {
-        // Add full path for services of mirror don't provide only packagist.org
-        foreach (['notify', 'notify-batch', 'search'] as $key) {
-            // Just in case packagist.org add full path in future
-            $path = parse_url($providers->$key){'path'};
-            $providers->$key = $this->http->getBaseUri().$path;
-        }
-
+        $providers->{'providers-url'} = "/p/%package%$%hash%.json";
+        $providers->{'metadata-url'} = "/p/%package%.json";
         return $providers;
     }
 

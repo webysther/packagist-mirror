@@ -58,6 +58,11 @@ class Create extends Base
     protected $latestErrorsShowed = [];
 
     /**
+     * Errors before disable mirror
+     */
+    const ERROR_LIMIT = 100;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct($name = '')
@@ -223,7 +228,7 @@ class Create extends Base
             return $this->setExitCode(1);
         }
 
-        $this->providers = $this->provider->addFullPath(
+        $this->providers = $this->provider->getPackagesJson(
             $this->package->getMainJson()
         );
 
@@ -318,15 +323,19 @@ class Create extends Base
                 $this->latestErrorsShowed[$base] = 0;
             }
 
-            if ($total < 100) {
-                if ($this->isDebug() && $total > 1) {
+            # Errors before disable mirror
+            if ($total < self::ERROR_LIMIT) {
+                //print_r($this->isVeryVerbose());
+                if ($this->isVeryVerbose() && $total > 1) {
+                    //print_r($this->latestErrorsShowed);
+                    //print($base.PHP_EOL);
                     if($this->latestErrorsShowed[$base] == $total){
                         continue;
                     }
 
                     $this->latestErrorsShowed[$base] = $total;
                     $softError = '<error>'.$total.' errors</> mirror <comment>';
-                    $softError = $softError.$base.'</>';
+                    $softError = $softError.$mirror.'</>';
                     $this->output->writeln($softError);
                 }
                 
@@ -347,7 +356,7 @@ class Create extends Base
     }
 
     /**
-     * Download packages listed on provider-*.json on public/p dir.
+     * Download packages listed on provider-*.json on /p dir.
      *
      * @return Create
      */

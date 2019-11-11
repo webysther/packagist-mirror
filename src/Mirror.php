@@ -48,8 +48,16 @@ class Mirror
     {
         $this->master = $master;
         $this->slaves = $slaves;
+        $this->data = [];
 
-        $this->data = $slaves;
+        foreach ($slaves as $value) {
+            if(empty($value) || !filter_var($value, FILTER_VALIDATE_URL)){
+                continue;
+            }
+
+            $this->data[] = $value;
+        }
+
         if (!in_array($master, $this->data)) {
             $this->data[] = $master;
         }

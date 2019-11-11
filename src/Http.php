@@ -80,7 +80,9 @@ class Http
      */
     public function __construct(Mirror $mirror, int $maxConnections)
     {
-        $this->config['base_uri'] = $mirror->getMaster();
+        // fixed when /something is passed is converted to /
+        // now we put a / as suffix and is resolved as /something/
+        $this->config['base_uri'] = trim($mirror->getMaster(), '/').'/';
         $this->client = new Client($this->config);
         $this->maxConnections = $maxConnections;
         $this->mirror = $mirror;
@@ -132,7 +134,11 @@ class Http
             $base = $this->mirror->getNext();
         }
 
-        return new Request('GET', $base.'/'.$uri);
+        // when uri is doubled // is misleading interpreted
+        $request_uri = trim($base, '/').'/'.trim($uri, '/');
+        // debug every uri:
+        // print($request_uri.PHP_EOL);
+        return new Request('GET', $request_uri);
     }
 
     /**
@@ -159,13 +165,14 @@ class Http
         $rejected = function ($reason, $path) use ($complete) {
             $uri = $reason->getRequest()->getUri();
             $host = $uri->getScheme().'://'.$uri->getHost();
+            $uri = (string) $uri;
 
             $wordwrap = wordwrap($reason->getMessage());
             $message = current(explode("\n", $wordwrap)).'...';
 
             $this->poolErrors[$path] = [
                 'code' => $reason->getCode(),
-                'host' => $host,
+                'host' => dirname($uri),
                 'message' => $message,
             ];
 

@@ -121,8 +121,8 @@ class Package
     }
 
     /**
-     * @param stdClass $providers
-     *
+     * @param stdClass $providers List of individual packages as a list
+     * 
      * @return array
      */
     public function normalize(stdClass $providers):array
@@ -137,7 +137,7 @@ class Package
     }
 
     /**
-     * @param string $uri
+     * @param string $uri URL to individual providers list packages
      *
      * @return array
      */
