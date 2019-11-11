@@ -203,7 +203,7 @@ class Create extends Base
     {
         $from = getcwd().'/resources/public/';
         foreach (new \DirectoryIterator($from) as $fileInfo) {
-            if($fileInfo->isDot()) {
+            if ($fileInfo->isDot()) {
                 continue;
             }
             $file = $fileInfo->getFilename();
@@ -321,7 +321,7 @@ class Create extends Base
             $base = $uri['scheme'].'://'.$uri['host'];
             $total = $this->http->getTotalErrorByMirror($base);
 
-            if(!isset($this->latestErrorsShowed[$base])){
+            if (!isset($this->latestErrorsShowed[$base])) {
                 $this->latestErrorsShowed[$base] = 0;
             }
 
@@ -331,7 +331,7 @@ class Create extends Base
                 if ($this->isVeryVerbose() && $total > 1) {
                     //print_r($this->latestErrorsShowed);
                     //print($base.PHP_EOL);
-                    if($this->latestErrorsShowed[$base] == $total){
+                    if ($this->latestErrorsShowed[$base] == $total) {
                         continue;
                     }
 
