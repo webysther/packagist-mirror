@@ -37,7 +37,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |Asia, China |[mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)||Every 300 seconds|
 |Asia, China |[Shanghai Jiao Tong University](https://packagist.mirrors.sjtug.sjtu.edu.cn) |[sjtug/packagist-mirror](https://github.com/sjtug/packagist-mirror)|Every hour|
 |Asia, China |[php.cnpkg.org](https://php.cnpkg.org)||Every 60 seconds|
-|Asia, China |[Tecent](https://mirrors.cloud.tencent.com/composer)||?|
+|Asia, China |[Tecent](https://mirrors.cloud.tencent.com/composer)|||
 |Asia, Japan |[packagist.jp](https://packagist.jp) |[hirak/packagist-crawler](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
 |Asia, South Korea |[packagist.kr](https://packagist.kr) |[packagistkr/packagist-mirror](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
 |South America, Brazil |[packagist.com.br](https://packagist.com.br) |[Webysther/packagist-mirror](https://github.com/Webysther/packagist-mirror)|Continuously|
@@ -162,10 +162,10 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [Zencodex](https://github.com/zencodex/composer-mirror) - create a mirror
-- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) - create a mirror (outdated)
-- [Hirak](https://github.com/hirak/packagist-crawler) - create a mirror (outdated)
-- [Slince](https://github.com/slince/composer-registry-manager): Easily switch to the composer repository you want
+- [Zencodex](https://github.com/zencodex/composer-mirror) create a mirror
+- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) create a mirror (outdated)
+- [Hirak](https://github.com/hirak/packagist-crawler) create a mirror (outdated)
+- [Slince](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
 
 ## ☮️ License
 

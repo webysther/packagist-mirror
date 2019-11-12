@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - More mirrors: packagist.co.za, mirrors.aliyun.com/composer, packagist.in
 - Google Analytics
 - Funding https://www.patreon.com/packagist_mirror
+- Dropped support for PHP < 7.2
 - Test PHP 7.3, 7.4 and 8.0 (failing)
 - nginx.conf based on nginx docker
 - World Map
@@ -37,7 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support for better to -vv and -vvv verbosity
 - Option `--no-clean` to support weekly/monthly clean
 - URI main mirror validation
-- Error counter to same mirror when give more than 1
+- Error counter to same mirror when give more than 1 error
 
 ### Changed
 - Better Contribution page.

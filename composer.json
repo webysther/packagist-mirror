@@ -16,7 +16,6 @@
         "sebastian/version": "~2",
         "nesbot/carbon": "~2",
         "php-snippets/circular-array": "~1",
-        "league/flysystem-cached-adapter": "~1",
         "illuminate/support": "~6"
     },
     "require-dev": {
