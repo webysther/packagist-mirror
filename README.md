@@ -31,25 +31,25 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
-| Location        | Mirror      | Github | Sync |
-| ------|-----|-----|-----|
-|Africa, South Africa |[packagist.co.za](https://packagist.co.za)||Every 300 seconds|
-|Asia, China |[mirrors.aliyun.com/composer](https://mirrors.aliyun.com/composer)||Every 300 seconds|
-|Asia, China |[Shanghai Jiao Tong University](https://packagist.mirrors.sjtug.sjtu.edu.cn) |[sjtug/packagist-mirror](https://github.com/sjtug/packagist-mirror)|Every hour|
-|Asia, China |[php.cnpkg.org](https://php.cnpkg.org)||Every 60 seconds|
-|Asia, China |[Tecent](https://mirrors.cloud.tencent.com/composer)|||
-|Asia, Japan |[packagist.jp](https://packagist.jp) |[hirak/packagist-crawler](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
-|Asia, South Korea |[packagist.kr](https://packagist.kr) |[packagistkr/packagist-mirror](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
-|South America, Brazil |[packagist.com.br](https://packagist.com.br) |[Webysther/packagist-mirror](https://github.com/Webysther/packagist-mirror)|Continuously|
+| Location        | Mirror      | Maintainer | Github | Sync |
+| ------|-----|-----|-----|-----|
+|Brazil|[packagist.com.br](https://packagist.com.br)|Webysther|[main](https://github.com/Webysther/packagist-mirror)|Continuously|
+|China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|Aliyun||Every 300 seconds|
+|China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|Shanghai Jiao Tong University|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
+|China|[php.cnpkg.org](https://php.cnpkg.org)|Eagle Wu|[fork](https://github.com/cnpkg/packagist-mirror)|Every 60 seconds|
+|China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|Tecent Cloud|Every day|
+|Japan|[packagist.jp](https://packagist.jp) |Hiraku|[forked](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
+|South Africa|[packagist.co.za](https://packagist.co.za)|SolidWorx|fork|Every 300 seconds|
+|South Korea|[packagist.kr](https://packagist.kr)|PackagistKR|[fork](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
 
 Not working as a mirror of packagist.org (Checked 2019-11):
 
-| Location        | Mirror      | Github | Reason|Sync |
-| ------|-----|-----|-----|-----|
-|Asia, China |[Huawei Cloud](https://mirrors.huaweicloud.com/repository/php)||> 100 packages outdated||
-|Asia, China |[pkg.phpcomposer.com](https://packagist.phpcomposer.com)||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json)||
-|Asia, India |[packagist.in](https://packagist.in) |[varunsridharan](https://github.com/varunsridharan)|404||
-|Asia, Indonesia |[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[IndraGunawan/packagist-mirror](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds|
+| Location        | Mirror      | Maintainer | Github | Reason|Sync |
+| ------|-----|-----|-----|-----|-----|
+|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|Huawei Cloud||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
+|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11||
+|India |[packagist.in](https://packagist.in) |Varun Sridharan|fork|Temporary server maintenance||
+|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[IndraGunawan/packagist-mirror](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds|
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
@@ -140,6 +140,8 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 - More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
 - Support gz disabled for limited configuration access to Apache/Nginx.
 - Support full mirror mode (for countries/companies with limited access to internet).
+- Status report for all mirrors around the world.
+- Stats after initial mirror creation.
 
 ## 📋 Requirements
 
