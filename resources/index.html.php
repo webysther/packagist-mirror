@@ -115,7 +115,7 @@
 
                     <h2>World Map of all mirrors</h2>
                         <p>
-                            All mirrors, the colors represent <a href="network.svg" target="_blank">the topology drawn here</a>.
+                            All mirrors, the colors represent <a href="network.svg" target="_blank">the topology</a> drawn here. Check <a href="https://status.packagist.com.br" target="_blank">status page</a> for health mirror's.
                         </p>
                         <a href="world_map.svg" target="_blank">
                             <center>

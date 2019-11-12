@@ -53,6 +53,8 @@ Not working as a mirror of packagist.org (Checked 2019-11):
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
+Check [status page](https://status.packagist.com.br) for health mirror's.
+
 [![World Map](/resources/public/world_map.svg)](https://packagist.com.br/world_map.svg)
 
 The colors represent the topology drawn below, only show servers in better condition at country level.
