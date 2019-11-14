@@ -47,9 +47,9 @@ Not working as a mirror of packagist.org (Checked 2019-11):
 | Location        | Mirror      | Maintainer | Github | Reason|Sync |
 | ------|-----|-----|-----|-----|-----|
 |China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|Huawei Cloud||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
-|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11||
+|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11|
 |India |[packagist.in](https://packagist.in) |Varun Sridharan|fork|Temporary server maintenance||
-|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[IndraGunawan/packagist-mirror](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds|
+|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |Indra Gunawan|[packagist-mirror](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
