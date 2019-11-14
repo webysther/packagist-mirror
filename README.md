@@ -27,8 +27,6 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 ## 🌎 Packagist public metadata mirrors around the world
 
-🇪🇺 🇨🇦 🇸🇬 🇧🇷 🇨🇳 🇮🇩 🇰🇷 🇯🇵 🇮🇳 🇿🇦
-
 🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
 | Location        | Mirror      | Maintainer | Github | Sync |
