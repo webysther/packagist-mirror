@@ -33,23 +33,23 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 | Location        | Mirror      | Maintainer | Github | Sync |
 | ------|-----|-----|-----|-----|
-|Brazil|[packagist.com.br](https://packagist.com.br)|Webysther|[main](https://github.com/Webysther/packagist-mirror)|Continuously|
-|China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|Aliyun||Every 300 seconds|
-|China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|Shanghai Jiao Tong University|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
-|China|[php.cnpkg.org](https://php.cnpkg.org)|Eagle Wu|[fork](https://github.com/cnpkg/packagist-mirror)|Every 60 seconds|
-|China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|Tecent Cloud|Every day|
-|Japan|[packagist.jp](https://packagist.jp) |Hiraku|[forked](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
-|South Africa|[packagist.co.za](https://packagist.co.za)|SolidWorx|fork|Every 300 seconds|
-|South Korea|[packagist.kr](https://packagist.kr)|PackagistKR|[fork](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
+|Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|
+|China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 300 seconds|
+|China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
+|China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every 60 seconds|
+|China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)|Every day|
+|Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 120 seconds|
+|South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 300 seconds|
+|South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every 60 seconds|
 
 Not working as a mirror of packagist.org (Checked 2019-11):
 
 | Location        | Mirror      | Maintainer | Github | Reason|Sync |
 | ------|-----|-----|-----|-----|-----|
-|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|Huawei Cloud||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
+|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
 |China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11|
-|India |[packagist.in](https://packagist.in) |Varun Sridharan|fork|Temporary server maintenance||
-|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |Indra Gunawan|[another](https://github.com/IndraGunawan/packagist-mirror)|> 100 packages outdated until 2019-09|Every 15 seconds
+|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Temporary server maintenance||
+|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|> 100 packages outdated until 2019-09|Every 15 seconds
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
