@@ -36,18 +36,19 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
 |China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
 |China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
+|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds
 |Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|
 
-Not working as a mirror of packagist.org (Checked 2019-11):
+Not working as a mirror of packagist.org (checked 2019-11):
 
 | Location        | Mirror      | Maintainer | Github | Reason|Sync |
 | ------|-----|-----|-----|-----|-----|
 |China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
 |China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11|
 |India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Temporary server maintenance||
-|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|> 100 packages outdated until 2019-09|Every 15 seconds
+||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|+100 packages not found, outdated until 2019-11||
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
