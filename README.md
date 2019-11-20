@@ -43,12 +43,12 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 Not working as a mirror of packagist.org (checked 2019-11):
 
-| Location        | Mirror      | Maintainer | Github | Reason|Sync |
-| ------|-----|-----|-----|-----|-----|
-|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).||
+| Location        | Mirror      | Maintainer | Github | Reason|
+| ------|-----|-----|-----|-----|
+|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).|
 |China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11|
-|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Temporary server maintenance||
-||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|+100 packages not found, outdated until 2019-11||
+|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Temporary server maintenance|
+||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|+100 packages not found, outdated until 2019-11|
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
