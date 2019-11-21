@@ -25,7 +25,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 ![Mirror creation](/resources/public/mirror-creation.gif)
 
-## 🌎 Packagist public metadata mirrors around the world
+## 🌎 Packagist public metadata mirrors observatory around the world
 
 🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
@@ -34,12 +34,15 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|
 |China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|
 |China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
+|China|[nas.tbpark.org:5081/phpcomposer](https://nas.tbpark.org:5081/phpcomposer)|[赵丰 (Zhao Feng)](https://github.com/zhaofeng-shu33)|[fork](https://github.com/zhaofeng-shu33/packagist-mirror)|Every 5 minutes|
 |China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
 |China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
 |Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds
+|Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds
 |Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|
+|Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[MYCOOLS INC.](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|
 
 Not working as a mirror of packagist.org (checked 2019-11):
 
