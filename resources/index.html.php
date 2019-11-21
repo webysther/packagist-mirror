@@ -119,8 +119,8 @@
                         </p>
                         <a href="world_map.svg" target="_blank">
                             <center>
-                                <img 
-                                src="world_map.svg" 
+                                <img
+                                src="world_map.svg"
                                 alt="World Map with all mirrors"
                                 width="80%" />
                             </center>
@@ -151,6 +151,7 @@
             // set text of the command
             document.getElementById('enablingStep').innerText = 'composer config -g repos.packagist composer '+ window.location.origin;
             document.getElementById('disablingStep').innerText = 'composer config -g --unset repos.packagist';
+            var lastsynced = document.getElementById('lastsynced');
 
             new ClipboardJS('.ctclipboard');
 
@@ -162,7 +163,6 @@
                         var responseHeader = req.getResponseHeader(wch);
                         var actual = moment.tz(responseHeader, '<?=$tz; ?>');
                         var format = 'YYYY-MM-DD HH:mm:ss ZZ';
-                        var lastsynced = document.getElementById('lastsynced');
                         lastsynced.innerText = 'Last sync: '+actual.format(format);
                     };
                     req.send(null);
