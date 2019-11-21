@@ -11,11 +11,7 @@ jobs:
   - php: nightly
 
 script:
-  # Update composer to latest version.
-  - composer self-update || true
-  # For faster installing
-  - composer global require hirak/prestissimo
   # Validate composer.json file.
   - composer validate
   # Install
-  - composer install
+  - composer install --ignore-platform-reqs
