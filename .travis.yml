@@ -5,6 +5,7 @@ php:
   - 7.3
   - 7.4snapshot
   - nightly
+    env: ALPHA=true
 
 jobs:
   allow_failures:
@@ -14,4 +15,5 @@ script:
   # Validate composer.json file.
   - composer validate
   # Install
-  - composer install --ignore-platform-reqs
+  - if [[ $ALPHA == true ]]; then composer install --ignore-platform-reqs; fi
+  - if [[ $ALPHA != true ]]; then composer install; fi
