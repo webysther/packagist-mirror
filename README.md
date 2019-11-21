@@ -40,6 +40,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds
 |Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds
 |Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|
+|Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[kawax](https://github.com/kawax)||Every hour|
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|
@@ -168,10 +169,13 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [Zencodex](https://github.com/zencodex/composer-mirror) create a mirror
-- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) create a mirror (outdated)
-- [Hirak](https://github.com/hirak/packagist-crawler) create a mirror (outdated)
+- [Zencodex](https://github.com/zencodex/composer-mirror) Create a mirror
+- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
+- [Hirak](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
 - [Slince](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
+- [Packagist Bot](https://github.com/kawax/packagist-bot) Yet Another Packagist Mirror
+- [Twity](https://github.com/julienj/twity) Provide a web based management of private and public composer packages.
+- [Velocita Proxy](https://github.com/isaaceindhoven/velocita-proxy) Composer caching reverse proxy
 
 ## ☮️ License
 
