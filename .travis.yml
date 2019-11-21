@@ -17,4 +17,3 @@ script:
   # Install
   - if [[ $ALPHA == true ]]; then composer install --ignore-platform-reqs; fi
   - if [[ $ALPHA != true ]]; then composer install; fi
-  - vendor/bin/phpunit
