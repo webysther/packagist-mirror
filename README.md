@@ -42,7 +42,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|
-|Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[MYCOOLS INC.](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|
+|Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|
 
 Not working as a mirror of packagist.org (checked 2019-11):
 
