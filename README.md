@@ -29,30 +29,31 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
-| Location        | Mirror      | Maintainer | Github | Sync |
-| ------|-----|-----|-----|-----|
-|Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|
-|China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|
+| Location        | Mirror      | Maintainer | Github | Sync | Since |
+| ------|-----|-----|-----|-----|-----|
+|Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|[Q3'17](https://github.com/Webysther/packagist-mirror/commits/master?after=7230e201b4542b7db33e2b19517352653f751759+419)
+|China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|[Q3'18](https://github.com/cnpkg/packagist-mirror/commits/master)
 |China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
-|China|[nas.tbpark.org:5081/phpcomposer](https://nas.tbpark.org:5081/phpcomposer)|[赵丰 (Zhao Feng)](https://github.com/zhaofeng-shu33)|[fork](https://github.com/zhaofeng-shu33/packagist-mirror)|Every 5 minutes|
-|China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|
+|China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|[Q2'19](https://github.com/sjtug/packagist-mirror/commits/master)
 |China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
-|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds
-|Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds
-|Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|
-|Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[Kawax](https://github.com/kawax)|[another](https://github.com/kawax/packagist-bot)|Every hour|
-|South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|
-|South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|
-|Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|
+|Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds|[Q3'18](https://github.com/IndraGunawan/packagist-mirror/commits/master)
+|Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds|[Q3'19](https://github.com/ianmustafa/packagist-mirror/commits/master)
+|Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|[Q4'14](https://github.com/hirak/packagist-crawler/graphs/contributors)
+|Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[Kawax](https://github.com/kawax)|[another](https://github.com/kawax/packagist-bot)|Every hour|[Q4'18](https://github.com/kawax/packagist-bot/graphs/contributors)
+|South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|[Q3'18](http://co.za/cgi-bin/whois.sh?Domain=packagist.co.za&Enter=Enter)
+|South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|[Q3'18](https://github.com/packagistkr/packagist-mirror/issues)
+|Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|🆕[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
 
 Not working as a mirror of packagist.org (checked 2019-11):
 
-| Location        | Mirror      | Maintainer | Github | Reason|
-| ------|-----|-----|-----|-----|
-|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||+100 packages not found, outdated until 2019-09, there no [2019$10 provider](https://mirrors.huaweicloud.com/repository/php/packages.json), [sample working](https://packagist.com.br/packages.json).|
-|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||No providers inside [packages.json](https://packagist.phpcomposer.com/packages.json) at least 2019-11|
-|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Temporary server maintenance|
-||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|+100 packages not found, outdated until 2019-11|
+| Location        | Mirror      | Maintainer | Github | Reason| At least | Since |
+| ------|-----|-----|-----|-----|-----|-----|
+|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||Outdated|[Q3'19](https://mirrors.huaweicloud.com/repository/php/packages.json)|
+||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Outdated|[Q3'19](https://packagist-mirror.wmflabs.org/packages.json)|[Q3'18](https://phabricator.wikimedia.org/T203529)
+|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|HTTP2 PROTOCOL ERROR|Q3'19|[Q2'19](https://www.registry.in/whois)
+|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||Outdated|[Q4'19](https://packagist.phpcomposer.com/packages.json)|
+|China|[nas.tbpark.org](https://nas.tbpark.org:5081/phpcomposer)|[赵丰 (Zhao Feng)](https://github.com/zhaofeng-shu33)|[fork](https://github.com/zhaofeng-shu33/packagist-mirror)|CONNECTION TIMED OUT|Q4'19|🆕[Q4'19](https://github.com/zhaofeng-shu33/packagist-mirror/commits/master)
+
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
 
