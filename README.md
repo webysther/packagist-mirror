@@ -50,7 +50,7 @@ Not working as a mirror of packagist.org (checked at Q4'19):
 | ------|-----|-----|-----|-----|-----|-----|
 |China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||Outdated|[Q3'19](https://mirrors.huaweicloud.com/repository/php/packages.json)|
 ||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Outdated|[Q3'19](https://packagist-mirror.wmflabs.org/packages.json)|[Q3'18](https://phabricator.wikimedia.org/T203529)
-|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|HTTP2 PROTOCOL ERROR|Q3'19|[Q2'19](https://www.registry.in/whois)
+|India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|HTTP2 PROTOCOL ERROR|Q4'19|[Q2'19](https://www.registry.in/whois)
 |China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||Outdated|🆕[Q4'19](https://packagist.phpcomposer.com/packages.json)|
 |China|[nas.tbpark.org](https://nas.tbpark.org:5081/phpcomposer)|[赵丰 (Zhao Feng)](https://github.com/zhaofeng-shu33)|[fork](https://github.com/zhaofeng-shu33/packagist-mirror)|CONNECTION TIMED OUT|🆕Q4'19|🆕[Q4'19](https://github.com/zhaofeng-shu33/packagist-mirror/commits/master)
 
