@@ -44,7 +44,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|[Q3'18](https://github.com/packagistkr/packagist-mirror/issues)
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|🆕[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
 
-Not working as a mirror of packagist.org (checked 2019-11):
+Not working as a mirror of packagist.org (checked at Q4'19):
 
 | Location        | Mirror      | Maintainer | Github | Reason| At least | Since |
 | ------|-----|-----|-----|-----|-----|-----|
