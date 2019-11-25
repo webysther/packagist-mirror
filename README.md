@@ -59,13 +59,13 @@ If you know any new mirror based or not on this one, please create a issue or a 
 
 Check [status page](https://status.packagist.com.br) for health mirror's.
 
-[![World Map](/resources/public/world_map.svg)](https://packagist.com.br/world_map.svg)
+[![World Map](/resources/public/world_map.svg)](https://github.com/Webysther/packagist-mirror/raw/master/resources/public/world_map.svg)
 
 The colors represent the topology drawn below, only show servers in better condition at country level.
 
 ## 🚀 Create your own mirror
 
-[![Topology](/resources/public/network.svg)](https://packagist.com.br/network.svg)
+[![Topology](/resources/public/network.svg)](https://github.com/Webysther/packagist-mirror/raw/master/resources/public/network.svg)
 
 With docker and nginx:
 
