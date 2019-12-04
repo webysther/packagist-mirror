@@ -20,7 +20,7 @@ PROXY_URL_PREFIX=${PROXY_URL_PREFIX:-'zipcache'}
 EXTERNAL_PORT=${EXTERNAL_PORT:-"80"}
 HTTP_PORT=${HTTP_PORT:-'8080'}
 OPTION=${OPTION:-'--no-progress'}
-MAIN_MIRROR=${MAIN_MIRROR:-'https://packagist.laravel-china.org'}
+MAIN_MIRROR=${MAIN_MIRROR:-'https://mirrors.aliyun.com/composer/'}
 CLEAR_ZIP_CACHE=${CLEAR_ZIP_CACHE:-'90'}
 
 if [ "${WEEK_SYNC_TIME}" == 'all' ];then
