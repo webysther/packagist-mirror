@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- PHPDotenv [migrated from version 3 to 4](https://github.com/vlucas/phpdotenv/blob/master/UPGRADING.md#v3-to-v4).
 
 ## [1.1.1] - 2019-11-11
 ### Added
