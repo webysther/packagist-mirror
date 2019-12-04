@@ -3,6 +3,8 @@
 namespace Webs\Mirror\Tests;
 
 use Dotenv\Dotenv;
+use Dotenv\Repository\Adapter\EnvConstAdapter;
+use Dotenv\Repository\RepositoryBuilder;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
@@ -21,8 +23,8 @@ abstract class TestCase extends BaseTestCase
 
         parent::__construct($name, $data, $dataName);
 
-        $dotenv = Dotenv::create(__DIR__.'/fixture/');
-        $dotenv->load();
+        $repository = RepositoryBuilder::create()->withReaders([new EnvConstAdapter()])->immutable()->make();
+        Dotenv::create($repository, __DIR__.'/fixture/', null)->load();
 
         $this->dir = vfsStream::setup()->url();
     }

@@ -31,8 +31,9 @@ if (!file_exists('.env')) {
 }
 
 // Load env
-$dotenv = Dotenv\Dotenv::create(getcwd());
-$dotenv->load();
+$adapter = [new Dotenv\Repository\Adapter\EnvConstAdapter()];
+$repository = Dotenv\Repository\RepositoryBuilder::create()->withReaders($adapter)->immutable()->make();
+Dotenv\Dotenv::create($repository, getcwd(), null)->load();
 
 date_default_timezone_set(getenv('TZ'));
 
