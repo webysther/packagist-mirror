@@ -9,7 +9,7 @@
 [![Quality Score](https://goo.gl/3LwbA1)](https://scrutinizer-ci.com/g/Webysther/packagist-mirror)
 [![Mentioned in Awesome composer](https://awesome.re/mentioned-badge.svg?style=flat-square)](https://github.com/jakoch/awesome-composer#packagist-mirrors)
 
-This is repository make possible to you create a metadata mirror and keep in sync with [packagist.org](packagist.org).
+This repository make possible to you create a metadata mirror and keep in sync with [packagist.org](packagist.org).
 
 ![Mirror creation](/resources/public/logo.svg)
 
