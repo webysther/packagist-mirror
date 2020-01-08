@@ -31,6 +31,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 | Location        | Mirror      | Maintainer | Github | Sync | Since |
 | ------|-----|-----|-----|-----|-----|
+|India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
 |Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|[Q3'17](https://github.com/Webysther/packagist-mirror/commits/master?after=7230e201b4542b7db33e2b19517352653f751759+419)
 |China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|[Q3'18](https://github.com/cnpkg/packagist-mirror/commits/master)
 |China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
@@ -50,7 +51,6 @@ Not working as a mirror of packagist.org (checked at Q4'19):
 | ------|-----|-----|-----|-----|-----|-----|
 |China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||Outdated|[Q3'19](https://mirrors.huaweicloud.com/repository/php/packages.json)|
 ||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Outdated|[Q3'19](https://packagist-mirror.wmflabs.org/packages.json)|[Q3'18](https://phabricator.wikimedia.org/T203529)
-|India |[packagist.vrkansagara.in](https://packagist.vrkansagara.in/) |[Vallabh Kansagara](https://github.com/vrkansagara)|fork|ACTIVE|
 |India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|HTTP2 PROTOCOL ERROR|⚠️Q4'19|[Q2'19](https://www.registry.in/whois)
 |China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||Outdated|⚠️[Q4'19](https://packagist.phpcomposer.com/packages.json)|
 |China|[nas.tbpark.org](https://nas.tbpark.org:5081/phpcomposer)|[赵丰 (Zhao Feng)](https://github.com/zhaofeng-shu33)|[fork](https://github.com/zhaofeng-shu33/packagist-mirror)|CONNECTION TIMED OUT|⚠️Q4'19|🆕[Q4'19](https://github.com/zhaofeng-shu33/packagist-mirror/commits/master)
