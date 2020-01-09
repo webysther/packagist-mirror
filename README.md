@@ -31,7 +31,6 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 | Location        | Mirror      | Maintainer | Github | Sync | Since |
 | ------|-----|-----|-----|-----|-----|
-|India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
 |Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|[Q3'17](https://github.com/Webysther/packagist-mirror/commits/master?after=7230e201b4542b7db33e2b19517352653f751759+419)
 |China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|[Q3'18](https://github.com/cnpkg/packagist-mirror/commits/master)
 |China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
@@ -39,6 +38,7 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 |China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
 |Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds|[Q3'18](https://github.com/IndraGunawan/packagist-mirror/commits/master)
 |Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds|[Q3'19](https://github.com/ianmustafa/packagist-mirror/commits/master)
+|India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
 |Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|[Q4'14](https://github.com/hirak/packagist-crawler/graphs/contributors)
 |Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[Kawax](https://github.com/kawax)|[another](https://github.com/kawax/packagist-bot)|Every hour|[Q4'18](https://github.com/kawax/packagist-bot/graphs/contributors)
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|[Q3'18](http://co.za/cgi-bin/whois.sh?Domain=packagist.co.za&Enter=Enter)
