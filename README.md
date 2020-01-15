@@ -46,7 +46,7 @@ Theses lists are ordered by country and sync time.
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|[Q3'18](http://co.za/cgi-bin/whois.sh?Domain=packagist.co.za&Enter=Enter)
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|[Q3'18](https://github.com/packagistkr/packagist-mirror/issues)
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
-||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork||[Q3'18](https://phabricator.wikimedia.org/T203529)
+|USA|[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Every 5 minutes|[Q3'18](https://phabricator.wikimedia.org/T203529)
 
 ⚠️ Not based on this [source code](https://github.com/Webysther/packagist-mirror):
 

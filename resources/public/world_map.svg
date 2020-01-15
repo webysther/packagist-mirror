@@ -158,7 +158,7 @@
     fill: #97D077;
  }
 
- .za, .kr, .id, .th, .cn, .in, .cz, .jp
+ .za, .kr, .id, .th, .cn, .in, .cz, .jp, .us
  {
     fill: #D5E8D4;
  }
