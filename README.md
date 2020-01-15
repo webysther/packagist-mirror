@@ -152,12 +152,18 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## 🛣️ Roadmap
 
+#### 2020
 - Translate readme.md and index of mirror.
+- Fully IaC with terraform.
 - More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
+- Support for Heroku.
+- Support for kubernetes.
+
+#### 2021
 - Support gz disabled for limited configuration access to Apache/Nginx.
-- Support full mirror mode (for countries/companies with limited access to internet).
-- Status report for all mirrors around the world.
-- Stats after initial mirror creation.
+- Support full mirror mode: Github/Gitlab.
+- Integration with [twity](https://github.com/julienj/twity).
+- Integration with [composer-registry-manager](https://github.com/slince/composer-registry-manager).
 
 ## 📋 Requirements
 
@@ -180,13 +186,14 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [Zencodex](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
-- [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
-- [Hirak](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
-- [Slince](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
-- [Packagist Bot](https://github.com/kawax/packagist-bot) Yet Another Packagist Mirror
-- [Twity](https://github.com/julienj/twity) Provide a web based management of private and public composer packages.
-- [Velocita Proxy](https://github.com/isaaceindhoven/velocita-proxy) Composer caching reverse proxy
+- [prestissimo](https://github.com/hirak/prestissimo) Composer parallel downloads packages in parallel to speed up the installation process.
+- [composer-mirror](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
+- [packagist-mirror](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
+- [packagist-crawler](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
+- [composer-registry-manager](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
+- [packagist-bot](https://github.com/kawax/packagist-bot) Yet Another Packagist Mirror
+- [twity](https://github.com/julienj/twity) Provide a web based management of private and public composer packages.
+- [velocita-proxy](https://github.com/isaaceindhoven/velocita-proxy) Composer caching reverse proxy
 
 ## ☮️ License
 

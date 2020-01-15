@@ -25,9 +25,9 @@ git clone https://github.com/Webysther/packagist-mirror.git
 cd packagist-mirror
 ```
 
-Run env:
+Run env dev:
 ```bash
-packagist-mirror-env
+env
 ```
 
 Config and Modify the .env:
@@ -52,7 +52,7 @@ php bin/mirror create -vvv
 
 - **Add tests!** - Your patch won't be accepted if it doesn't have tests.
 
-- **Document any change in behaviour** - Make sure the README and any other relevant documentation are kept up-to-date.
+- **Document any change in behaviour** - Make sure the README, CHANGELOG and any other relevant documentation are kept up-to-date.
 
 - **Consider our release cycle** - We try to follow semver. Randomly breaking public APIs is not an option.
 

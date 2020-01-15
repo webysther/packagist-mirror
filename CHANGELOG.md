@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - [Indonesia mirror](http://packagist.telkomuniversity.ac.id). [@Telkom University](https://packagist.telkomuniversity.ac.id)
 - [Japan mirror](https://packagist.dev.studio-umi.jp). [@Studio Umi](https://github.com/studioumi)
 
-
 ## [1.1.1] - 2019-11-11
 ### Added
 - More mirrors: https://packagist.kr, https://packagist.mirrors.sjtug.sjtu.edu.cn, https://mirrors.cloud.tencent.com/composer, https://mirrors.huaweicloud.com/repository/php
