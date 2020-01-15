@@ -49,7 +49,7 @@ $cli = new Symfony\Component\Console\Application(
 
 $filesystem = new Webs\Mirror\Filesystem(getenv('PUBLIC_DIR'));
 $provider = new Webs\Mirror\Provider;
-$package = new Webs\Mirror\Package;
+$package = new Webs\Mirror\Package(getenv('URI_PATTERN'));
 $progressBar = new Webs\Mirror\ProgressBar;
 
 $mirror = new Webs\Mirror\Mirror(

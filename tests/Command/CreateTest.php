@@ -41,7 +41,7 @@ class CreateTest extends TestCase
         $filesystem = new Filesystem($this->dir);
         $filesystem->setFilesystem($fly);
         $provider = new Provider;
-        $package = new Package;
+        $package = new Package(getenv('URI_PATTERN'));
 
         $progressBar = new ProgressBar;
 
