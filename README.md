@@ -180,7 +180,7 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [Zencodex](https://github.com/zencodex/composer-mirror) Create a mirror
+- [Zencodex](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
 - [IndraGunawan](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
 - [Hirak](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
 - [Slince](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
