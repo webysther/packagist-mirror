@@ -471,6 +471,7 @@ class Create extends Base
         $maintainerProfile = getenv('MAINTAINER_PROFILE');
         $maintainerRepo = getenv('MAINTAINER_REPO');
         $maintainerLicense = getenv('MAINTAINER_LICENSE');
+        $since = getenv('SINCE');
         $tz = getenv('TZ');
         $synced = getenv('SLEEP');
         $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID');

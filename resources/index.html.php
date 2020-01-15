@@ -176,5 +176,6 @@
                 }, (<?=$synced ?>000+1000));
             }
         </script>
+        <!-- Since: <?=$since ?> -->
     </body>
 </html>
