@@ -153,6 +153,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 ## 🛣️ Roadmap
 
 #### 2020
+- Support for Drupal metadata
 - Translate readme.md and index of mirror.
 - Fully IaC with terraform.
 - More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
@@ -186,7 +187,7 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [prestissimo](https://github.com/hirak/prestissimo) Composer parallel downloads packages in parallel to speed up the installation process.
+- [prestissimo](https://github.com/hirak/prestissimo) Downloads packages in parallel to speed up the installation process.
 - [composer-mirror](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
 - [packagist-mirror](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
 - [packagist-crawler](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
