@@ -29,33 +29,40 @@ When creating your local copy the child mirror (you) adds a list of other mirror
 
 🛫 Amazing data mirrors used to download repositories metadata built using this [recommended repository](https://packagist.org/mirrors) or another:
 
+Theses lists are ordered by country and sync time.
+
 | Location        | Mirror      | Maintainer | Github | Sync | Since |
 | ------|-----|-----|-----|-----|-----|
 |Brazil|[packagist.com.br](https://packagist.com.br)|[Webysther](https://github.com/Webysther)|[main](https://github.com/Webysther/packagist-mirror)|Continuously|[Q3'17](https://github.com/Webysther/packagist-mirror/commits/master?after=7230e201b4542b7db33e2b19517352653f751759+419)
 |China|[php.cnpkg.org](https://php.cnpkg.org)|[Eagle Wu](https://github.com/wudi)|[fork](https://github.com/cnpkg/packagist-mirror)|Every minute|[Q3'18](https://github.com/cnpkg/packagist-mirror/commits/master)
-|China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
 |China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|[Q2'19](https://github.com/sjtug/packagist-mirror/commits/master)
-|China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
 |Czech Republic|[packagist.hostuj.to](https://packagist.hostuj.to)|[HOSTUJ TO](https://hostuj.to)|fork|Every 5 minutes|🆕Q1'20
 |India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Every minute|[Q2'19](https://www.registry.in/whois)
 |India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
 |Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds|[Q3'18](https://github.com/IndraGunawan/packagist-mirror/commits/master)
 |Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds|[Q3'19](https://github.com/ianmustafa/packagist-mirror/commits/master)
 |Indonesia|[packagist.telkomuniversity.ac.id](http://packagist.telkomuniversity.ac.id) |[Telkom University](https://mirror.telkomuniversity.ac.id)|fork|Every 5 minutes|🆕Q1'20
-|Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|[Q4'14](https://github.com/hirak/packagist-crawler/graphs/contributors)
 |Japan|[packagist.dev.studio-umi.jp](https://packagist.dev.studio-umi.jp/) |[Studio Umi](https://github.com/studioumi)|fork|Every minute|🆕Q1'20
-|Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[Kawax](https://github.com/kawax)|[another](https://github.com/kawax/packagist-bot)|Every hour|[Q4'18](https://github.com/kawax/packagist-bot/graphs/contributors)
 |South Africa|[packagist.co.za](https://packagist.co.za)|[SolidWorx](https://github.com/SolidWorx)|fork|Every 5 minutes|[Q3'18](http://co.za/cgi-bin/whois.sh?Domain=packagist.co.za&Enter=Enter)
 |South Korea|[packagist.kr](https://packagist.kr)|[PackagistKR](https://github.com/packagistkr)|[fork](https://github.com/packagistkr/packagist-mirror)|Every minute|[Q3'18](https://github.com/packagistkr/packagist-mirror/issues)
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
 ||[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork||[Q3'18](https://phabricator.wikimedia.org/T203529)
 
-Not working as a mirror of packagist.org (checked at Q1'20):
+⚠️ Not based on this [source code](https://github.com/Webysther/packagist-mirror):
 
-| Location        | Mirror      | Maintainer | Github | Reason| At least | Since |
-| ------|-----|-----|-----|-----|-----|-----|
-|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||Outdated|[Q3'19](https://mirrors.huaweicloud.com/repository/php/packages.json)|
-|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||Outdated|⚠️[Q4'19](https://packagist.phpcomposer.com/packages.json)|
+| Location        | Mirror      | Maintainer | Github | Sync | Since |
+| ------|-----|-----|-----|-----|-----|
+|China|[mirrors.aliyun.com](https://mirrors.aliyun.com/composer)|[Aliyun](https://mirrors.aliyun.com)||Every 5 minutes|
+|China|[mirrors.cloud.tencent.com](https://mirrors.cloud.tencent.com/help/composer.html)|[Tecent Cloud](https://mirrors.cloud.tencent.com)||Every day
+|Japan|[packagist.jp](https://packagist.jp) |[Hiraku](https://github.com/hirak)|[forked](https://github.com/hirak/packagist-crawler)|Every 2 minutes|[Q4'14](https://github.com/hirak/packagist-crawler/graphs/contributors)
+|Japan|[packagist.kawax.biz](https://packagist.kawax.biz) |[Kawax](https://github.com/kawax)|[another](https://github.com/kawax/packagist-bot)|Every hour|[Q4'18](https://github.com/kawax/packagist-bot/graphs/contributors)
+
+🛑 Not working as a mirror of packagist.org (checked at Q1'20):
+
+| Location        | Mirror      | Maintainer | Github | Reason| At least |
+| ------|-----|-----|-----|-----|-----|
+|China |[mirrors.huaweicloud.com](https://mirrors.huaweicloud.com/repository/php)|[Huawei Cloud](https://mirrors.huaweicloud.com)||Outdated|[Q3'19](https://mirrors.huaweicloud.com/repository/php/packages.json)
+|China |[packagist.phpcomposer.com](https://pkg.phpcomposer.com)|||Outdated|[Q4'19](https://packagist.phpcomposer.com/packages.json)
 
 
 If you know any new mirror based or not on this one, please create a issue or a pull request with the new data.
