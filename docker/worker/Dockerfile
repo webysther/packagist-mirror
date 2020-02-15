@@ -9,7 +9,7 @@ ENV TZ=UTC
 ENV SLEEP=0
 
 RUN groupadd -g ${PGID} packagist \
-    && useradd -u ${PUID} -g packagist -m packagist -G docker_env \
+    && useradd -u ${PUID} -g packagist -m packagist \
     && usermod -p "*" packagist -s /bin/bash \
     && chown -R packagist:packagist /home/packagist \
     && echo "" >> ~/.bashrc \
