@@ -1,0 +1,51 @@
+version: "3.7"
+
+networks:
+    frontend:
+    backend:
+    web:
+        external: true
+
+services:
+    worker:
+        container_name: packagist-worker
+        build: ./docker/worker
+        command: "bash /home/root/sync.sh"
+        tty: true
+        environment:
+            SLEEP: 300
+        volumes:
+            - .:/var/www:cached
+        networks:
+            - backend
+
+    nginx:
+        container_name: packagist-nginx
+        build: ./docker/nginx
+        volumes:
+            - .:/var/www:cached
+            - ./docker/nginx/sites/:/etc/nginx/sites-available
+        labels:
+            - "traefik.enable=true"
+            - "traefik.port=80"
+            - "traefik.docker.network=web"
+            - "traefik.http.routers.packagist.rule=Host(`packagist.com.br`)"
+            - "traefik.http.routers.packagist.tls=true"
+            - "traefik.http.routers.packagist.tls.certresolver=le"
+            - "traefik.http.routers.packagist.entrypoints=websecure"
+        depends_on:
+            - php-fpm
+        networks:
+            - frontend
+            - backend
+            - web
+
+    php-fpm:
+        container_name: packagist-php-fpm
+        build: ./docker/php-fpm
+        volumes:
+            - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+            - .:/var/www:cached
+        networks:
+            - backend
+
