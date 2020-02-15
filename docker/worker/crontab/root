@@ -1,0 +1,1 @@
+* * * * * worker SLEEP=0 bash /docker-entrypoint.sh

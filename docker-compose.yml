@@ -1,0 +1,42 @@
+version: "3.7"
+
+networks:
+  frontend:
+  backend:
+
+services:
+  worker:
+    container_name: packagist-worker
+    build: ./docker/worker
+    command: "bash /home/root/sync.sh"
+    tty: true
+    volumes:
+      - .:/var/www:cached
+    networks:
+      - backend
+
+  nginx:
+    container_name: packagist-nginx
+    build: ./docker/nginx
+    volumes:
+      - .:/var/www:cached
+      - ./docker/nginx/sites/:/etc/nginx/sites-available
+    ports:
+      - 127.0.0.1:8000:80
+    depends_on:
+      - php-fpm
+    networks:
+      - frontend
+      - backend
+
+  php-fpm:
+    container_name: packagist-php-fpm
+    build: ./docker/php-fpm
+    expose:
+      - 9000
+    volumes:
+      - ./docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      - .:/var/www:cached
+    networks:
+      - backend
+
