@@ -14,7 +14,6 @@ RUN echo "upstream php-upstream { server php-fpm:9000; }" > /etc/nginx/conf.d/up
     && rm /etc/nginx/conf.d/default.conf
 
 ADD ./startup.sh /opt/startup.sh
-RUN sed -i 's/\r//g' /opt/startup.sh
 CMD ["/bin/bash", "/opt/startup.sh"]
 
 EXPOSE 80
