@@ -3,6 +3,8 @@ version: "3.7"
 networks:
   frontend:
   backend:
+  web:
+    external: true
 
 services:
   worker:
@@ -21,13 +23,20 @@ services:
     volumes:
       - .:/var/www:cached
       - ./docker/nginx/sites/:/etc/nginx/sites-available
-    ports:
-      - 127.0.0.1:8000:80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.docker.network=web"
+      - "traefik.http.routers.packagist.rule=Host(`packagist-uk.lab.cwserve.com`)"
+      - "traefik.http.routers.packagist.tls=true"
+      - "traefik.http.routers.packagist.tls.certresolver=le"
+      - "traefik.http.routers.packagist.entrypoints=websecure"
     depends_on:
       - php-fpm
     networks:
       - frontend
       - backend
+      - web
 
   php-fpm:
     container_name: packagist-php-fpm
