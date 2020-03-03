@@ -6,7 +6,7 @@ ARG PGID=1000
 ENV PUID ${PUID}
 ENV PGID ${PGID}
 ENV TZ=UTC
-ENV SLEEP=0
+ENV SLEEP=300
 
 RUN groupadd -g ${PGID} packagist \
     && useradd -u ${PUID} -g packagist -m packagist \
