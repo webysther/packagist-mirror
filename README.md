@@ -48,6 +48,7 @@ When creating a mirror, you add a list of other mirrors to use for initial sync,
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
 |USA|[packagist-mirror.wmflabs.org](https://packagist-mirror.wmflabs.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Every 5 minutes|[Q3'18](https://phabricator.wikimedia.org/T203529)
 |Taiwan|[packagist.tw](https://packagist.tw) |[Peter](https://github.com/peter279k)|[fork](https://github.com/open-source-contributions/packagist-mirror)|Every 5 minutes|🆕Q2'20
+|Taiwan|[repo1.packagist.tw](https://repo1.packagist.tw) |[Peter](https://github.com/peter279k)|[fork](https://github.com/open-source-contributions/packagist-mirror)|Every 5 minutes|🆕Q2'20
 
 ⚠️ Not based on this [source code](https://github.com/Webysther/packagist-mirror):
 
