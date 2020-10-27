@@ -38,6 +38,7 @@ When creating a mirror, you add a list of other mirrors to use for initial sync,
 |China|[packagist.mirrors.sjtug.sjtu.edu.cn](https://packagist.mirrors.sjtug.sjtu.edu.cn)|[Shanghai Jiao Tong University](https://github.com/sjtug)|[fork](https://github.com/sjtug/packagist-mirror)|Every hour|[Q2'19](https://github.com/sjtug/packagist-mirror/commits/master)
 |Czech Republic|[packagist.hostuj.to](https://packagist.hostuj.to)|[HOSTUJ TO](https://hostuj.to)|fork|Every 5 minutes|🆕Q1'20
 |Finland|[packagist.fi](https://packagist.fi)|[Niko Granö](https://xn--gran-8qa.fi)|fork|Every 5 minutes|🆕Q2'20
+|France|[packagist.fr](https://packagist.fr)|[Baptiste Pillot](https://github.com/baptistepillot)|[fork](https://github.com/bappli/packagist-mirror)|Every minute|🆕[Q4'20](https://github.com/bappli/packagist-mirror/commits/master)
 |Germany|[packagist.hesse.im](https://packagist.hesse.im)|[Benjamin Hesse](https://hesse.im)|[fork](https://github.com/42656e/packagist-mirror)|Every minute|🆕Q3'20
 |India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Every minute|[Q2'19](https://www.registry.in/whois)
 |India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
