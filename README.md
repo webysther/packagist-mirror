@@ -11,6 +11,10 @@
 
 ❤️ [Recommended by packagist.org](https://packagist.org/mirrors) ❤️
 
+## Announcement: [Composer 2 is now available!](https://blog.packagist.com/composer-2-0-is-now-available/)
+
+**This mirror is for Composer 1; Composer 2 is very fast on its own. We will update to support the version 2 for those need solve the slow internet access or availability problem with the main repository.**
+
 A mirror for [packagist.org](packagist.org) that regularly caches packages from one or more main mirrors to add to a distributed package repository.
 
 ![Mirror creation](/resources/public/logo.svg)
@@ -219,10 +223,7 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
-- [prestissimo](https://github.com/hirak/prestissimo) Downloads packages in parallel to speed up the installation process.
 - [composer-mirror](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
-- [packagist-mirror](https://github.com/IndraGunawan/packagist-mirror) Create a mirror (outdated)
-- [packagist-crawler](https://github.com/hirak/packagist-crawler) Create a mirror (outdated)
 - [composer-registry-manager](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
 - [packagist-bot](https://github.com/kawax/packagist-bot) Yet Another Packagist Mirror
 - [twity](https://github.com/julienj/twity) Provide a web based management of private and public composer packages.
