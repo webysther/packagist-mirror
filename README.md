@@ -25,7 +25,7 @@ If you're using [PHP Composer](https://getcomposer.org/), commands like *create-
 
 This project aims to create a local mirror with ease, allowing greater availability for companies/countries that want to use composer without depending on the infrastructure of third parties. It is also possible to create a public mirror to reduce the load on the main repository and better distribute requests around the world, helping make the packagist ecosystem faster as a whole!
 
-When creating a mirror, you add a list of other mirrors to use for initial sync, which pulls all packages to your local machine.   After the mirror is created and synced, the next runs will only pull updates.  If any mirror fails to deliver a metadata file, the client will fallback to its configured main mirror, whether that be packagist.org or otherwise. If the client encounters an installation problem or loses connection to a mirror, it can return from where it stopped running. 
+When creating a mirror, you add a list of other mirrors to use for initial sync, which pulls all packages to your local machine.   After the mirror is created and synced, the next runs will only pull updates.  If any mirror fails to deliver a metadata file, the client will fallback to its configured main mirror, whether that be packagist.org or otherwise. If the client encounters an installation problem or loses connection to a mirror, it can return from where it stopped running.
 
 ![Mirror creation](/resources/public/mirror-creation.gif)
 
@@ -55,7 +55,6 @@ When creating a mirror, you add a list of other mirrors to use for initial sync,
 |Thailand|[packagist.mycools.in.th](https://packagist.mycools.in.th)|[Jarak Kritkiattisak](https://github.com/mycools)|[fork](https://github.com/mycools/packagist-mirror)|Every 5 minutes|[Q4'19](https://github.com/mycools/packagist-mirror/commits/master)
 |USA|[packagist-mirror.wmcloud.org](https://packagist-mirror.wmcloud.org) |[Wikimedia](https://www.wikimedia.org/)|fork|Every 5 minutes|[Q3'18](https://phabricator.wikimedia.org/T203529)
 |Taiwan|[packagist.tw](https://packagist.tw) |[Peter](https://github.com/peter279k)|[fork](https://github.com/open-source-contributions/packagist-mirror)|Every 5 minutes|🆕Q2'20
-|Taiwan|[repo1.packagist.tw](https://repo1.packagist.tw) |[Peter](https://github.com/peter279k)|[fork](https://github.com/open-source-contributions/packagist-mirror)|Every 5 minutes|🆕Q2'20
 |Vietnam|[packagist.ondinh.net](https://packagist.ondinh.net/) |[Long Nguyen](https://github.com/olragon)|[main](https://github.com/Webysther/packagist-mirror)|Every 5 minutes|🆕Q3'20
 
 ⚠️ Not based on this [source code](https://github.com/Webysther/packagist-mirror):
@@ -97,7 +96,7 @@ There are currently three supported methods for creating your own mirror.
 - [Docker + Nginx + PHP](#docker-nginx-php) - Docker for cron jobs, Nginx + PHP on the host.
 - [Nginx + PHP](#nginx-php) - Cron + Nginx + PHP all running on the host.
 
-In all three methods, you need to clone the repository and copy `.env.example` to `.env` and modify to include your values instead of the defaults. 
+In all three methods, you need to clone the repository and copy `.env.example` to `.env` and modify to include your values instead of the defaults.
 
 ```bash
 # Clone this repository
