@@ -223,6 +223,7 @@ $ vendor/bin/phpunit
 
 ## 💙 Other correlated projects
 
+- [composer/mirror](https://github.com/composer/mirror) The official composer mirrorring script (used for official packagist.org mirrors)
 - [composer-mirror](https://github.com/zencodex/composer-mirror) Create a mirror (open sourced code but not maintained)
 - [composer-registry-manager](https://github.com/slince/composer-registry-manager) Easily switch to the composer repository you want
 - [packagist-bot](https://github.com/kawax/packagist-bot) Yet Another Packagist Mirror
