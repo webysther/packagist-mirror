@@ -108,7 +108,8 @@ class Provider
     public function getPackagesJson(stdClass $providers):stdClass
     {
         $providers->{'providers-url'} = "/p/%package%$%hash%.json";
-        $providers->{'metadata-url'} = "/p/%package%.json";
+        // v2 metadata are not mirrorred and so should not be advertised
+        unset($providers->{'metadata-url'});
         return $providers;
     }
 
