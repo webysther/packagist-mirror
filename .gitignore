@@ -6,3 +6,6 @@ cs_fixer*
 *.lock
 *.cache
 *.phar
+core.*
+.ddev
+.gitpod.yml
