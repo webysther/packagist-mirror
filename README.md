@@ -185,22 +185,6 @@ Nginx will now serve your mirror at the configured URL.
 
 Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
 
-## 🛣️ Roadmap
-
-#### 2020
-- Support for Drupal metadata
-- Translate readme.md and index of mirror.
-- Fully IaC with terraform.
-- More recipes to AWS/Azure/GCP/DigitalOcean and another cloud providers.
-- Support for Heroku.
-- Support for kubernetes.
-
-#### 2021
-- Support gz disabled for limited configuration access to Apache/Nginx.
-- Support full mirror mode: Github/Gitlab.
-- Integration with [twity](https://github.com/julienj/twity).
-- Integration with [composer-registry-manager](https://github.com/slince/composer-registry-manager).
-
 ## 📋 Requirements
 
 The following versions of PHP are supported by this version.
