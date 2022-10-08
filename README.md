@@ -45,6 +45,7 @@ When creating a mirror, you add a list of other mirrors to use for initial sync,
 |Germany|[composer.mg100.net](https://composer.mg100.net)|[Alex Gummenscheimer](https://github.com/MG-100)|[fork](https://github.com/MG-100/packagist-mirror)|Every minute|🆕Q1'21
 |India |[packagist.in](https://packagist.in) |[Varun Sridharan](https://github.com/varunsridharan)|fork|Every minute|[Q2'19](https://www.registry.in/whois)
 |India|[packagist.vrkansagara.in](https://packagist.vrkansagara.in/packages.json)|[Vallabh Kansagara](https://github.com/vrkansagara)|[fork](https://github.com/vrkansagara/packagist-mirror)|Every 5 minutes|[Q4'19](https://packagist.vrkansagara.in/packages.json)|
+|Iran and Germany|[composer.karimi.dev](https://composer.karimi.dev/packages.json)|[Muhammed Hussein Karimi](https://github.com/mhkarimi1383)|fork|Every minute|🆕[Q4'22](https://composer.karimi.dev/packages.json)|
 |Indonesia|[packagist.phpindonesia.id](https://packagist.phpindonesia.id) |[Indra Gunawan](https://github.com/IndraGunawan)|fork|Every 30 seconds|[Q3'18](https://github.com/IndraGunawan/packagist-mirror/commits/master)
 |Indonesia|[packagist.ianmustafa.com](https://packagist.ianmustafa.com) |[Ian Mustafa](https://github.com/ianmustafa)|[fork](https://github.com/ianmustafa/packagist-mirror)|Every 30 seconds|[Q3'19](https://github.com/ianmustafa/packagist-mirror/commits/master)
 |Indonesia|[packagist.telkomuniversity.ac.id](http://packagist.telkomuniversity.ac.id) |[Telkom University](https://mirror.telkomuniversity.ac.id)|fork|Every 5 minutes|🆕Q1'20
