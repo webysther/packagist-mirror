@@ -1,3 +1,7 @@
+# DEPRECATED
+
+The project has been frozen since the announcement of [composer 2](https://blog.packagist.com/composer-2-0-is-now-available/), which solved several problems, but still did not cover all users, especially in China. A few weeks ago, it adopted a [global CDN model](https://bunny.net/network/), which makes a mirror unnecessary. This includes Brazil, China and other countries where performance was still not good enough. This is a good move and I recommend that all existing mirrors start shutting down their domains. I will open a PR to remove the Packagist mirror page. Thank you to the community and everyone who helped the project.
+
 # 📦 Packagist Mirror
 
 [![docker pulls](https://goo.gl/Jb5Cq4)](https://hub.docker.com/r/webysther/packagist-mirror)
